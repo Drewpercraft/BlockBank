@@ -2,3 +2,39 @@ name: BlockBank
 author: hitechwizard
 version: 2.0.0_ALPHA
 main: com.drewpercraft.blockbank.BlockBank
+name: BlockBank
+website: www.drewpercraft.com
+description: A Realistic Banking system for cash and blocks
+depend: [Vault]
+
+commands:
+    bank:
+        description: Manage your bank accounts.
+        usage: /bank [command] see /bank help for more info.
+        permission: blockbank.user
+        permission-message: You can not have a bank account.
+        
+permissions:
+    blockbank.*:
+        description: Gives user access to all Bank commands
+        children:
+              blockbank.user: true
+              blockbank.vault: true
+              blockbank.borrow: true
+              blockbank.admin: true
+              
+    blockbank.user:
+        description: Allow user to access BlockBank accounts
+        default: true
+        
+    blockbank.vault:
+        description: Allow user to use BlockBank vaults.
+        default: true
+
+    blockbank.borrow:
+        description: Allow user to borrow money from BlockBank.
+        default: true
+          
+    blockbank.admin:
+        description: Allows user to administer BlockBank.
+        default: op
