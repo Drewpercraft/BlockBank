@@ -5,7 +5,7 @@ main: com.drewpercraft.blockbank.BlockBank
 name: BlockBank
 website: www.drewpercraft.com
 description: A Realistic Banking system for cash and blocks
-depend: [Vault]
+depend: [Vault, WorldGuard, WorldEdit]
 
 commands:
     bank:
@@ -14,14 +14,29 @@ commands:
         permission: blockbank.user
         permission-message: You can not have a bank account.
         
+    balance:
+        description: Get the balance in all your accounts.
+        usage: /balance
+        alias: /bal
+
+    pay:
+        description: Pay another player out of your pocket.
+        usage: /pay [player] [amount]
+
+    balancetop:
+        description: Show your ranking in cash assets along with the top 10 players.
+        usage: /balancetop
+        alias: /baltop
+
+
 permissions:
     blockbank.*:
         description: Gives user access to all Bank commands
         children:
-              blockbank.user: true
-              blockbank.vault: true
-              blockbank.borrow: true
-              blockbank.admin: true
+            blockbank.user: true
+            blockbank.vault: true
+            blockbank.borrow: true
+            blockbank.admin: true
               
     blockbank.user:
         description: Allow user to access BlockBank accounts
