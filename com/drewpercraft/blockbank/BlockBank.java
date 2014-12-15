@@ -15,6 +15,7 @@ import com.drewpercraft.blockbank.commands.CommandBalance;
 import com.drewpercraft.blockbank.commands.CommandBalanceTop;
 import com.drewpercraft.blockbank.commands.CommandBank;
 import com.drewpercraft.blockbank.commands.CommandPay;
+import com.drewpercraft.blockbank.listeners.PlayerListener;
 
 
 public final class BlockBank extends JavaPlugin {
@@ -30,7 +31,11 @@ public final class BlockBank extends JavaPlugin {
     	this.getCommand("balance").setExecutor(new CommandBalance(this));
     	this.getCommand("pay").setExecutor(new CommandPay(this));
     	this.getCommand("balanceTop").setExecutor(new CommandBalanceTop(this));
+    	
     	loadConfiguration();
+    	
+    	log.info(String.format("Enabling %s event handlers", this.getName()));
+    	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
     	//TODO Start Security
     	//TODO Start InterestManager
     	/*
@@ -44,12 +49,13 @@ public final class BlockBank extends JavaPlugin {
 		log.info(String.format("%s has been enabled.", getDescription().getName()));	    	  
     	 
     	*/
+    	log.info(String.format("%s enabled", this.getName()));
     }
  
     @Override
     public void onDisable() {
         // TODO Insert logic to be performed when the plugin is disabled
-    	log.info(String.format("Disabling %s", this.getName()));
+    	log.info(String.format("%s Disabled", this.getName()));
     }
     
     

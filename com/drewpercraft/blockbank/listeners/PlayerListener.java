@@ -29,8 +29,16 @@ public final class PlayerListener implements Listener {
 	public void onLogin(PlayerLoginEvent event)
 	{
     	Player player = event.getPlayer();
-    	if (!player.hasMetadata("blockbank.money")) {
-    		player.setMetadata("blockbank.money", new FixedMetadataValue(plugin, 0));
+    	if (player.hasPermission("blockbank.user")) {
+	    	if (!player.hasMetadata("blockbank.money")) {
+	    		player.setMetadata("blockbank.money", new FixedMetadataValue(plugin, 0));
+	    		player.sendMessage("BlockBank has given you a wallet.");
+	    		plugin.getLogger().info(String.format("Created a wallet for %s", player.getName()));
+	    	}else{
+	    		String money = player.getMetadata("blockbank.money").get(0).asString();
+	    		player.sendMessage(String.format("Your BlockBank wallet contains $%s", money));
+	    		plugin.getLogger().info(String.format("%s wallet contains %s", player.getName(), money));
+	    	}
     	}
     }
     
