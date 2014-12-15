@@ -17,7 +17,7 @@ commands:
     balance:
         description: Get the balance in all your accounts.
         usage: /balance
-        alias: /bal
+        aliases: [bal, money, $]
 
     pay:
         description: Pay another player out of your pocket.
@@ -26,7 +26,7 @@ commands:
     balancetop:
         description: Show your ranking in cash assets along with the top 10 players.
         usage: /balancetop
-        alias: /baltop
+        aliases: [baltop]
 
 
 permissions:
