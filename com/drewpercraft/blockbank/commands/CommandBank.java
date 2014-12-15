@@ -17,7 +17,7 @@ public class CommandBank implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,	String[] arg3) {
 		// TODO Auto-generated method stub
-		this.plugin.getLogger().info("BlockBank: command Bank");
+		this.plugin.getLogger().info(String.format("CommandBank 1: %s  2: %s  3: %s", arg1, arg2, arg3));
 		return false;
 	}
 
