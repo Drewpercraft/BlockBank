@@ -1,6 +1,5 @@
 package com.drewpercraft.blockbank;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashMap;
@@ -9,9 +8,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 
 import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.commands.CommandBalance;
@@ -26,26 +23,10 @@ public final class BlockBank extends JavaPlugin {
 	protected Logger log;
 	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
 	private VaultEconomy vaultAPI = null;
-
-	public BlockBank() {
-		super();
-		initialize();
-	}
-
-	public BlockBank(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) 
-	{
-		super(loader, description, dataFolder, file);
-		initialize();
-	}
-
-	private void initialize()
-	{
-		log = getLogger();
-		vaultAPI = new VaultEconomy(this);
-	}
 	
 	@Override
     public void onEnable() {
+		log = getLogger();
     	log.info(String.format("Enabling %s commands", this.getName()));
     	this.getCommand("bank").setExecutor(new CommandBank(this));
     	this.getCommand("balance").setExecutor(new CommandBalance(this));
@@ -115,7 +96,8 @@ public final class BlockBank extends JavaPlugin {
     
     public VaultEconomy getVaultAPI()
     {
-    	return this.vaultAPI;
+    	if (vaultAPI == null) vaultAPI = new VaultEconomy(this);
+    	return vaultAPI;
     }
     
     protected static String intToTime(int value) {
