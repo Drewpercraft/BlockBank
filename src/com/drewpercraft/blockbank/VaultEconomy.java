@@ -203,7 +203,7 @@ public class VaultEconomy implements Economy {
 	public String format(double amount) {
 		int decimals = plugin.getConfig().getInt("decimals", 0);
 		String symbol = plugin.getConfig().getString("currencySymbol", "$");
-		return String.format("%s%d", symbol, amount);
+		return String.format("%s%f", symbol, amount);
 	}
 
 	/* (non-Javadoc)
@@ -219,18 +219,18 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#getBalance(org.bukkit.OfflinePlayer, java.lang.String)
 	 */
 	@Override
-	public double getBalance(OfflinePlayer arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getBalance(OfflinePlayer player, String world) {
+		//BlockBank does not support separate balances per world.
+		return getBalance(player);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#getBalance(org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public double getBalance(OfflinePlayer arg0) {
+	public double getBalance(OfflinePlayer player) {
 		// TODO Auto-generated method stub
-		return 0;
+		return plugin.getPlayer(player.getUniqueId()).getBalance();
 	}
 
 	/* (non-Javadoc)

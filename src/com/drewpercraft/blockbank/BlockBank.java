@@ -22,6 +22,7 @@ public final class BlockBank extends JavaPlugin {
 	
 	protected Logger log;
 	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
+	private Map<UUID, Player> players = new HashMap<UUID, Player>();
 	private VaultEconomy vaultAPI = null;
 	
 	@Override
@@ -138,5 +139,17 @@ public final class BlockBank extends JavaPlugin {
     
 	public int getDefaultCloseHour() {
 		return this.getConfig().getInt("closeHour", 17);
+	}
+
+	public Player getPlayer(UUID uniqueId) {
+		if (!players.containsKey(uniqueId)) {
+			players.put(uniqueId, new Player(this, uniqueId));
+		}
+		return players.get(uniqueId);
+	}
+
+	public void unloadPlayer(UUID uniqueId) {
+		log.info("Unloading player " + uniqueId.toString());
+		players.remove(uniqueId);
 	}
 }

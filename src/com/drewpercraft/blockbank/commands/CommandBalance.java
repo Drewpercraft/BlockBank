@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.drewpercraft.blockbank.BlockBank;
 
@@ -19,9 +20,14 @@ public class CommandBalance implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,	String[] arg3) {
-		// TODO Auto-generated method stub
-		log.info(String.format("CommandBalance 1: %s  2: %s  3: %s", arg1, arg2, arg3));
+	public boolean onCommand(CommandSender sender, Command arg1, String arg2,	String[] arg3) {
+		if (sender instanceof Player)
+		{
+			Player player = (Player) sender;
+			double amount = plugin.getPlayer(player.getUniqueId()).getBalance();
+			sender.sendMessage(String.format("You have %s in your wallet.", plugin.getVaultAPI().format(amount)));
+			return true;
+		}
 		return false;
 	}
 
