@@ -32,7 +32,6 @@ public class Player {
 	
 	public File getPlayerFile()
 	{
-		plugin.getLogger().info("Attempting to load " + filename);
 		return new File(filename);
 	}
 	
@@ -46,6 +45,7 @@ public class Player {
 				data.put("uuid", uuid.toString());
 				data.put("balance", 0.0);
 			}else{
+				plugin.getLogger().info("Loading UUID: " + uuid.toString());
 				JSONParser parser = new JSONParser();
 				Object obj = parser.parse(new FileReader(playerFile));
 				data = (JSONObject) obj;
@@ -67,7 +67,7 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().info("Writing " + data.toString() + " to " + playerFile.getAbsolutePath());
+			plugin.getLogger().info("Saving " + playerFile.getAbsolutePath());
 			os.write(data.toString());
 			os.close();
 		}

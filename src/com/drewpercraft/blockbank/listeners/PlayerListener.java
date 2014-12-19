@@ -6,8 +6,7 @@ package com.drewpercraft.blockbank.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.EventHandler;
 
 import com.drewpercraft.blockbank.BlockBank;
@@ -27,7 +26,7 @@ public final class PlayerListener implements Listener {
     }
 	
     @EventHandler
-    public void onLogin(PlayerLoginEvent event)
+    public void onLogin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();
     	if (player.hasPermission("blockbank.user")) {
@@ -35,13 +34,5 @@ public final class PlayerListener implements Listener {
     	}
     }
     
-    @EventHandler
-	public void onQuit(PlayerQuitEvent event)
-	{
-    	Player player = event.getPlayer();
-    	if (player.hasPermission("blockbank.user")) {
-	    	//FIXME plugin.getVaultAPI().getPlayer(player.getUniqueId()).save();
-    	}
-    }
-    
+
 }

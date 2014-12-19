@@ -1,5 +1,6 @@
 package com.drewpercraft.blockbank;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +31,18 @@ public class VaultEconomy implements Economy {
 		this.plugin = plugin;
 		this.log = plugin.getLogger();
 		this.log.info("VaultEconomy loading existing accounts...");
-		//TODO Load all the player accounts
+		
+		File playerDataPath = new File(this.plugin.getPlayerDataPath());
+		File[] playerDataFiles = playerDataPath.listFiles();
+		for (File file : playerDataFiles)
+		{
+			String filename = file.getName();
+			if (filename.endsWith(".json"))
+			{
+				getPlayer(UUID.fromString(filename.substring(0, filename.length() - 5)));
+			}
+			
+		}
 		
 	}
 
@@ -123,11 +135,8 @@ public class VaultEconomy implements Economy {
 	@Override
 	public boolean createPlayerAccount(OfflinePlayer player) 
 	{
-		if (!players.containsKey(player.getUniqueId()))
-		{
-			
-		}
-		return false;
+		getPlayer(player.getUniqueId()).save();
+		return true;
 	}
 
 	/* (non-Javadoc)
