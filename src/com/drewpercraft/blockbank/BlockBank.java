@@ -1,13 +1,18 @@
 package com.drewpercraft.blockbank;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,6 +29,7 @@ public final class BlockBank extends JavaPlugin {
 	protected Logger log;
 	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
 	private VaultEconomy vaultAPI = null;
+	private ResourceBundle userMessages;
 	
 	@Override
     public void onEnable() {
@@ -63,30 +69,45 @@ public final class BlockBank extends JavaPlugin {
     
     public void loadConfiguration() {
     	log.info("Loading configuration");
-    	banks.clear();
-   		this.saveDefaultConfig();
-   		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
-
-   		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
-    	Set<String> bank_ids = bankConfig.getKeys(false);
-    	for(Iterator<String> bankIT = bank_ids.iterator(); bankIT.hasNext();) {
-    		String bankID = bankIT.next();
-    		Bank bank = new Bank(this, bankID);
-    		banks.put(bank.getId(), bank);
+    	
+    	try {
+	    	banks.clear();
+	   		this.saveDefaultConfig();
+	   		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
+	
+	   		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
+	    	Set<String> bank_ids = bankConfig.getKeys(false);
+	    	for(Iterator<String> bankIT = bank_ids.iterator(); bankIT.hasNext();) {
+	    		String bankID = bankIT.next();
+	    		Bank bank = new Bank(this, bankID);
+	    		banks.put(bank.getId(), bank);
+	    	}
+	    	this.saveConfig();
+	    	
+	    	File playerDataPath = new File(getPlayerDataPath());
+	    	if (!playerDataPath.isDirectory()) {
+	    		log.info("Player Data Path " + getPlayerDataPath() + " was not found - creating");
+	    		playerDataPath.mkdirs();
+	    	}else{
+	    		log.info("Found player path " + getPlayerDataPath());
+	    	}
+	    	
+	    	getVaultAPI();
+	    	
+	    	String messagePath = this.getDataFolder() + File.separator + "language.txt";
+	    	FileInputStream fis = new FileInputStream(messagePath);
+			try {
+			  userMessages = new PropertyResourceBundle(fis);
+			} finally {
+			  fis.close();
+			}
+	    	
+	    	log.info("Configuration Load Completed");
     	}
-    	this.saveConfig();
-    	
-    	File playerDataPath = new File(getPlayerDataPath());
-    	if (!playerDataPath.isDirectory()) {
-    		log.info("Player Data Path " + getPlayerDataPath() + " was not found - creating");
-    		playerDataPath.mkdirs();
-    	}else{
-    		log.info("Found player path " + getPlayerDataPath());
+    	catch (Exception e) {
+    		log.severe("Error loading configuration. Disabling BlockBank.");
+    		Bukkit.getPluginManager().disablePlugin(this);
     	}
-    	
-    	getVaultAPI();
-    	
-    	log.info("Configuration Load Completed");
     }
     
     public VaultEconomy getVaultAPI()
@@ -141,5 +162,10 @@ public final class BlockBank extends JavaPlugin {
 			filePath = getDataFolder().getAbsolutePath() + File.separator + "playerData";
 		}
 		return filePath;
+	}
+	
+	public String getMessage(String key)
+	{
+		return userMessages.getString(key);
 	}
 }

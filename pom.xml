@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
@@ -6,6 +7,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.8-R0.1-SNAPSHOT</bukkitVersion>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
+		<maven.output.build.path>/Volumes/server/plugins</maven.output.build.path>
 	</properties>
 
 	<!-- Project information -->
@@ -46,7 +48,7 @@
 			<url>http://dev.drewpercraft.com/repositories/pub_snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
@@ -95,21 +97,47 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${maven.output.build.path}</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
-       <repository>
+		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
-       <repository>
-       		<id>sk89q-repo</id>
-       		<url>http://maven.sk89q.com/repo/</url>
-       </repository>
-       <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
-       </repository>
-   </repositories>
+		<repository>
+			<id>sk89q-repo</id>
+			<url>http://maven.sk89q.com/repo/</url>
+		</repository>
+		<repository>
+			<id>vault-repo</id>
+			<url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
+		</repository>
+	</repositories>
 	<description>BlockBank was developed in order to provide a complete banking system for RPG/Adventure servers that prefer that their banking system be more realistic. BlockBank allows players to establish banks that other players can deposit/withdraw money from, create safety deposit chests. Players earn interest on their deposits, and pay interest on their loans. Each bank can set their hours of operations, location, the interest rates paid/charged, and if the &quot;creepy bill collectors&quot; are sent to collect on delinquent accounts. Players can have multiple accounts in each bank, and players can co-mingle accounts into a single vault inside the bank to allow for shared access. To establish a vault in the bank, players place a sign on a vacant chest in the bank's vault room to associate it with the first account that does not have a vault. These chests are protected by the bank's security guard and prevent anyone other than the account holder from accessing them (similar to the Lockette plugin).</description>
 </project>

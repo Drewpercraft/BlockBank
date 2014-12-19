@@ -19,22 +19,24 @@ public class CommandBalance implements CommandExecutor {
 		this.log = this.plugin.getLogger();
 	}
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2,	String[] params) {
 		if (sender instanceof OfflinePlayer)
 		{
 			OfflinePlayer player;
 			if (params.length > 0) {
-				player = plugin.getServer().getPlayer(params[0]);
+				String playerName = params[0].toLowerCase();
+				player = plugin.getServer().getOfflinePlayer(playerName);
 				if (!(player instanceof OfflinePlayer)) {
-					sender.sendMessage(String.format("%s is not a valid player name.", params[0]));
+					sender.sendMessage(String.format(plugin.getMessage("InvalidPlayer"), playerName)); //$NON-NLS-1$
 					return true;
 				}
 			}else{
 				player = (OfflinePlayer) sender;
 			}
 			double amount = plugin.getVaultAPI().getBalance(player);
-			sender.sendMessage(String.format("You have %s in your wallet.", plugin.getVaultAPI().format(amount)));
+			sender.sendMessage(String.format(plugin.getMessage("WalletBalance"), plugin.getVaultAPI().format(amount))); //$NON-NLS-1$
 			return true;
 		}
 		return false;
