@@ -1,5 +1,6 @@
 package com.drewpercraft.blockbank;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.HashMap;
@@ -22,7 +23,6 @@ public final class BlockBank extends JavaPlugin {
 	
 	protected Logger log;
 	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
-	private Map<UUID, Player> players = new HashMap<UUID, Player>();
 	private VaultEconomy vaultAPI = null;
 	
 	@Override
@@ -66,7 +66,6 @@ public final class BlockBank extends JavaPlugin {
     	banks.clear();
    		this.saveDefaultConfig();
    		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
-		initializeMessages();
 
    		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
     	Set<String> bank_ids = bankConfig.getKeys(false);
@@ -76,23 +75,18 @@ public final class BlockBank extends JavaPlugin {
     		banks.put(bank.getId(), bank);
     	}
     	this.saveConfig();
+    	
+    	File playerDataPath = new File(getPlayerDataPath());
+    	if (!playerDataPath.isDirectory()) {
+    		log.info("Player Data Path " + getPlayerDataPath() + " was not found - creating");
+    		playerDataPath.mkdirs();
+    	}else{
+    		log.info("Found player path " + getPlayerDataPath());
+    	}
+    	
+    	getVaultAPI();
+    	
     	log.info("Configuration Load Completed");
-    }
-    
-    private void initializeMessages()
-    {
-   		if (!this.getConfig().contains("messages")) {
-   			this.getConfig().createSection("messages");
-   		}
-   		ConfigurationSection messages = this.getConfig().getConfigurationSection("messages");
-    	//TODO abstract all initial chat strings here
-   		messages.addDefault("BRANCH_CLOSED", "This branch is currently closed.");
-   		messages.addDefault("BRANCH_CLOSING", "The {branch.name} of {bank.name} is closing.");
-    }
-    
-    protected String getMessage(String id)
-    {
-    	return "Not Implemented";
     }
     
     public VaultEconomy getVaultAPI()
@@ -141,15 +135,11 @@ public final class BlockBank extends JavaPlugin {
 		return this.getConfig().getInt("closeHour", 17);
 	}
 
-	public Player getPlayer(UUID uniqueId) {
-		if (!players.containsKey(uniqueId)) {
-			players.put(uniqueId, new Player(this, uniqueId));
+	public String getPlayerDataPath() {
+		String filePath = getConfig().getString("playerDataPath", null);
+		if (filePath == null) {
+			filePath = getDataFolder().getAbsolutePath() + File.separator + "playerData";
 		}
-		return players.get(uniqueId);
-	}
-
-	public void unloadPlayer(UUID uniqueId) {
-		log.info("Unloading player " + uniqueId.toString());
-		players.remove(uniqueId);
+		return filePath;
 	}
 }

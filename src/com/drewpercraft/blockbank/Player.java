@@ -5,32 +5,26 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.plugin.Plugin;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 public class Player {
 
-	private final Plugin plugin;
+	private final BlockBank plugin;
 	private final String filePath;
 	private final String filename;
 	private final UUID uuid;
 	private JSONObject data = new JSONObject();
 
 	
-	public Player(Plugin plugin, UUID uuid) {
+	public Player(BlockBank plugin, UUID uuid) {
 		this.plugin = plugin;
 		this.uuid = uuid;
-		String filePath = plugin.getConfig().getString("playerDataPath", "");
-		if (filePath.length() == 0) {
-			filePath = plugin.getDataFolder().getAbsolutePath() + File.separator + "playerData";
-		}
-		this.filePath = filePath;
+		
+		this.filePath = plugin.getPlayerDataPath();
 		this.filename = this.filePath + File.separator + uuid + ".json";
 		load();
 	}
@@ -73,6 +67,7 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
+			plugin.getLogger().info("Writing " + data.toString() + " to " + playerFile.getAbsolutePath());
 			os.write(data.toString());
 			os.close();
 		}

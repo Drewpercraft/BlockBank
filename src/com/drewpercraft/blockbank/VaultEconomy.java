@@ -1,7 +1,10 @@
 package com.drewpercraft.blockbank;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.OfflinePlayer;
@@ -10,17 +13,39 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
+import com.drewpercraft.blockbank.Player;
+
+/*
+ * Implementes the Vault Econonmy interface and contains
+ * all the business logic required to support it
+ */
 public class VaultEconomy implements Economy {
 
 	BlockBank plugin = null;
 	Logger log = null;
+	private Map<UUID, Player> players = new HashMap<UUID, Player>();
 	
 	public VaultEconomy(BlockBank plugin) 
 	{
 		this.plugin = plugin;
 		this.log = plugin.getLogger();
+		this.log.info("VaultEconomy loading existing accounts...");
+		//TODO Load all the player accounts
+		
 	}
 
+	public Player getPlayer(UUID uniqueId) {
+		if (!players.containsKey(uniqueId)) {
+			players.put(uniqueId, new Player(plugin, uniqueId));
+		}
+		return players.get(uniqueId);
+	}
+
+	public void unloadPlayer(UUID uniqueId) {
+		log.info("Unloading player " + uniqueId.toString());
+		players.remove(uniqueId);
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#bankBalance(java.lang.String)
 	 */
@@ -86,40 +111,44 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#createPlayerAccount(org.bukkit.OfflinePlayer, java.lang.String)
 	 */
 	@Override
-	public boolean createPlayerAccount(OfflinePlayer arg0, String arg1) 
+	public boolean createPlayerAccount(OfflinePlayer player, String worldName) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		// BlockBank does not support separate accounts per world
+		return createPlayerAccount(player);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#createPlayerAccount(org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public boolean createPlayerAccount(OfflinePlayer arg0) 
+	public boolean createPlayerAccount(OfflinePlayer player) 
 	{
-		// TODO Auto-generated method stub
+		if (!players.containsKey(player.getUniqueId()))
+		{
+			
+		}
 		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#createPlayerAccount(java.lang.String, java.lang.String)
 	 */
+	@Deprecated
 	@Override
-	public boolean createPlayerAccount(String arg0, String arg1) 
+	public boolean createPlayerAccount(String playerName, String worldName) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		// BlockBank does not support separate accounts per world
+		return createPlayerAccount(playerName);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#createPlayerAccount(java.lang.String)
 	 */
+	@Deprecated
 	@Override
-	public boolean createPlayerAccount(String arg0) 
+	public boolean createPlayerAccount(String playerName) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		return createPlayerAccount(plugin.getServer().getPlayer(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -201,9 +230,9 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public String format(double amount) {
-		int decimals = plugin.getConfig().getInt("decimals", 0);
 		String symbol = plugin.getConfig().getString("currencySymbol", "$");
-		return String.format("%s%f", symbol, amount);
+		String formatString = "%s%." + fractionalDigits() + "f";
+		return String.format(formatString, symbol, amount);
 	}
 
 	/* (non-Javadoc)
@@ -211,8 +240,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public int fractionalDigits() {
-		// TODO Auto-generated method stub
-		return 0;
+		return plugin.getConfig().getInt("decimals", 0);
 	}
 
 	/* (non-Javadoc)
@@ -228,9 +256,10 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#getBalance(org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public double getBalance(OfflinePlayer player) {
-		// TODO Auto-generated method stub
-		return plugin.getPlayer(player.getUniqueId()).getBalance();
+	public double getBalance(OfflinePlayer offlinePlayer) {
+		Player player = players.get(offlinePlayer.getUniqueId());
+		if (player instanceof Player) return player.getBalance();
+		return 0.0;
 	}
 
 	/* (non-Javadoc)

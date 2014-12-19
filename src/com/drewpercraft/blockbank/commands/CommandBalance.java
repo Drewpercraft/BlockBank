@@ -24,7 +24,7 @@ public class CommandBalance implements CommandExecutor {
 		if (sender instanceof Player)
 		{
 			Player player = (Player) sender;
-			double amount = plugin.getPlayer(player.getUniqueId()).getBalance();
+			double amount = plugin.getVaultAPI().getBalance(player);
 			sender.sendMessage(String.format("You have %s in your wallet.", plugin.getVaultAPI().format(amount)));
 			return true;
 		}
