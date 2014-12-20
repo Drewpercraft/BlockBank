@@ -275,7 +275,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#getBalance(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public double getBalance(String arg0, String arg1) {
+	public double getBalance(String playerName, String worldName) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -284,7 +284,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#getBalance(java.lang.String)
 	 */
 	@Override
-	public double getBalance(String arg0) {
+	public double getBalance(String playerName) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -303,7 +303,6 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
 		return "BlockBank";
 	}
 
@@ -311,16 +310,15 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#has(org.bukkit.OfflinePlayer, double)
 	 */
 	@Override
-	public boolean has(OfflinePlayer arg0, double arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean has(OfflinePlayer player, double amount) {
+		return getBalance(player) >= amount;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#has(org.bukkit.OfflinePlayer, java.lang.String, double)
 	 */
 	@Override
-	public boolean has(OfflinePlayer arg0, String arg1, double arg2) {
+	public boolean has(OfflinePlayer player, String world, double amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -329,7 +327,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#has(java.lang.String, double)
 	 */
 	@Override
-	public boolean has(String arg0, double arg1) {
+	public boolean has(String playerName, double amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -338,7 +336,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#has(java.lang.String, java.lang.String, double)
 	 */
 	@Override
-	public boolean has(String arg0, String arg1, double arg2) {
+	public boolean has(String playerName, String worldName, double amount) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -347,7 +345,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#hasAccount(org.bukkit.OfflinePlayer, java.lang.String)
 	 */
 	@Override
-	public boolean hasAccount(OfflinePlayer arg0, String arg1) {
+	public boolean hasAccount(OfflinePlayer player, String worldName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -356,7 +354,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#hasAccount(org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public boolean hasAccount(OfflinePlayer arg0) {
+	public boolean hasAccount(OfflinePlayer player) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -365,7 +363,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#hasAccount(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean hasAccount(String arg0, String arg1) {
+	public boolean hasAccount(String playerName, String worldName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -374,7 +372,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#hasAccount(java.lang.String)
 	 */
 	@Override
-	public boolean hasAccount(String arg0) {
+	public boolean hasAccount(String playerName) {
 		// TODO Auto-generated method stub
 		return false;
 	}
@@ -392,7 +390,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#isBankMember(java.lang.String, org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public EconomyResponse isBankMember(String arg0, OfflinePlayer arg1) {
+	public EconomyResponse isBankMember(String bankName, OfflinePlayer player) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -401,7 +399,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#isBankMember(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public EconomyResponse isBankMember(String arg0, String arg1) {
+	public EconomyResponse isBankMember(String bankName, String playerName) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -410,7 +408,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#isBankOwner(java.lang.String, org.bukkit.OfflinePlayer)
 	 */
 	@Override
-	public EconomyResponse isBankOwner(String arg0, OfflinePlayer arg1) {
+	public EconomyResponse isBankOwner(String bankName, OfflinePlayer player) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -419,7 +417,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#isBankOwner(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public EconomyResponse isBankOwner(String arg0, String arg1) {
+	public EconomyResponse isBankOwner(String bankName, String playerName) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -437,7 +435,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#withdrawPlayer(org.bukkit.OfflinePlayer, double)
 	 */
 	@Override
-	public EconomyResponse withdrawPlayer(OfflinePlayer arg0, double arg1) {
+	public EconomyResponse withdrawPlayer(OfflinePlayer player, double amount) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -446,7 +444,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#withdrawPlayer(org.bukkit.OfflinePlayer, java.lang.String, double)
 	 */
 	@Override
-	public EconomyResponse withdrawPlayer(OfflinePlayer arg0, String arg1, double arg2) {
+	public EconomyResponse withdrawPlayer(OfflinePlayer player, String worldName, double amount) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -455,7 +453,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#withdrawPlayer(java.lang.String, double)
 	 */
 	@Override
-	public EconomyResponse withdrawPlayer(String arg0, double arg1) {
+	public EconomyResponse withdrawPlayer(String playerName, double amount) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
@@ -464,7 +462,7 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#withdrawPlayer(java.lang.String, java.lang.String, double)
 	 */
 	@Override
-	public EconomyResponse withdrawPlayer(String arg0, String arg1, double arg2) {
+	public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
 		// TODO Auto-generated method stub
 		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
 	}
