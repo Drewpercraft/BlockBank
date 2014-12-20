@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -133,16 +132,7 @@ public final class BlockBank extends JavaPlugin {
     	return vaultAPI;
     }
     
-    protected static String intToTime(int value) {
-		int hour = value;
-		String ampm = "am";
-		if (hour > 12) {
-			hour -= 12;
-			if (hour != 12) ampm = "pm";
-		}
-		if (hour == 0) hour = 12;
-		return String.format("%d:00%s", hour, ampm);
-	}
+    
 	
 	protected static boolean booleanValue(String value) {		
 		if (Integer.parseInt("0" + value) > 0 || value.equals("on") || value.startsWith("y") || value.startsWith("t")) return true;
@@ -183,7 +173,11 @@ public final class BlockBank extends JavaPlugin {
 	
 	public String getMessage(String key)
 	{
-		return userMessages.getString(key);
+		if (!userMessages.containsKey(key)) {
+			log.severe(String.format("Language file is missing the %s key", key));
+			return key;
+		}
+		return getConfig().getString("dialogPrefix", "") + userMessages.getString(key) + getConfig().getString("dialogSuffix", "");
 	}
 	
 	public String getMessage(String key, Object... args)
@@ -191,16 +185,9 @@ public final class BlockBank extends JavaPlugin {
 		return String.format(getMessage(key), args);
 	}
 
-	@SuppressWarnings("deprecation")
-	public OfflinePlayer getPlayerByName(String playerName) {
-		return getServer().getOfflinePlayer(playerName);
-	}
 
-	public String createPosessive(String string) {
-		if (string.endsWith("s")) {
-			return string + "'";
-		}
-		return string + "'s";
-		
-	}
+
+	
+
+	
 }

@@ -6,3 +6,5 @@ Deposit=%s was placed into your wallet.
 PaymentSent=You paid %s %s.
 PaymentReceived=You received %s from %s.
 NegativeAmountUsed=You may not use negative amounts.
+Your=your
+InvalidConsoleCommand=You may not use the %s command from the console.

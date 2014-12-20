@@ -6,6 +6,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.drewpercraft.blockbank.BlockBank;
+import com.drewpercraft.Utils;
 
 public class CommandPay implements CommandExecutor {
 
@@ -16,27 +17,30 @@ public class CommandPay implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,	String[] params) {
-		if (sender instanceof OfflinePlayer)
-		{
-			if (params.length < 2) {
+	public boolean onCommand(CommandSender sender, Command comand, String label, String[] args) {
+		if (sender instanceof OfflinePlayer) {
+			if (args.length < 2) {
 				return false;
 			}
 			OfflinePlayer player = (OfflinePlayer) sender;
 		
-			String payeeName = params[0];
-			double amount = Double.parseDouble(params[1]);
+			String payeeName = args[0];
+			double amount = Utils.getDouble(args[1]);
+						
+			if (amount < 0) {
+				sender.sendMessage(plugin.getMessage("NegativeAmountUsed"));
+				return true;
+			}
 			
 			String displayAmount = plugin.getVaultAPI().format(amount);
 			
-			if (!plugin.getVaultAPI().has(player, amount))
-			{
+			if (!plugin.getVaultAPI().has(player, amount)) 			{
 				sender.sendMessage(plugin.getMessage("InsufficientFunds", displayAmount));
 				return true;
 			}
 			
-			OfflinePlayer payee = plugin.getPlayerByName(payeeName);
-			if (!(payee instanceof OfflinePlayer)) {
+			OfflinePlayer payee = Utils.getPlayerByName(payeeName);
+			if (payee == null) {
 				sender.sendMessage(plugin.getMessage("InvalidPlayer", payeeName)); //$NON-NLS-1$
 				return true;
 			}
@@ -50,8 +54,9 @@ public class CommandPay implements CommandExecutor {
 				payee.getPlayer().sendMessage(plugin.getMessage("PaymentReceived", player.getName(), displayAmount));
 			}
 			return true;
-		}
-		return false;
+		}	
+		sender.sendMessage(plugin.getMessage("InvalidConsoleCommand", label));
+		return true;
 	}
 
 }

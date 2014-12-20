@@ -14,6 +14,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
+import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.Player;
 
 /*
@@ -134,7 +135,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public boolean createPlayerAccount(String playerName) 
 	{
-		return createPlayerAccount(plugin.getPlayerByName(playerName));
+		return createPlayerAccount(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -145,7 +146,7 @@ public class VaultEconomy implements Economy {
 	public boolean createPlayerAccount(String playerName, String worldName) 
 	{
 		// BlockBank does not support separate accounts per world
-		return createPlayerAccount(plugin.getPlayerByName(playerName));
+		return createPlayerAccount(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -205,7 +206,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public EconomyResponse depositPlayer(String playerName, double amount) {
-		return depositPlayer(plugin.getPlayerByName(playerName), amount);
+		return depositPlayer(Utils.getPlayerByName(playerName), amount);
 	}
 
 	/* (non-Javadoc)
@@ -326,7 +327,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(String playerName, double amount) {
-		return has(plugin.getPlayerByName(playerName), amount);
+		return has(Utils.getPlayerByName(playerName), amount);
 	}
 
 	/* (non-Javadoc)
@@ -360,7 +361,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public boolean hasAccount(String playerName) {
-		return hasAccount(plugin.getPlayerByName(playerName));
+		return hasAccount(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -369,7 +370,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public boolean hasAccount(String playerName, String worldName) {
-		return hasAccount(plugin.getPlayerByName(playerName));
+		return hasAccount(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -466,7 +467,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(String playerName, double amount) {
-		return withdrawPlayer(plugin.getPlayerByName(playerName), amount);
+		return withdrawPlayer(Utils.getPlayerByName(playerName), amount);
 	}
 
 	/* (non-Javadoc)
@@ -474,7 +475,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
-		return withdrawPlayer(plugin.getPlayerByName(playerName), amount);
+		return withdrawPlayer(Utils.getPlayerByName(playerName), amount);
 	}
 
 	

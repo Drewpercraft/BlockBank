@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.OfflinePlayer;
 
 import com.drewpercraft.blockbank.BlockBank;
+import com.drewpercraft.Utils;
 
 public class CommandBalance implements CommandExecutor {
 
@@ -17,26 +18,28 @@ public class CommandBalance implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] params) {
-		if (sender instanceof OfflinePlayer)
-		{
-			OfflinePlayer player;
-			String walletName = "your";
-			if (params.length > 0) {
-				String playerName = params[0];
-				player = plugin.getPlayerByName(playerName);
-				if (!(player instanceof OfflinePlayer)) {
-					sender.sendMessage(plugin.getMessage("InvalidPlayer", playerName)); //$NON-NLS-1$
-					return true;
-				}
-				walletName = plugin.createPosessive(playerName);
+
+		OfflinePlayer player;
+		String walletName = plugin.getMessage("Your");
+		if (params.length == 0) {
+			if (sender instanceof OfflinePlayer) {
+				player = (OfflinePlayer) sender;	
 			}else{
-				player = (OfflinePlayer) sender;
+				sender.sendMessage(plugin.getMessage("InvalidConsoleCommand", params[0]));
+				return true;
 			}
-			double amount = plugin.getVaultAPI().getBalance(player);
-			sender.sendMessage(plugin.getMessage("WalletBalance", plugin.getVaultAPI().format(amount), walletName)); //$NON-NLS-1$
-			return true;
+		}else{
+			String playerName = params[0];
+			player = Utils.getPlayerByName(playerName);
+			if (player == null) {
+				sender.sendMessage(plugin.getMessage("InvalidPlayer", playerName)); //$NON-NLS-1$
+				return true;
+			}
+			walletName = Utils.getPossessive(playerName);
 		}
-		return false;
+		double amount = plugin.getVaultAPI().getBalance(player);
+		sender.sendMessage(plugin.getMessage("WalletBalance", plugin.getVaultAPI().format(amount), walletName)); //$NON-NLS-1$
+		return true;
 	}
 
 }
