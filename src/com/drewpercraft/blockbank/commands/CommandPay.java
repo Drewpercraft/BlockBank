@@ -17,7 +17,7 @@ public class CommandPay implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command comand, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof OfflinePlayer) {
 			if (args.length < 2) {
 				return false;

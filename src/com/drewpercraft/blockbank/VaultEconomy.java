@@ -229,7 +229,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public String format(double amount) {
 		String symbol = plugin.getConfig().getString("currencySymbol", "$");
-		String formatString = "%s%." + fractionalDigits() + "f";
+		String formatString = "%s%,." + fractionalDigits() + "f";
 		return String.format(formatString, symbol, amount);
 	}
 

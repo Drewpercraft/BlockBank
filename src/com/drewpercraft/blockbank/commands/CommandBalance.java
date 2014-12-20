@@ -17,7 +17,7 @@ public class CommandBalance implements CommandExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] params) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] params) {
 
 		OfflinePlayer player;
 		String walletName = plugin.getMessage("Your");
@@ -25,7 +25,7 @@ public class CommandBalance implements CommandExecutor {
 			if (sender instanceof OfflinePlayer) {
 				player = (OfflinePlayer) sender;	
 			}else{
-				sender.sendMessage(plugin.getMessage("InvalidConsoleCommand", params[0]));
+				sender.sendMessage(plugin.getMessage("InvalidConsoleCommand", label));
 				return true;
 			}
 		}else{
