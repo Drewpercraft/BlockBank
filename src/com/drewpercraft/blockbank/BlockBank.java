@@ -1,13 +1,18 @@
 package com.drewpercraft.blockbank;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Iterator;
+import java.util.PropertyResourceBundle;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,34 +29,36 @@ public final class BlockBank extends JavaPlugin {
 	protected Logger log;
 	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
 	private VaultEconomy vaultAPI = null;
+	private ResourceBundle userMessages;
 	
 	@Override
     public void onEnable() {
 		log = getLogger();
-    	log.info(String.format("Enabling %s commands", this.getName()));
-    	this.getCommand("bank").setExecutor(new CommandBank(this));
-    	this.getCommand("balance").setExecutor(new CommandBalance(this));
-    	this.getCommand("pay").setExecutor(new CommandPay(this));
-    	this.getCommand("balanceTop").setExecutor(new CommandBalanceTop(this));
     	
-    	loadConfiguration();
+    	if (loadConfiguration()) {
+        	log.info(String.format("Enabling %s commands", this.getName()));
+        	this.getCommand("bank").setExecutor(new CommandBank(this));
+        	this.getCommand("balance").setExecutor(new CommandBalance(this));
+        	this.getCommand("pay").setExecutor(new CommandPay(this));
+        	this.getCommand("balanceTop").setExecutor(new CommandBalanceTop(this));
     	
-    	log.info(String.format("Enabling %s event handlers", this.getName()));
-    	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-    	//TODO Start Security
-    	//TODO Start InterestManager
-    	/*
-		BukkitRunnable interestManager = new InterestManagerTask(this);
-		// Run the interestManager at the stroke of midnight (18000)
-		String worldName = getServer().getWorlds().get(0).getName();
-		long delay = 18000 - getServer().getWorld(worldName).getTime();
-		if (delay < 0) delay += 24000;
-		interestManager.runTaskTimer(this, delay, 24000);
-		getServer().getPluginManager().registerEvents(this, this);
-		log.info(String.format("%s has been enabled.", getDescription().getName()));	    	  
-    	 
-    	*/
-    	log.info(String.format("%s enabled", this.getName()));
+        	log.info(String.format("Enabling %s event handlers", this.getName()));
+        	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+	    	//TODO Start Security
+	    	//TODO Start InterestManager
+	    	/*
+			BukkitRunnable interestManager = new InterestManagerTask(this);
+			// Run the interestManager at the stroke of midnight (18000)
+			String worldName = getServer().getWorlds().get(0).getName();
+			long delay = 18000 - getServer().getWorld(worldName).getTime();
+			if (delay < 0) delay += 24000;
+			interestManager.runTaskTimer(this, delay, 24000);
+			getServer().getPluginManager().registerEvents(this, this);
+			log.info(String.format("%s has been enabled.", getDescription().getName()));	    	  
+	    	 
+	    	*/
+	    	log.info(String.format("%s enabled", this.getName()));
+    	}
     }
  
     @Override
@@ -61,32 +68,62 @@ public final class BlockBank extends JavaPlugin {
     }
     
     
-    public void loadConfiguration() {
+    public boolean loadConfiguration() {
     	log.info("Loading configuration");
-    	banks.clear();
-   		this.saveDefaultConfig();
-   		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
-
-   		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
-    	Set<String> bank_ids = bankConfig.getKeys(false);
-    	for(Iterator<String> bankIT = bank_ids.iterator(); bankIT.hasNext();) {
-    		String bankID = bankIT.next();
-    		Bank bank = new Bank(this, bankID);
-    		banks.put(bank.getId(), bank);
+    	
+    	try {
+	    	banks.clear();
+	   		this.saveDefaultConfig();
+	   		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
+	
+	   		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
+	    	Set<String> bank_ids = bankConfig.getKeys(false);
+	    	for(Iterator<String> bankIT = bank_ids.iterator(); bankIT.hasNext();) {
+	    		String bankID = bankIT.next();
+	    		Bank bank = new Bank(this, bankID);
+	    		banks.put(bank.getId(), bank);
+	    	}
+	    	this.saveConfig();
+	    	
+	    	// Load the language file
+	    	File messageFile = new File(this.getDataFolder() + File.separator + "language.txt");
+	    	InputStream fis;
+	    	if (messageFile.exists())
+	    	{
+	    		log.info("Loading language settings from " + messageFile);
+	    		fis = new FileInputStream(messageFile);
+	    	}else{
+	    		log.info("Using default language settings");
+	    		fis = this.getClass().getClassLoader().getResourceAsStream("language.txt");
+	    	}
+	    	 
+			try {
+			  userMessages = new PropertyResourceBundle(fis);
+			} finally {
+			  fis.close();
+			}
+	    	
+	    	// Load the player accounts
+	    	File playerDataPath = new File(getPlayerDataPath());
+	    	if (!playerDataPath.isDirectory()) {
+	    		log.info("Player Data Path " + getPlayerDataPath() + " was not found - creating");
+	    		playerDataPath.mkdirs();
+	    	}else{
+	    		log.info("Found player path " + getPlayerDataPath());
+	    	}
+	    	
+	    	// Make everything work with vault
+	    	getVaultAPI();
+	    
+	    	log.info("Configuration Load Completed");
     	}
-    	this.saveConfig();
-    	
-    	File playerDataPath = new File(getPlayerDataPath());
-    	if (!playerDataPath.isDirectory()) {
-    		log.info("Player Data Path " + getPlayerDataPath() + " was not found - creating");
-    		playerDataPath.mkdirs();
-    	}else{
-    		log.info("Found player path " + getPlayerDataPath());
+    	catch (Exception e) {
+    		e.printStackTrace();
+    		log.severe("Error loading configuration. Disabling BlockBank.");
+    		Bukkit.getPluginManager().disablePlugin(this);
+    		return false;
     	}
-    	
-    	getVaultAPI();
-    	
-    	log.info("Configuration Load Completed");
+    	return true;
     }
     
     public VaultEconomy getVaultAPI()
@@ -95,16 +132,7 @@ public final class BlockBank extends JavaPlugin {
     	return vaultAPI;
     }
     
-    protected static String intToTime(int value) {
-		int hour = value;
-		String ampm = "am";
-		if (hour > 12) {
-			hour -= 12;
-			if (hour != 12) ampm = "pm";
-		}
-		if (hour == 0) hour = 12;
-		return String.format("%d:00%s", hour, ampm);
-	}
+    
 	
 	protected static boolean booleanValue(String value) {		
 		if (Integer.parseInt("0" + value) > 0 || value.equals("on") || value.startsWith("y") || value.startsWith("t")) return true;
@@ -142,4 +170,24 @@ public final class BlockBank extends JavaPlugin {
 		}
 		return filePath;
 	}
+	
+	public String getMessage(String key)
+	{
+		if (!userMessages.containsKey(key)) {
+			log.severe(String.format("Language file is missing the %s key", key));
+			return key;
+		}
+		return getConfig().getString("dialogPrefix", "") + userMessages.getString(key) + getConfig().getString("dialogSuffix", "");
+	}
+	
+	public String getMessage(String key, Object... args)
+	{
+		return String.format(getMessage(key), args);
+	}
+
+
+
+	
+
+	
 }

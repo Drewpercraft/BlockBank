@@ -1,0 +1,7 @@
+language: java
+notifications:
+  email: false
+jdk:
+  - oraclejdk7
+script: mvn compile test
+install: true

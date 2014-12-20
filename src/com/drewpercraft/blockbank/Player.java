@@ -35,17 +35,20 @@ public class Player {
 		return new File(filename);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void load()
 	{
 		File playerFile = getPlayerFile();
 		try
 		{
 			boolean newPlayer = playerFile.createNewFile();
+			String playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
+			data.put("uuid", uuid.toString());
+			data.put("playerName", playerName);
 			if (newPlayer) {
-				data.put("uuid", uuid.toString());
 				data.put("balance", 0.0);
 			}else{
-				plugin.getLogger().info("Loading UUID: " + uuid.toString());
+				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
 				Object obj = parser.parse(new FileReader(playerFile));
 				data = (JSONObject) obj;
@@ -84,8 +87,25 @@ public class Player {
 		return balance.doubleValue();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void setBalance(double amount)
 	{
 		data.put("balance", amount);
+		save();
+	}
+
+	/*
+	 *  Withdraw allows for overdraft
+	 */
+	public double withdraw(double amount) {
+		double newBalance = getBalance() - amount;
+		setBalance(newBalance);
+		return newBalance;
+	}
+	
+	public double deposit(double amount) {
+		double newBalance = getBalance() + amount;
+		setBalance(newBalance);
+		return newBalance;
 	}
 }

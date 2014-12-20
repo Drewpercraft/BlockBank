@@ -9,9 +9,11 @@ loanRate: -1
 openHour: 8
 closeHour: 17
 maxVaults: 10
-currencySymbol: ©
-currencySingular: coin
-currencyPlural: coins
+currencySymbol: $
+currencySingular: dollar
+currencyPlural: dollars
 decimals: 0
+dialogPrefix: &6
+dialogSuffix: 
 
 banks:

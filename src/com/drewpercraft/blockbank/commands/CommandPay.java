@@ -1,28 +1,62 @@
 package com.drewpercraft.blockbank.commands;
 
-import java.util.logging.Logger;
-
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import com.drewpercraft.blockbank.BlockBank;
+import com.drewpercraft.Utils;
 
 public class CommandPay implements CommandExecutor {
 
 	private final BlockBank plugin;
-	private final Logger log;
 	
 	public CommandPay(BlockBank plugin) {
 		this.plugin = plugin;
-		this.log = this.plugin.getLogger();
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3) {
-		// TODO Auto-generated method stub
-		log.info(String.format("CommandPay 1: %s  2: %s  3: %s", arg1, arg2, arg3));
-		return false;
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (sender instanceof OfflinePlayer) {
+			if (args.length < 2) {
+				return false;
+			}
+			OfflinePlayer player = (OfflinePlayer) sender;
+		
+			String payeeName = args[0];
+			double amount = Utils.getDouble(args[1]);
+						
+			if (amount < 0) {
+				sender.sendMessage(plugin.getMessage("NegativeAmountUsed"));
+				return true;
+			}
+			
+			String displayAmount = plugin.getVaultAPI().format(amount);
+			
+			if (!plugin.getVaultAPI().has(player, amount)) 			{
+				sender.sendMessage(plugin.getMessage("InsufficientFunds", displayAmount));
+				return true;
+			}
+			
+			OfflinePlayer payee = Utils.getPlayerByName(payeeName);
+			if (payee == null) {
+				sender.sendMessage(plugin.getMessage("InvalidPlayer", payeeName)); //$NON-NLS-1$
+				return true;
+			}
+			
+			//FIXME This returns an EconomyResponse, which should be checked.
+			plugin.getVaultAPI().withdrawPlayer(player, amount);
+			plugin.getVaultAPI().depositPlayer(payee, amount);
+						
+			sender.sendMessage(plugin.getMessage("PaymentSent", payeeName, displayAmount)); //$NON-NLS-1$
+			if (payee.isOnline()) {
+				payee.getPlayer().sendMessage(plugin.getMessage("PaymentReceived", player.getName(), displayAmount));
+			}
+			return true;
+		}	
+		sender.sendMessage(plugin.getMessage("InvalidConsoleCommand", label));
+		return true;
 	}
 
 }
