@@ -35,6 +35,7 @@ public class Player {
 		return new File(filename);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void load()
 	{
 		File playerFile = getPlayerFile();
@@ -84,8 +85,25 @@ public class Player {
 		return balance.doubleValue();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void setBalance(double amount)
 	{
 		data.put("balance", amount);
+		save();
+	}
+
+	/*
+	 *  Withdraw allows for overdraft
+	 */
+	public double withdraw(double amount) {
+		double newBalance = getBalance() - amount;
+		setBalance(newBalance);
+		return newBalance;
+	}
+	
+	public double deposit(double amount) {
+		double newBalance = getBalance() + amount;
+		setBalance(newBalance);
+		return newBalance;
 	}
 }

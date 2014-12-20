@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -183,5 +184,23 @@ public final class BlockBank extends JavaPlugin {
 	public String getMessage(String key)
 	{
 		return userMessages.getString(key);
+	}
+	
+	public String getMessage(String key, Object... args)
+	{
+		return String.format(getMessage(key), args);
+	}
+
+	@SuppressWarnings("deprecation")
+	public OfflinePlayer getPlayerByName(String playerName) {
+		return getServer().getOfflinePlayer(playerName);
+	}
+
+	public String createPosessive(String string) {
+		if (string.endsWith("s")) {
+			return string + "'";
+		}
+		return string + "'s";
+		
 	}
 }

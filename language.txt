@@ -1,5 +1,8 @@
 InvalidPlayer=%s is not a valid player name.
-WalletBalance=You have %s in your wallet.
-InsufficientFunds=You do not have %s.
+WalletBalance=There is %s in %s wallet.
+InsufficientFunds=You do not have %s in your wallet.
+Withdraw=%s was withdrawn from your wallet.
+Deposit=%s was placed into your wallet.
 PaymentSent=You paid %s %s.
 PaymentReceived=You received %s from %s.
+NegativeAmountUsed=You may not use negative amounts.
