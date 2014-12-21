@@ -42,6 +42,18 @@ public final class Utils {
 		return string + "'s";	
 	}
 	
+	public static int getInt(String string) {
+		int amount;
+		try {
+			amount = Integer.parseInt(string);
+		}
+		catch (NumberFormatException e)
+		{
+			amount = 0;
+		}
+		return amount;
+	}
+	
 	public static double getDouble(String string) {
 		double amount;
 		try {
@@ -52,6 +64,13 @@ public final class Utils {
 			amount = 0;
 		}
 		return amount;
+	}
+	
+	public static boolean getBoolean(String string) {
+		if (string.equalsIgnoreCase("on")) return true;
+		if (string.equalsIgnoreCase("yes")) return true;
+		if (string.equalsIgnoreCase("1")) return true;
+		return false;
 	}
 	
 	
