@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 public final class Utils {
 
 	private Utils() {
-		// TODO Auto-generated constructor stub
+		//Singleton implementation
 	}
 
 	public final class Pair<X, Y>
@@ -19,8 +19,6 @@ public final class Utils {
 			this.y = y;
 		}
 	}
-	
-	
 	
 	public static OfflinePlayer getPlayerByName(String playerName) 
 	{
@@ -80,11 +78,20 @@ public final class Utils {
 	}
 	
 	public static boolean getBoolean(String string) {
-		if (string.equalsIgnoreCase("on")) return true;
-		if (string.equalsIgnoreCase("yes")) return true;
-		if (string.equalsIgnoreCase("1")) return true;
-		if (string.equalsIgnoreCase("enable")) return true;
+		String value = string.toLowerCase();
+		if (Integer.parseInt("0" + value) != 0 || 
+				value.equals("on") || 
+				value.startsWith("y") || 
+				value.startsWith("t")) 
+			return true;
+		
 		return false;
+
+		//if (string.equalsIgnoreCase("on")) return true;
+		//if (string.equalsIgnoreCase("yes")) return true;
+		//if (string.equalsIgnoreCase("1")) return true;
+		//if (string.equalsIgnoreCase("enable")) return true;
+		//return false;
 	}
 
 	/*
