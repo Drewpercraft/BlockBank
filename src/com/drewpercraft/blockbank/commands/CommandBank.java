@@ -127,7 +127,14 @@ public class CommandBank implements TabExecutor {
 	public boolean subCommand_reload(CommandSender player, String[] args)
 	{
 		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
-		return false;
+		
+		plugin.reloadConfig();
+		if (plugin.loadConfiguration()) {
+			player.sendMessage(plugin.getMessage("ReloadSuccess"));
+		}else{
+			player.sendMessage(plugin.getMessage("ReloadFail"));
+		}		
+		return true;
 	}
 	
 	public boolean subCommand_remove(CommandSender player, String[] args)

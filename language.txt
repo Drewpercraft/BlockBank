@@ -12,3 +12,5 @@ Disabled=disabled
 InvalidConsoleCommand=You may not use the %s command from the console.
 GlobalSetAnnouncements=Announcements for all banks was %s.
 PermissionError=You do not have permission to do that.
+ReloadSuccess=BlockBank reloaded succeded.
+ReloadFail=BlockBank reload failed and has been &4DISABLED!
