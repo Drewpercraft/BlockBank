@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -203,6 +204,10 @@ public final class BlockBank extends JavaPlugin {
 	public String getMessage(String key, Object... args)
 	{
 		return String.format(getMessage(key), args);
+	}
+
+	public void sendMessage(CommandSender player, String key, Object... args) {
+		player.sendMessage(getMessage(key, args));		
 	}
 
 
