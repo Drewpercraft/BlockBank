@@ -12,8 +12,9 @@ maxVaults: 10
 currencySymbol: $
 currencySingular: dollar
 currencyPlural: dollars
-decimals: 0
+decimals: 2
 dialogPrefix: &6
 dialogSuffix: 
+dropMoney: true
 
 banks:

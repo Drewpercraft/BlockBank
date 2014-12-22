@@ -140,27 +140,47 @@ public final class BlockBank extends JavaPlugin {
 	}
 
 	public int getDefaultMaxVaults() {
-		return this.getConfig().getInt("maxVaults", 10);
+		return getConfig().getInt("maxVaults", 10);
 	}
 
 	public boolean getDefaultAnnouncements() {
-		return this.getConfig().getBoolean("announcements", true);
+		return getConfig().getBoolean("announcements", true);
 	}
 	
 	public double getDefaultSavingsRate() {
-		return this.getConfig().getDouble("savingsRate", 0);
+		return getConfig().getDouble("savingsRate", 0);
 	}
 	
 	public double getDefaultLoanRate() {
-		return this.getConfig().getDouble("loanRate", 0);
+		return getConfig().getDouble("loanRate", 0);
 	}
 	
 	public int getDefaultOpenHour() {
-		return this.getConfig().getInt("openHour", 8);
+		return getConfig().getInt("openHour", 8);
 	}
     
 	public int getDefaultCloseHour() {
-		return this.getConfig().getInt("closeHour", 17);
+		return getConfig().getInt("closeHour", 17);
+	}
+	
+	public boolean getDropMoney() {
+		return getConfig().getBoolean("dropMoney", true);
+	}
+	
+	public String getCurrencyPlural() {
+		return getConfig().getString("currencyPlural", "dollars");
+	}
+	
+	public String getCurrencySingular() {
+		return getConfig().getString("currencySingular", "dollar");
+	}
+	
+	public String getCurrencySymbol() {
+		return getConfig().getString("currencySymbol", "$");
+	}
+	
+	public int getDecimals() {
+		return getConfig().getInt("decimals", 2);
 	}
 
 	public String getPlayerDataPath() {

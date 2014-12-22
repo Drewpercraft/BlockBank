@@ -44,19 +44,21 @@ public final class PlayerListener implements Listener {
     }
     
     public void onDeath(PlayerDeathEvent event)
-    {   	
-    	Player deadMan = event.getEntity();
-    	double pocketCash = plugin.getVaultAPI().getBalance(deadMan);
-    	
-    	if (pocketCash > 0) {
-    		plugin.getVaultAPI().withdrawPlayer(deadMan, pocketCash);
-    		deadMan.sendMessage("Your killer raided your pockets and took " + plugin.getVaultAPI().format(pocketCash));
-    	
-    		Player killer = event.getEntity().getKiller();    	
-    		if (killer instanceof HumanEntity) {
-    			plugin.getVaultAPI().depositPlayer(killer, pocketCash);
-    			killer.sendMessage("You were able to find " + plugin.getVaultAPI().format(pocketCash) + " in " + Utils.getPossessive(deadMan.getDisplayName()) + " pockets.");
-    		}
+    {
+    	if (plugin.getDropMoney()) {
+	    	Player deadMan = event.getEntity();
+	    	double pocketCash = plugin.getVaultAPI().getBalance(deadMan);
+	    	
+	    	if (pocketCash > 0) {
+	    		plugin.getVaultAPI().withdrawPlayer(deadMan, pocketCash);
+	    		deadMan.sendMessage("Your killer raided your pockets and took " + plugin.getVaultAPI().format(pocketCash));
+	    	
+	    		Player killer = event.getEntity().getKiller();    	
+	    		if (killer instanceof HumanEntity) {
+	    			plugin.getVaultAPI().depositPlayer(killer, pocketCash);
+	    			killer.sendMessage("You were able to find " + plugin.getVaultAPI().format(pocketCash) + " in " + Utils.getPossessive(deadMan.getDisplayName()) + " pockets.");
+	    		}
+	    	}
     	}
     }
     

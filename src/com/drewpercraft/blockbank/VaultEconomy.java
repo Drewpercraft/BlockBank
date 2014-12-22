@@ -155,7 +155,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public String currencyNamePlural() 
 	{
-		return plugin.getConfig().getString("currencyPlural", "coins");
+		return plugin.getCurrencyPlural();
 	}
 
 	/* (non-Javadoc)
@@ -164,7 +164,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public String currencyNameSingular()
 	{
-		return plugin.getConfig().getString("currencySingular", "coin");
+		return plugin.getCurrencySingular();
 	}
 
 	/* (non-Javadoc)
@@ -228,7 +228,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public String format(double amount) {
-		String symbol = plugin.getConfig().getString("currencySymbol", "$");
+		String symbol = plugin.getCurrencySymbol();
 		String formatString = "%s%,." + fractionalDigits() + "f";
 		return String.format(formatString, symbol, amount);
 	}
@@ -238,7 +238,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public int fractionalDigits() {
-		return plugin.getConfig().getInt("decimals", 0);
+		return plugin.getDecimals();
 	}
 
 	/* (non-Javadoc)
