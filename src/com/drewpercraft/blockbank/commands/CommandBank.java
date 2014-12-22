@@ -3,6 +3,7 @@ package com.drewpercraft.blockbank.commands;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -25,21 +26,21 @@ public class CommandBank implements TabExecutor {
 	public List<String> onTabComplete(CommandSender player, Command command, String label, String[] args)
 	{
 		List<String> options = new ArrayList<String>();
-		if (args.length == 0) {
+		if (args.length == 1) {
 			Method[] methods = this.getClass().getDeclaredMethods();
 			for(Method method : methods) {
 				String methodName = method.getName();
-				plugin.getLogger().info("TabComplete: " + methodName);
-				if (methodName.startsWith("subCommand_")) {
-					options.add(methodName.substring(12));
+				if (methodName.startsWith("subCommand_" + args[0])) {
+					options.add(methodName.substring(11));
 				}
 			}
-		}
+		}		
+		Collections.sort(options);
 		return options;
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender player, Command command, String notused,	String[] args) 
+	public boolean onCommand(CommandSender player, Command command, String label, String[] args) 
 	{
 		// bank requires at least one extra argument
 		if (args.length < 1) return false;

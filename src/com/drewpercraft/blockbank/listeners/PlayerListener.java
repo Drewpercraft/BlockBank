@@ -8,7 +8,6 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerChatTabCompleteEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.EventHandler;
 
@@ -36,11 +35,6 @@ public final class PlayerListener implements Listener {
     	if (player.hasPermission("blockbank.user")) {
 	    	plugin.getVaultAPI().createPlayerAccount(player);
     	}
-    }
-    
-    public void onTabComplete(PlayerChatTabCompleteEvent event)
-    {
-    	
     }
     
     public void onDeath(PlayerDeathEvent event)

@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-
 public class Bank {
 	
 	private final BlockBank plugin;

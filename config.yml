@@ -15,6 +15,7 @@ dropMoney: true
 allowLoans: false
 maxATM: 10
 maxBranches: 3
+#saveInterval: 10
 
 ######################################
 # The options apply to banks unless

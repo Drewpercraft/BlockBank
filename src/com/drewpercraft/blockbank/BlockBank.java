@@ -3,8 +3,10 @@ package com.drewpercraft.blockbank;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -13,6 +15,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -209,10 +212,15 @@ public final class BlockBank extends JavaPlugin {
     	
     	if (loadConfiguration()) {
         	log.info(String.format("Enabling %s commands", this.getName()));
-        	this.getCommand("bank").setExecutor(new CommandBank(this));
+        	CommandBank commandBank = new CommandBank(this);
+        	this.getCommand("bank").setExecutor(commandBank);
+        	this.getCommand("bank").setTabCompleter(commandBank);
         	this.getCommand("balance").setExecutor(new CommandBalance(this));
+        	//TODO this.getCommand("balance").setTabCompleter(Utils.userTabCompleter, 0);
         	this.getCommand("pay").setExecutor(new CommandPay(this));
+        	//TODO this.getCommand("pay").setTabCompleter(Utils.userTabCompleter, 0);
         	this.getCommand("balanceTop").setExecutor(new CommandBalanceTop(this));
+        	
     	
         	log.info(String.format("Enabling %s event handlers", this.getName()));
         	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -234,6 +242,14 @@ public final class BlockBank extends JavaPlugin {
     	}
     }
 
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args)
+	{
+		log.info(String.format("onTabComplete %s - %s", cmd, commandLabel));
+		List<String> options = new ArrayList<String>();
+		return options;
+	}
+	
 	/*
 	 *  Send the player a message based on the language file
 	 */
