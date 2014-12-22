@@ -2,6 +2,7 @@ package com.drewpercraft;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 
 public final class Utils {
 
@@ -9,6 +10,18 @@ public final class Utils {
 		// TODO Auto-generated constructor stub
 	}
 
+	public final class Pair<X, Y>
+	{
+		public final X x;
+		public final Y y;
+		public Pair(X x, Y y) {
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	
+	
 	public static OfflinePlayer getPlayerByName(String playerName) 
 	{
 		OfflinePlayer[] players = Bukkit.getServer().getOfflinePlayers();
@@ -70,8 +83,21 @@ public final class Utils {
 		if (string.equalsIgnoreCase("on")) return true;
 		if (string.equalsIgnoreCase("yes")) return true;
 		if (string.equalsIgnoreCase("1")) return true;
+		if (string.equalsIgnoreCase("enable")) return true;
 		return false;
 	}
-	
+
+	/*
+	 * Verify the player has the given permission and if not
+	 * inform them of the problem.
+	 */
+	public static boolean PermissionCheckFailed(CommandSender player, String permission, String message) {
+		if (!player.hasPermission(permission)) {
+			player.sendMessage(message);
+			return true;
+		}
+		return false;
+	}
+
 	
 }
