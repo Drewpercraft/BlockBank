@@ -13,6 +13,7 @@ commands:
         usage: /bank [command] see /bank help for more info.
         permission: blockbank.user
         permission-message: You can not have a bank account.
+        aliases: [eco]
         
     balance:
         description: Get the balance in all your accounts.
