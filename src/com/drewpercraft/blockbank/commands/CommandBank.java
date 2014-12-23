@@ -12,6 +12,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
 import com.drewpercraft.Utils;
+import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
 
 public class CommandBank implements TabExecutor {
@@ -34,7 +35,18 @@ public class CommandBank implements TabExecutor {
 					options.add(methodName.substring(11));
 				}
 			}
-		}		
+		}
+		
+		if (args.length == 2) {
+			if (label.equals("announcements")) {
+				// Provide a list of banks + "global"
+				options.add(plugin.getMessage("global"));
+			}
+			
+			if (label.equals("create")) {
+				options.addAll(plugin.getValidBankNames());
+			}
+		}
 		Collections.sort(options);
 		return options;
 	}
@@ -105,11 +117,11 @@ public class CommandBank implements TabExecutor {
 			status = plugin.getMessage("Disabled");
 		}
 		if (args.get(0).equalsIgnoreCase("global")) {
-			plugin.getConfig().set("announcements", setting);
+			plugin.setConfig("announcements", setting);
 			plugin.getLogger().info("Global Announcements set to " + status);
 			plugin.sendMessage(player, "GlobalSetAnnouncements", status);
 		}else{
-			
+			//TODO Get the bank specified and set its announcements flag
 		}
 		return true;
 	}
@@ -117,13 +129,26 @@ public class CommandBank implements TabExecutor {
 	public boolean subCommand_atm(CommandSender player, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		//TODO
 		return false;
 	}
 	
 	public boolean subCommand_create(CommandSender player, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
-		return false;
+		if (args.size() == 0) return false;
+		
+		String bankName = args.get(0).toLowerCase();
+		List<String> validBankNames = plugin.getValidBankNames();
+		if (validBankNames.contains(bankName)) {
+			if (plugin.getBank(bankName) == null) {
+				Bank bank = new Bank(plugin, bankName);
+				plugin.addBank(bank);
+			}else{
+				plugin.sendMessage(player, "BankAlreadyExists", bankName);
+			}
+		}
+		return true;
 	}
 	
 	public boolean subCommand_loan(CommandSender player, Vector<String> args)

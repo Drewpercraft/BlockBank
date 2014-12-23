@@ -7,7 +7,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<bukkitVersion>1.8-R0.1-SNAPSHOT</bukkitVersion>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
-		<maven.output.build.path>/Volumes/server/plugins</maven.output.build.path>
 	</properties>
 
 	<!-- Project information -->
@@ -76,7 +75,7 @@
 	</dependencies>
 
 	<build>
-		<defaultGoal>clean install</defaultGoal>
+		<defaultGoal>compile package install</defaultGoal>
 		<sourceDirectory>src/</sourceDirectory>
 		<resources>
 			<resource>
@@ -120,13 +119,35 @@
 									<version>${project.version}</version>
 									<type>jar</type>
 									<overWrite>true</overWrite>
-									<outputDirectory>${maven.output.build.path}</outputDirectory>
+									<outputDirectory>${local.test.pluginPath}</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+		        <groupId>org.codehaus.mojo</groupId>
+		        <artifactId>exec-maven-plugin</artifactId>
+		        <version>1.3.2</version>
+		        <executions>
+		          <execution>
+		          	<id>restart</id>
+		          	<phase>package</phase>
+		            <goals>
+		              <goal>exec</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		        <configuration>
+		          <executable>ssh</executable>
+		          <arguments>
+		            <argument>${local.test.server}</argument>
+		            <argument>${local.test.script}</argument>
+		            <argument>restart</argument>
+		          </arguments>
+		        </configuration>
+		      </plugin>
 		</plugins>
 	</build>
 	<repositories>

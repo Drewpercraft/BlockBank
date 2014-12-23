@@ -39,6 +39,7 @@ public final class PlayerListener implements Listener {
     
     public void onDeath(PlayerDeathEvent event)
     {
+    	plugin.getLogger().info("Processing death event for:" + event.getEntity().getName());
     	if (plugin.getDropMoney()) {
 	    	Player deadMan = event.getEntity();
 	    	double pocketCash = plugin.getVaultAPI().getBalance(deadMan);

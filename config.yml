@@ -3,8 +3,9 @@
 # |             Drewpercraft - BlockBank.jar             | #
 # +------------------------------------------------------+ #
 ############################################################
-# These optins apply to all banks
-#################################
+# These optins apply to all banks and
+# cannot be set in game
+######################################
 currencySymbol: $
 currencySingular: dollar
 currencyPlural: dollars
@@ -15,7 +16,19 @@ dropMoney: true
 allowLoans: false
 maxATM: 10
 maxBranches: 3
+logTransactions: true
+
+######################################
+# How ofter to save the player data
+# files
+######################################
 #saveInterval: 10
+
+######################################
+# Banks can be related to the world
+# name, faction name or all
+######################################
+bankRelation: world
 
 ######################################
 # The options apply to banks unless

@@ -3,7 +3,6 @@ package com.drewpercraft.blockbank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,29 +12,28 @@ public class Bank {
 	
 	private final BlockBank plugin;
 	private final Logger log;
-	private final UUID id;
-	private String name = "";
+	private final String name;
 	private List<Branch> branches = new ArrayList<Branch>();
 	private List<Location> atms = new ArrayList<Location>();
 	private List<Account> accounts = new ArrayList<Account>();
 	
 	private ConfigurationSection config = null;
+
 	
-	public Bank(BlockBank plugin)
+	public Bank(BlockBank plugin, String name)
 	{
 		this.plugin = plugin;
 		this.log = plugin.getLogger();
-		this.id = UUID.randomUUID();
-		this.name = "Un-named bank";
-		this.config = this.plugin.getConfig().getConfigurationSection("banks").createSection(this.id.toString());		
-	}
-	
-	public Bank(BlockBank plugin, String id)
-	{
-		this.plugin = plugin;
-		this.log = plugin.getLogger();
-		this.id = UUID.fromString(id);
-		this.config = this.plugin.getConfig().getConfigurationSection("banks").getConfigurationSection(id);
+		this.name = name;
+		this.config = this.plugin.getConfig().getConfigurationSection("banks").getConfigurationSection(name);
+		if (this.config == null) {
+			this.config = this.plugin.getConfig().getConfigurationSection("banks").createSection(name);
+			this.config.set("title", name);
+			this.config.set("announcements",  this.plugin.getConfig().getBoolean("announcements", true));
+			this.config.set("savingsRate", this.plugin.getConfig().getDouble("savingsRate", 0));
+			this.config.set("loanRate", this.plugin.getConfig().getDouble("loanRate", 0));
+			this.config.set("maxVaults", this.plugin.getConfig().getInt("maxVaults", 10));
+		}
 		loadConfiguration();
 	}
 	
@@ -44,7 +42,7 @@ public class Bank {
 	 */
 	@Override
 	public String toString() {
-		return name;
+		return config.getString("title");
 	}
 	
 	public void loadConfiguration()
@@ -53,22 +51,21 @@ public class Bank {
 		branches.clear();
 		atms.clear();
 		accounts.clear();
-    	ConfigurationSection branchConfigs = this.config.getConfigurationSection("branches");
+    	ConfigurationSection branchConfigs = config.getConfigurationSection("branches");
     	if (branchConfigs == null) {
-    		branchConfigs = this.config.createSection("branches");
+    		branchConfigs = config.createSection("branches");
     	}
     	
-    	ConfigurationSection atmConfigs = this.config.getConfigurationSection("atms");
+    	ConfigurationSection atmConfigs = config.getConfigurationSection("atms");
     	if (atmConfigs == null) {
-    		atmConfigs = this.config.createSection("atms");
+    		atmConfigs = config.createSection("atms");
     	}
     	
     	ConfigurationSection accounts = this.config.getConfigurationSection("accounts");
     	if (accounts == null) {
-    		accounts = this.config.createSection("accounts");
+    		accounts = config.createSection("accounts");
     	}
-    	
-    	
+    	    	
 	}
 		
 	public Account createAccount(Player player, double amount)
@@ -88,21 +85,25 @@ public class Bank {
 		return plugin;
 	}
 
+	public String getName() {
+		return name;
+	}
+	
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return this.config.getString("name", "Un-named Bank");
+	public String getTitle() {
+		return this.config.getString("title", "Un-named Bank");
 	}
 
 	/**
 	 * @param name the name to set
 	 */
-	public void setName(String name) {
+	public void setTitle(String title) {
 		//TODO Check to make sure we're not renaming this bank to a name already in use
 		//TODO Implement setting error
-		if (name.length() < 1) return;
-		this.config.set("name", name);
+		if (title.length() < 1) return;
+		this.config.set("title", title);
 		this.plugin.saveConfig();
 	}
 
@@ -170,13 +171,6 @@ public class Bank {
 		if (savingsRate > 30) savingsRate = 30;
 		this.config.set("savingsRate", savingsRate);
 		this.plugin.saveConfig();
-	}
-
-	/**
-	 * @return the id
-	 */
-	public UUID getId() {
-		return id;
 	}
 
 	/**

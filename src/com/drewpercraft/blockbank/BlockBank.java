@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,7 +30,7 @@ import com.drewpercraft.blockbank.listeners.PlayerListener;
 public final class BlockBank extends JavaPlugin {
 	
 	protected Logger log;
-	private Map<UUID, Bank> banks = new HashMap<UUID, Bank>();
+	private Map<String, Bank> banks = new HashMap<String, Bank>();
 	private VaultEconomy vaultAPI = null;	
 	private ResourceBundle userMessages;
  
@@ -77,6 +77,27 @@ public final class BlockBank extends JavaPlugin {
 	public boolean getDropMoney() {
 		return getConfig().getBoolean("dropMoney", true);
 	}
+	
+	public boolean getAllowLoans() {
+		return getConfig().getBoolean("allowLoans", false);
+	}
+	
+	public int getMaxATM() {
+		return getConfig().getInt("maxATM", 10);
+	}
+	
+	public int getMaxBranches() {
+		return getConfig().getInt("maxBranches", 3);
+	}
+	
+	public boolean getLogTransactions() {
+		return getConfig().getBoolean("logTransactions", true);
+	}
+	
+	public String getBankRelation() {
+		return getConfig().getString("bankRelation", "world");
+	}
+	
 	
 	/*
 	 * Get the message using the key from the language file
@@ -146,11 +167,11 @@ public final class BlockBank extends JavaPlugin {
 	   		if (!this.getConfig().contains("banks")) this.getConfig().createSection("banks");
 	
 	   		ConfigurationSection bankConfig = this.getConfig().getConfigurationSection("banks");
-	    	Set<String> bank_ids = bankConfig.getKeys(false);
-	    	for(Iterator<String> bankIT = bank_ids.iterator(); bankIT.hasNext();) {
-	    		String bankID = bankIT.next();
-	    		Bank bank = new Bank(this, bankID);
-	    		banks.put(bank.getId(), bank);
+	    	Set<String> bankNames = bankConfig.getKeys(false);
+	    	for(Iterator<String> bankIT = bankNames.iterator(); bankIT.hasNext();) {
+	    		String bankName = bankIT.next();
+	    		Bank bank = new Bank(this, bankName);
+	    		banks.put(bank.getName(), bank);
 	    	}
 	    	this.saveConfig();
 	    	
@@ -256,6 +277,39 @@ public final class BlockBank extends JavaPlugin {
 	public void sendMessage(CommandSender player, String key, Object... args) 
 	{
 		player.sendMessage(getMessage(key, args));		
+	}
+
+	public <T> void setConfig(String key, T setting) {
+		getConfig().set(key, setting);
+		//TODO instead of saveConfig, this can be a timer/dirty flag or trigger an event
+		// so the save happens in another thread
+		saveConfig();
+	}
+
+	public List<String> getValidBankNames() {
+		String relationType = getConfig().getString("bankRelation").toLowerCase();
+		List<String> results = new ArrayList<String>();
+		if (relationType.equals("world") || relationType.equals("all")) {
+			for(World world : Bukkit.getWorlds()) {
+				results.add(world.getName().toLowerCase());
+			}			
+		}
+		if (relationType.equals("factions") || relationType.equals("all")) {
+			//TODO Relating to factions is not implemented yet
+			//for(Faction faction : ?.getFactions()) {
+			//	results.add(faction.getName());
+			//}			
+		}
+		return results;
+	}
+
+	public Bank getBank(String bankName) {
+		return banks.get(bankName);
+	}
+	
+	public void addBank(Bank bank)
+	{
+		banks.put(bank.getName(), bank);
 	}
 
 	
