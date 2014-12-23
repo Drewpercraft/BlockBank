@@ -26,6 +26,7 @@ public class CommandBank implements TabExecutor {
 	@Override
 	public List<String> onTabComplete(CommandSender player, Command command, String label, String[] args)
 	{
+		plugin.getLogger().info("tab completer for " + label + " called ");
 		List<String> options = new ArrayList<String>();
 		if (args.length == 1) {
 			Method[] methods = this.getClass().getDeclaredMethods();
@@ -38,12 +39,12 @@ public class CommandBank implements TabExecutor {
 		}
 		
 		if (args.length == 2) {
-			if (label.equals("announcements")) {
+			if (args[0].equals("announcements")) {
 				// Provide a list of banks + "global"
 				options.add(plugin.getMessage("global"));
 			}
 			
-			if (label.equals("create")) {
+			if (args[0].equals("create")) {
 				options.addAll(plugin.getValidBankNames());
 			}
 		}
@@ -81,7 +82,6 @@ public class CommandBank implements TabExecutor {
 		Method[] methods = this.getClass().getDeclaredMethods();
 		for(Method method : methods) {
 			String methodName = method.getName();
-			plugin.getLogger().info("TabComplete: " + methodName);
 			if (methodName.startsWith(name)) {
 				return method;
 			}

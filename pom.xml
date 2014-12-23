@@ -75,7 +75,7 @@
 	</dependencies>
 
 	<build>
-		<defaultGoal>compile package install</defaultGoal>
+		<defaultGoal>clean compile package install</defaultGoal>
 		<sourceDirectory>src/</sourceDirectory>
 		<resources>
 			<resource>

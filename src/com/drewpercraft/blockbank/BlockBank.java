@@ -263,14 +263,7 @@ public final class BlockBank extends JavaPlugin {
     	}
     }
 
-	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args)
-	{
-		log.info(String.format("onTabComplete %s - %s", cmd, commandLabel));
-		List<String> options = new ArrayList<String>();
-		return options;
-	}
-	
+		
 	/*
 	 *  Send the player a message based on the language file
 	 */
@@ -310,6 +303,7 @@ public final class BlockBank extends JavaPlugin {
 	public void addBank(Bank bank)
 	{
 		banks.put(bank.getName(), bank);
+		saveConfig();
 	}
 
 	
