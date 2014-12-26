@@ -16,4 +16,5 @@ PermissionError=You do not have permission to do that.
 ExecptionMessage=BlockBank command failed and has been logged.
 ReloadSuccess=BlockBank reloaded succeded.
 ReloadFail=BlockBank reload failed and has been &4DISABLED!
+BankCreated=The %s bank was created.
 BankAlreadyExists=A bank named &4%s already exists.

@@ -24,7 +24,7 @@ public class CommandBank implements TabExecutor {
 	}
 	
 	@Override
-	public List<String> onTabComplete(CommandSender player, Command command, String label, String[] args)
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args)
 	{
 		plugin.getLogger().info("tab completer for " + label + " called ");
 		List<String> options = new ArrayList<String>();
@@ -53,7 +53,7 @@ public class CommandBank implements TabExecutor {
 	}
 	
 	@Override
-	public boolean onCommand(CommandSender player, Command command, String label, String[] args) 
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) 
 	{
 		// bank requires at least one extra argument
 		if (args.length < 1) return false;
@@ -66,10 +66,10 @@ public class CommandBank implements TabExecutor {
 		if (method != null) {
 			Boolean result = new Boolean(false);
 			try {
-				result = (Boolean) method.invoke(this, player, params);
+				result = (Boolean) method.invoke(this, sender, params);
 			} catch (Exception e) {
 				e.printStackTrace();
-				plugin.sendMessage(player, "ExceptionMessage");
+				plugin.sendMessage(sender, "ExceptionMessage");
 			} 
 			// TODO Add false check to provide better help
 			return result.booleanValue();
@@ -92,11 +92,11 @@ public class CommandBank implements TabExecutor {
 	/*
 	 *   /bank announcement [bank name] on|off
 	 */
-	public boolean subCommand_announcements(CommandSender player, Vector<String> args)
+	public boolean subCommand_announcements(CommandSender sender, Vector<String> args)
 	{
 		plugin.getLogger().info("subCommand_announcements");
 		
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		if (args.size() == 0) {
 			plugin.getLogger().info("Missing status");
@@ -119,23 +119,23 @@ public class CommandBank implements TabExecutor {
 		if (args.get(0).equalsIgnoreCase("global")) {
 			plugin.setConfig("announcements", setting);
 			plugin.getLogger().info("Global Announcements set to " + status);
-			plugin.sendMessage(player, "GlobalSetAnnouncements", status);
+			plugin.sendMessage(sender, "GlobalSetAnnouncements", status);
 		}else{
 			//TODO Get the bank specified and set its announcements flag
 		}
 		return true;
 	}
 	
-	public boolean subCommand_atm(CommandSender player, Vector<String> args)
+	public boolean subCommand_atm(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		//TODO
 		return false;
 	}
 	
-	public boolean subCommand_create(CommandSender player, Vector<String> args)
+	public boolean subCommand_create(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		if (args.size() == 0) return false;
 		
 		String bankName = args.get(0).toLowerCase();
@@ -144,16 +144,17 @@ public class CommandBank implements TabExecutor {
 			if (plugin.getBank(bankName) == null) {
 				Bank bank = new Bank(plugin, bankName);
 				plugin.addBank(bank);
+				plugin.sendMessage(sender,  "BankCreated", bankName);
 			}else{
-				plugin.sendMessage(player, "BankAlreadyExists", bankName);
+				plugin.sendMessage(sender, "BankAlreadyExists", bankName);
 			}
 		}
 		return true;
 	}
 	
-	public boolean subCommand_loan(CommandSender player, Vector<String> args)
+	public boolean subCommand_loan(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		if (args.size() == 0) {
 			plugin.getLogger().info("Missing loan rate");
@@ -165,38 +166,38 @@ public class CommandBank implements TabExecutor {
 		String status = String.format("%.2f", setting);
 		plugin.getConfig().set("loanRate", setting);
 		plugin.getLogger().info("Global Announcements set to " + status);
-		plugin.sendMessage(player, "GlobalSetAnnouncements", status);
+		plugin.sendMessage(sender, "GlobalSetAnnouncements", status);
 		return true;
 	}
 	
-	public boolean subCommand_reload(CommandSender player, Vector<String> args)
+	public boolean subCommand_reload(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		plugin.reloadConfig();
 		if (plugin.loadConfiguration()) {
-			player.sendMessage(plugin.getMessage("ReloadSuccess"));
+			sender.sendMessage(plugin.getMessage("ReloadSuccess"));
 		}else{
-			player.sendMessage(plugin.getMessage("ReloadFail"));
+			sender.sendMessage(plugin.getMessage("ReloadFail"));
 		}		
 		return true;
 	}
 	
-	public boolean subCommand_remove(CommandSender player, Vector<String> args)
+	public boolean subCommand_remove(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		return false;
 	}
 
-	public boolean subCommand_savings(CommandSender player, Vector<String> args)
+	public boolean subCommand_savings(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		return false;
 	}
 	
-	public boolean subCommand_vaults(CommandSender player, Vector<String> args)
+	public boolean subCommand_vaults(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(player, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		return false;
 	}

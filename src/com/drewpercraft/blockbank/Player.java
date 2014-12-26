@@ -90,7 +90,9 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public void setBalance(double amount)
 	{
-		data.put("balance", amount);
+		//Round amount to the correct number of decimals
+		int decimals = plugin.getDecimals() * 100;
+		data.put("balance", (double) Math.round(amount * decimals) / decimals);
 		save();
 	}
 

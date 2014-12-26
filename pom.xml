@@ -99,33 +99,7 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>${project.groupId}</groupId>
-									<artifactId>${project.artifactId}</artifactId>
-									<version>${project.version}</version>
-									<type>jar</type>
-									<overWrite>true</overWrite>
-									<outputDirectory>${local.test.pluginPath}</outputDirectory>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			</plugin>			
 			<plugin>
 		        <groupId>org.codehaus.mojo</groupId>
 		        <artifactId>exec-maven-plugin</artifactId>
@@ -140,12 +114,7 @@
 		          </execution>
 		        </executions>
 		        <configuration>
-		          <executable>ssh</executable>
-		          <arguments>
-		            <argument>${local.test.server}</argument>
-		            <argument>${local.test.script}</argument>
-		            <argument>restart</argument>
-		          </arguments>
+		          <executable>deploy</executable>
 		        </configuration>
 		      </plugin>
 		</plugins>

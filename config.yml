@@ -37,7 +37,7 @@ bankRelation: world
 announcements: true
 savingsRate: 0
 loanRate: 0
-mavVaults: 10
+maxVaults: 10
 
 ######################################
 # The options apply to branches unless

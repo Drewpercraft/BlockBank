@@ -1,19 +1,27 @@
 package com.drewpercraft.blockbank.commands;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.OfflinePlayer;
 
 import com.drewpercraft.blockbank.BlockBank;
 import com.drewpercraft.Utils;
 
-public class CommandBalance implements CommandExecutor {
+public class CommandBalance implements TabExecutor {
 
 	private final BlockBank plugin;
 	
 	public CommandBalance(BlockBank plugin) {
 		this.plugin = plugin;
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	@Override
@@ -41,5 +49,4 @@ public class CommandBalance implements CommandExecutor {
 		sender.sendMessage(plugin.getMessage("WalletBalance", plugin.getVaultAPI().format(amount), walletName)); //$NON-NLS-1$
 		return true;
 	}
-
 }

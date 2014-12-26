@@ -33,6 +33,7 @@ public class Bank {
 			this.config.set("savingsRate", this.plugin.getConfig().getDouble("savingsRate", 0));
 			this.config.set("loanRate", this.plugin.getConfig().getDouble("loanRate", 0));
 			this.config.set("maxVaults", this.plugin.getConfig().getInt("maxVaults", 10));
+			this.plugin.saveConfig();
 		}
 		loadConfiguration();
 	}
