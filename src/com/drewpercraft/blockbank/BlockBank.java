@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,7 +22,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.drewpercraft.blockbank.commands.CommandBalance;
 import com.drewpercraft.blockbank.commands.CommandBalanceTop;
 import com.drewpercraft.blockbank.commands.CommandBank;
+import com.drewpercraft.blockbank.commands.CommandBorrow;
+import com.drewpercraft.blockbank.commands.CommandBranch;
+import com.drewpercraft.blockbank.commands.CommandCredit;
+import com.drewpercraft.blockbank.commands.CommandDeposit;
 import com.drewpercraft.blockbank.commands.CommandPay;
+import com.drewpercraft.blockbank.commands.CommandWithdraw;
 import com.drewpercraft.blockbank.listeners.PlayerListener;
 
 
@@ -208,6 +212,7 @@ public final class BlockBank extends JavaPlugin {
 	    	}
 	    	
 	    	// Make everything work with vault
+	    	vaultAPI = null;
 	    	getVaultAPI();
 	    
 	    	log.info("Configuration Load Completed");
@@ -233,14 +238,44 @@ public final class BlockBank extends JavaPlugin {
     	
     	if (loadConfiguration()) {
         	log.info(String.format("Enabling %s commands", this.getName()));
+        	CommandBalance commandBalance = new CommandBalance(this);
+        	getCommand("balance").setExecutor(commandBalance);
+        	getCommand("balance").setTabCompleter(commandBalance);
+        	
+        	CommandBalanceTop commandBalanceTop = new CommandBalanceTop(this);
+        	getCommand("balanceTop").setExecutor(commandBalanceTop);
+        	getCommand("balance").setTabCompleter(commandBalanceTop);
+        	
         	CommandBank commandBank = new CommandBank(this);
-        	this.getCommand("bank").setExecutor(commandBank);
-        	this.getCommand("bank").setTabCompleter(commandBank);
-        	this.getCommand("balance").setExecutor(new CommandBalance(this));
-        	//TODO this.getCommand("balance").setTabCompleter(Utils.userTabCompleter, 0);
-        	this.getCommand("pay").setExecutor(new CommandPay(this));
-        	//TODO this.getCommand("pay").setTabCompleter(Utils.userTabCompleter, 0);
-        	this.getCommand("balanceTop").setExecutor(new CommandBalanceTop(this));
+        	getCommand("bank").setExecutor(commandBank);
+        	getCommand("bank").setTabCompleter(commandBank);
+        	
+        	CommandBorrow commandBorrow = new CommandBorrow(this);
+        	getCommand("borrow").setExecutor(commandBorrow);
+        	getCommand("borrow").setTabCompleter(commandBorrow);
+        	
+        	CommandBranch commandBranch = new CommandBranch(this);
+        	getCommand("branch").setExecutor(commandBranch);
+        	getCommand("branch").setTabCompleter(commandBranch);
+        	
+        	CommandCredit commandCredit = new CommandCredit(this);
+        	getCommand("credit").setExecutor(commandCredit);
+        	getCommand("credit").setTabCompleter(commandCredit);
+        	
+        	CommandDeposit commandDeposit = new CommandDeposit(this);
+        	getCommand("deposit").setExecutor(commandDeposit);
+        	getCommand("deposit").setTabCompleter(commandDeposit);
+        	
+        	CommandPay commandPay = new CommandPay(this);
+        	getCommand("pay").setExecutor(commandPay);
+        	getCommand("pay").setTabCompleter(commandPay);
+        	
+        	CommandWithdraw commandWithdraw = new CommandWithdraw(this);
+        	getCommand("withdraw").setExecutor(commandWithdraw);
+        	getCommand("withdraw").setTabCompleter(commandWithdraw);
+        	
+        	
+        	
         	
     	
         	log.info(String.format("Enabling %s event handlers", this.getName()));
