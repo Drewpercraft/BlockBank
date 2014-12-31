@@ -47,6 +47,11 @@ public class VaultEconomy implements Economy {
 		
 	}
 
+	public Map<UUID, Player> getPlayerBalances()
+	{
+		return players;
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#bankBalance(java.lang.String)
 	 */

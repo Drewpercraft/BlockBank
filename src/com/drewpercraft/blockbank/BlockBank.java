@@ -341,5 +341,14 @@ public final class BlockBank extends JavaPlugin {
 		saveConfig();
 	}
 
+	public Bank getBankByRegion(String regionName) {
+		for (Bank bank : banks.values()) {
+			if (bank.getBranches().containsKey(regionName)) {
+				return bank;
+			}
+		}
+		return null;
+	}
+
 	
 }

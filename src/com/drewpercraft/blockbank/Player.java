@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
@@ -28,7 +30,6 @@ public class Player {
 		this.filename = this.filePath + File.separator + uuid + ".json";
 		load();
 	}
-	
 	
 	public File getPlayerFile()
 	{
@@ -79,6 +80,17 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }	
+	}
+	
+	public String getName()
+	{
+		return (String) data.get("playerName");
+	}
+	
+	public double getWorth()
+	{
+		//TODO Add in all bank balances
+		return getBalance();
 	}
 	
 	public double getBalance()

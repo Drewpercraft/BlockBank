@@ -5,11 +5,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 
+import com.drewpercraft.Utils;
+import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
+import com.drewpercraft.blockbank.WorldGuard;
 
 public final class CommandBranch implements TabExecutor {
 
@@ -60,5 +65,45 @@ public final class CommandBranch implements TabExecutor {
 			}
 		}
 		return null;
+	}
+	
+	/*
+	 * Param list:
+	 * 		0: bank name
+	 * 		1: region name
+	 */
+	public Boolean subParam_create(CommandSender sender, Vector<String> args)
+	{		
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		
+		if (args.size() < 2) return false;
+		String bankName = args.get(0);
+		String regionName = args.get(1);
+		
+		Bank bank = plugin.getBank(args.get(0));
+		if (bank == null) {
+			plugin.sendMessage(sender, "BankDoesNotExist", bankName);
+			return true;
+		}
+		
+		OfflinePlayer player = Utils.getPlayerByName(sender.getName());
+		if (!WorldGuard.isValidRegion(player, regionName)) {
+			plugin.sendMessage(sender, "RegionDoesNotExist", regionName);
+			return true;
+		}
+		
+		if (player.getPlayer() == null) {
+			plugin.sendMessage(sender, "ConsoleNotAllowed");
+			return true;
+		}
+		
+		if (plugin.getBankByRegion(regionName) != null) {
+			plugin.sendMessage(sender, "BranchAlreadyExists");
+			return true;
+		}
+		
+		bank.createBranch(regionName);
+		plugin.sendMessage(sender, "BranchCreated", bank.getName(), regionName);
+		return true;
 	}
 }

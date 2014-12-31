@@ -1,7 +1,9 @@
 package com.drewpercraft.blockbank;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
@@ -13,7 +15,7 @@ public class Bank {
 	private final BlockBank plugin;
 	private final Logger log;
 	private final String name;
-	private List<Branch> branches = new ArrayList<Branch>();
+	private Map<String, Branch> branches = new HashMap<String, Branch>();
 	private List<Location> atms = new ArrayList<Location>();
 	private List<Account> accounts = new ArrayList<Account>();
 	
@@ -55,6 +57,10 @@ public class Bank {
     	ConfigurationSection branchConfigs = config.getConfigurationSection("branches");
     	if (branchConfigs == null) {
     		branchConfigs = config.createSection("branches");
+    	}
+    	for(String name : branchConfigs.getKeys(false)) {
+    		Branch branch = new Branch(this, name);
+    		branches.put(name, branch);
     	}
     	
     	ConfigurationSection atmConfigs = config.getConfigurationSection("atms");
@@ -177,7 +183,7 @@ public class Bank {
 	/**
 	 * @return the branches
 	 */
-	public List<Branch> getBranches() {
+	public Map<String, Branch> getBranches() {
 		return branches;
 	}
 
@@ -199,6 +205,10 @@ public class Bank {
 		// TODO Auto-generated method stub
 		return this.config;
 	}
-	
+
+	public void createBranch(String regionName) {
+		branches.put(regionName, new Branch(this, regionName));
+		plugin.saveConfig();
+	}
 	
 }
