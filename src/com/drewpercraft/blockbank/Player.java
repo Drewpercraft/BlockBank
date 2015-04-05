@@ -40,26 +40,29 @@ public class Player {
 	public void load()
 	{
 		File playerFile = getPlayerFile();
+		String playerName = "";
 		try
 		{
 			boolean newPlayer = playerFile.createNewFile();
-			String playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
+			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
 			data.put("uuid", uuid.toString());
 			data.put("playerName", playerName);
 			data.put("balance", 0.0);
-			if (!newPlayer) 
+			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				Object obj = parser.parse(new FileReader(playerFile));
-				data = (JSONObject) obj;
-			}
+				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));
+				if (obj.containsKey("balance")) {
+					data.put("balance", obj.get("balance"));
+				}
+			} 
 		}
 		catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
-            plugin.log()
+            plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is corrupt");
         } 
 	}
 	
