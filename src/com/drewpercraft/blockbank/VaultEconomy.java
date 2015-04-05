@@ -270,8 +270,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playerName) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getBalance(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -279,8 +278,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playerName, String worldName) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getBalance(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)

@@ -54,6 +54,8 @@ public class Player {
 				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));
 				if (obj.containsKey("balance")) {
 					data.put("balance", obj.get("balance"));
+				}else{
+					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
 				}
 			} 
 		}
