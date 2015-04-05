@@ -46,9 +46,8 @@ public class Player {
 			String playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
 			data.put("uuid", uuid.toString());
 			data.put("playerName", playerName);
-			if (newPlayer) {
-				data.put("balance", 0.0);
-			}else{
+			data.put("balance", 0.0);
+			if (!newPlayer) 
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
 				Object obj = parser.parse(new FileReader(playerFile));
@@ -60,7 +59,7 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
+            plugin.log()
         } 
 	}
 	
