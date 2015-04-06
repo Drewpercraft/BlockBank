@@ -6,6 +6,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<mainClass>${project.groupId}.${project.artifactId}</mainClass>
+		<bukkitVersion>1.8-R0.1-SNAPSHOT</bukkitVersion>
 	</properties>
 
 	<!-- Project information -->
@@ -67,11 +68,10 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.8</version>
-			<scope>provided</scope>
-		</dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${bukkitVersion}</version>
+        </dependency>
 	</dependencies>
 
 	<build>

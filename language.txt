@@ -23,5 +23,6 @@ BankDoesNotExist=The bank %s does not exist.
 RegionDoesNotExist=The region %s does not exist.
 ConsoleNotAllowed=This command cannot be used at the console.
 BranchAlreadyExists=A branch is already using that region.
+TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
 BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
-BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s
+BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)

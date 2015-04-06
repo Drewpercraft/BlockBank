@@ -1,5 +1,6 @@
 package com.drewpercraft.blockbank.commands;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
@@ -45,9 +46,11 @@ public class CommandBalanceTop implements TabExecutor {
 		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
 		log.info(String.format("Found %d players", players.size()));
 		TreeMap<UUID, Player> sortedBalances = new TreeMap<UUID, Player>(new PlayerBalanceCompare(players));
+		double totalEconomy = 0.0;
 		for(UUID playerId : players.keySet()) {
 			if (players.get(playerId).getWorth() > 0 && !plugin.getServer().getOfflinePlayer(playerId).isBanned()) {
 				sortedBalances.put(playerId, players.get(playerId));
+				totalEconomy += players.get(playerId).getWorth();
 			}
 		}
 		log.info(String.format("Found %d sortedBalances", sortedBalances.size()));
@@ -62,12 +65,14 @@ public class CommandBalanceTop implements TabExecutor {
 		}
 		
 		log.info(String.format("Showing balances #%d to %d", index+1, lastIndex));
+		plugin.sendMessage(sender, "TotalEconomy", plugin.getVaultAPI().format(totalEconomy));
 		plugin.sendMessage(sender, "BalanceTopHeader", page, pageCount);
 		for(int i = index; i < lastIndex; i++ ) {
 			String name = players.get(keys[i]).getName();
 			Double balance = players.get(keys[i]).getBalance();
 			String formattedBalance = plugin.getVaultAPI().format(balance);
-			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance);
+			DecimalFormat dFormat = new DecimalFormat("##.##"); 
+			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance, dFormat.format(balance * 100 / totalEconomy));
 		}
 		return true;
 	}
