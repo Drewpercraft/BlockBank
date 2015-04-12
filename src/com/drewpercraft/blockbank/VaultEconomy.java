@@ -109,8 +109,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse createBank(String bankName, String playerName) 
 	{
-		// TODO Auto-generated method stub
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		return createBank(bankName, Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -220,12 +219,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
-		// TODO Auto-generated method stub
-		if (amount < 0) {
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot deposit negative funds");
-		}
-
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		return depositPlayer(Utils.getPlayerByName(playerName), amount);
 	}
 
 	/* (non-Javadoc)

@@ -37,6 +37,7 @@ public class Branch {
 			config.set("openHour", bank.getConfig().getInt("openHour", 8));
 			config.set("closeHour", bank.getConfig().getInt("closeHour", 17));
 			config.set("maxVaults", bank.getConfig().getInt("maxVaults", 10));
+			config.set("title", name);
 			plugin.saveConfig();
 		}
 	}
@@ -58,21 +59,24 @@ public class Branch {
 	 * @return the bank
 	 */
 	public Bank getBank() {
-		return bank;
+		return this.bank;
 	}
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return this.config.getString("name", "Invalid Branch");
+		return this.name;
 	}
 
 	public String getTitle() {
-		return this.config.getString("title", "Un-named Branch");
+		return this.config.getString("title", getName());
 	}
 	
+	public String getWorld() {
+		return this.config.getString("world", "Unknown");
+	}
 	/**
-	 * @param name the name to set
+	 * @param title the display name of this branch
 	 */
 	public void setTitle(String title) {
 		//TODO Check to make sure we're not renaming this bank to a name already in use
@@ -81,7 +85,12 @@ public class Branch {
 		this.config.set("title", title);
 		this.plugin.saveConfig();
 	}
-
+	
+	public void setWorld(String world) {
+		//TODO worldName should be verified
+		this.config.set("world", world);
+		this.plugin.saveConfig();
+	}
 	/**
 	 * @return the announcements
 	 */

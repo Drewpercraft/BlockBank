@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.bukkit.command.Command;
@@ -149,6 +150,15 @@ public class CommandBank implements TabExecutor {
 				plugin.sendMessage(sender, "BankAlreadyExists", bankName);
 			}
 		}
+		return true;
+	}
+	
+	public boolean subCommand_list(CommandSender sender, Vector<String> args)
+	{
+		Map<String, Bank> banks = plugin.getBanks();
+		List<String> message = new ArrayList<String>();
+		message.addAll(banks.keySet());
+		plugin.sendMessage(sender, "BankList", message);
 		return true;
 	}
 	

@@ -115,15 +115,18 @@ public class Player {
 	/*
 	 *  Withdraw allows for overdraft
 	 */
-	public double withdraw(double amount) {
+	public double withdraw(double amount) 
+	{
 		double newBalance = getBalance() - amount;
 		setBalance(newBalance);
 		return newBalance;
 	}
 	
-	public double deposit(double amount) {
+	public double deposit(double amount) 
+	{
 		double newBalance = getBalance() + amount;
 		setBalance(newBalance);
 		return newBalance;
 	}
+	
 }

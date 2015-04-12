@@ -180,17 +180,24 @@ public class Bank {
 		this.plugin.saveConfig();
 	}
 
+	public Branch getBranch(String branchName)
+	{
+		return branches.get(branchName);
+	}
+	
 	/**
 	 * @return the branches
 	 */
-	public Map<String, Branch> getBranches() {
+	public Map<String, Branch> getBranches() 
+	{
 		return branches;
 	}
 
 	/**
 	 * @return the atms
 	 */
-	public List<Location> getAtms() {
+	public List<Location> getAtms() 
+	{
 		return atms;
 	}
 
@@ -206,8 +213,11 @@ public class Bank {
 		return this.config;
 	}
 
-	public void createBranch(String regionName) {
-		branches.put(regionName, new Branch(this, regionName));
+	public void createBranch(String world, String regionName)
+	{
+		Branch branch = new Branch(this, regionName);
+		branch.setWorld(world);
+		branches.put(regionName, branch);
 		plugin.saveConfig();
 	}
 	

@@ -18,11 +18,15 @@ ReloadSuccess=BlockBank reloaded succeded.
 ReloadFail=BlockBank reload failed and has been \u00A74DISABLED!
 BankCreated=The %s bank was created.
 BranchCreated=The %s bank added the %s branch.
-BankAlreadyExists=A bank named &4%s already exists.
+BankAlreadyExists=A bank named \u00A74%s already exists.
 BankDoesNotExist=The bank %s does not exist.
+BankList=Available Banks: %s
 RegionDoesNotExist=The region %s does not exist.
 ConsoleNotAllowed=This command cannot be used at the console.
 BranchAlreadyExists=A branch is already using that region.
+BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
+BranchListEntry=\u00A76%d) \u00A79%s
 TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
 BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)
+

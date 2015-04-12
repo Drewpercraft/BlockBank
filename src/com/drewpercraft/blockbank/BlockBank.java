@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -38,67 +39,83 @@ public final class BlockBank extends JavaPlugin {
 	private VaultEconomy vaultAPI = null;	
 	private ResourceBundle userMessages;
  
-    public String getCurrencyPlural() {
+    public String getCurrencyPlural() 
+    {
 		return getConfig().getString("currencyPlural", "dollars");
 	}
     
-    public String getCurrencySingular() {
+    public String getCurrencySingular() 
+    {
 		return getConfig().getString("currencySingular", "dollar");
 	}
     
-    public String getCurrencySymbol() {
+    public String getCurrencySymbol() 
+    {
 		return getConfig().getString("currencySymbol", "$");
 	}
     
-	public int getDecimals() {
+	public int getDecimals() 
+	{
 		return getConfig().getInt("decimals", 2);
 	}
 
-	public boolean getDefaultAnnouncements() {
+	public boolean getDefaultAnnouncements() 
+	{
 		return getConfig().getBoolean("announcements", true);
 	}
 
-	public int getDefaultCloseHour() {
+	public int getDefaultCloseHour() 
+	{
 		return getConfig().getInt("closeHour", 17);
 	}
 	
-	public double getDefaultLoanRate() {
+	public double getDefaultLoanRate() 
+	{
 		return getConfig().getDouble("loanRate", 0);
 	}
 	
-	public int getDefaultMaxVaults() {
+	public int getDefaultMaxVaults() 
+	{
 		return getConfig().getInt("maxVaults", 10);
 	}
 	
-	public int getDefaultOpenHour() {
+	public int getDefaultOpenHour() 
+	{
 		return getConfig().getInt("openHour", 8);
 	}
     
-	public double getDefaultSavingsRate() {
+	public double getDefaultSavingsRate() 
+	{
 		return getConfig().getDouble("savingsRate", 0);
 	}
 	
-	public boolean getDropMoney() {
+	public boolean getDropMoney() 
+	{
 		return getConfig().getBoolean("dropMoney", true);
 	}
 	
-	public boolean getAllowLoans() {
+	public boolean getAllowLoans() 
+	{
 		return getConfig().getBoolean("allowLoans", false);
 	}
 	
-	public int getMaxATM() {
+	public int getMaxATM() 
+	{
 		return getConfig().getInt("maxATM", 10);
 	}
 	
-	public int getMaxBranches() {
+	public int getMaxBranches() 
+	{
 		return getConfig().getInt("maxBranches", 3);
 	}
 	
-	public boolean getLogTransactions() {
+	public boolean getLogTransactions() 
+	{
 		return getConfig().getBoolean("logTransactions", true);
 	}
 	
-	public String getBankRelation() {
+	public String getBankRelation() 
+	{
 		return getConfig().getString("bankRelation", "world");
 	}
 	
@@ -129,26 +146,39 @@ public final class BlockBank extends JavaPlugin {
 	 * Returns the bank owning the branch or ATM the player is standing
 	 * in or null if he is not in a bank
 	 */
-	public Bank getPlayerBank(Player player) 
+	public Bank getPlayerBank(OfflinePlayer player) 
 	{
-		// TODO
-		return null;
+		Branch branch = getPlayerBranch(player);
+		if (branch == null) return null;
+		return branch.getBank();
 	}
 	
 	/*
 	 * Returns the bank owning the branch or ATM the player is standing
 	 * in or null if he is not in a bank
 	 */
-	public Branch getPlayerBranch(Player player)
+	public Branch getPlayerBranch(OfflinePlayer offlinePlayer)
 	{
-		// TODO
+		for(String bankName : banks.keySet()) {
+			Map<String, Branch> branches = banks.get(bankName).getBranches();
+			for(String regionName : branches.keySet()) {
+				if (WorldGuard.isPlayerInRegion(offlinePlayer, regionName)) {
+					Branch branch = branches.get(regionName);
+					org.bukkit.entity.Player player = offlinePlayer.getPlayer();
+					if (player.getWorld().getName().equalsIgnoreCase(branch.getWorld())) {
+						return branch;
+					}
+				}
+			}
+		}
 		return null;
 	}
 
 	/*
 	 * Get the full path to where the player data files are stored
 	 */
-	public String getPlayerDataPath() {
+	public String getPlayerDataPath() 
+	{
 		String filePath = getConfig().getString("playerDataPath", null);
 		if (filePath == null) {
 			filePath = getDataFolder().getAbsolutePath() + File.separator + "playerData";
@@ -162,7 +192,8 @@ public final class BlockBank extends JavaPlugin {
     	return vaultAPI;
     }
 	
-	public boolean loadConfiguration() {
+	public boolean loadConfiguration() 
+	{
     	log.info("Loading configuration");
     	
     	try {
@@ -227,13 +258,15 @@ public final class BlockBank extends JavaPlugin {
     }
 
 	@Override
-    public void onDisable() {
+    public void onDisable() 
+	{
         // TODO Insert logic to be performed when the plugin is disabled
     	log.info(String.format("%s Disabled", this.getName()));
     }
 
 	@Override
-    public void onEnable() {
+    public void onEnable() 
+	{
 		log = getLogger();
     	
     	if (loadConfiguration()) {
@@ -307,14 +340,16 @@ public final class BlockBank extends JavaPlugin {
 		player.sendMessage(getMessage(key, args));		
 	}
 
-	public <T> void setConfig(String key, T setting) {
+	public <T> void setConfig(String key, T setting) 
+	{
 		getConfig().set(key, setting);
 		//TODO instead of saveConfig, this can be a timer/dirty flag or trigger an event
 		// so the save happens in another thread
 		saveConfig();
 	}
 
-	public List<String> getValidBankNames() {
+	public List<String> getValidBankNames() 
+	{
 		String relationType = getConfig().getString("bankRelation").toLowerCase();
 		List<String> results = new ArrayList<String>();
 		if (relationType.equals("world") || relationType.equals("all")) {
@@ -331,8 +366,14 @@ public final class BlockBank extends JavaPlugin {
 		return results;
 	}
 
-	public Bank getBank(String bankName) {
+	public Bank getBank(String bankName) 
+	{
 		return banks.get(bankName);
+	}
+	
+	public Map<String, Bank> getBanks()
+	{
+		return banks;
 	}
 	
 	public void addBank(Bank bank)
@@ -341,10 +382,13 @@ public final class BlockBank extends JavaPlugin {
 		saveConfig();
 	}
 
-	public Bank getBankByRegion(String regionName) {
+	public Bank getBankByRegion(String world, String regionName) 
+	{
 		for (Bank bank : banks.values()) {
 			if (bank.getBranches().containsKey(regionName)) {
-				return bank;
+				if (bank.getBranches().get(regionName).getWorld().equalsIgnoreCase(world)) {
+					return bank;
+				}
 			}
 		}
 		return null;
