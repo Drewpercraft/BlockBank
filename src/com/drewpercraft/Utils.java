@@ -106,4 +106,10 @@ public final class Utils {
 		return false;
 	}
 	
+	public static int GetWorldHour(long time)
+	{
+		int hour = (int) (6 + (time / 1000));
+		if (hour >= 24) hour -= 24;
+		return hour;
+	}
 }

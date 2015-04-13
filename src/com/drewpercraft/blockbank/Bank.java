@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.milkbowl.vault.economy.EconomyResponse;
+
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -16,11 +19,9 @@ public class Bank {
 	private final Logger log;
 	private final String name;
 	private Map<String, Branch> branches = new HashMap<String, Branch>();
-	private List<Location> atms = new ArrayList<Location>();
-	private List<Account> accounts = new ArrayList<Account>();
-	
+	private List<Location> atms = new ArrayList<Location>();	
 	private ConfigurationSection config = null;
-
+	private ConfigurationSection accounts = null;
 	
 	public Bank(BlockBank plugin, String name)
 	{
@@ -53,7 +54,6 @@ public class Bank {
 		log.info(String.format("Loading Bank: %s", this));
 		branches.clear();
 		atms.clear();
-		accounts.clear();
     	ConfigurationSection branchConfigs = config.getConfigurationSection("branches");
     	if (branchConfigs == null) {
     		branchConfigs = config.createSection("branches");
@@ -68,11 +68,11 @@ public class Bank {
     		atmConfigs = config.createSection("atms");
     	}
     	
-    	ConfigurationSection accounts = this.config.getConfigurationSection("accounts");
+    	accounts = this.config.getConfigurationSection("accounts");
     	if (accounts == null) {
     		accounts = config.createSection("accounts");
     	}
-    	    	
+    		
 	}
 		
 	public Account createAccount(Player player, double amount)
@@ -83,6 +83,30 @@ public class Bank {
 		//TODO Create account
 		return null;
 	
+	}
+	
+	public boolean deposit(OfflinePlayer player, double amount)
+	{
+		String id = player.getUniqueId().toString();
+		EconomyResponse response = plugin.getVaultAPI().withdrawPlayer(player, amount);
+		if (!response.transactionSuccess()) return false;
+		double previousBalance = accounts.getDouble(id, 0.0);
+		accounts.set(id, previousBalance + amount);
+		this.plugin.saveConfig();
+		return true;
+	}
+	
+	public boolean withdraw(OfflinePlayer player, double amount)
+	{
+		String id = player.getUniqueId().toString();
+		double previousBalance = accounts.getDouble(id, 0.0);
+		if (previousBalance < amount) return false;
+		
+		EconomyResponse response = plugin.getVaultAPI().depositPlayer(player, amount);
+		if (!response.transactionSuccess()) return false;
+		accounts.set(id, previousBalance - amount);
+		this.plugin.saveConfig();
+		return true;		
 	}
 	
 	/**
@@ -201,12 +225,6 @@ public class Bank {
 		return atms;
 	}
 
-	/**
-	 * @return the accounts
-	 */
-	public List<Account> getAccounts() {
-		return accounts;
-	}
 
 	public ConfigurationSection getConfig() {
 		// TODO Auto-generated method stub

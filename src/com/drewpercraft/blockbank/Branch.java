@@ -3,7 +3,10 @@ package com.drewpercraft.blockbank;
 import java.util.logging.Logger;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.drewpercraft.Utils;
 
 public class Branch {
 	
@@ -132,6 +135,16 @@ public class Branch {
 		if (closeHour < 0 || closeHour > 23) return;
 		this.config.set("closeHour", closeHour);
 		this.plugin.saveConfig();
+	}
+
+	public boolean isOpen() {
+		World world = plugin.getServer().getWorld(this.config.getString("world"));
+		int hour = Utils.GetWorldHour(world.getTime());
+		return (hour >= this.config.getInt("openHour") && (hour <= this.config.getInt("closeHour")));
+	}
+	
+	public boolean isClosed() {
+		return !isOpen();
 	}
 	
 	
