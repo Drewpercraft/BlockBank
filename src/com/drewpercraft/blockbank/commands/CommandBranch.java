@@ -107,6 +107,52 @@ public final class CommandBranch implements TabExecutor {
 		return null;
 	}
 	
+	public boolean subCommand_announcements(CommandSender sender, Vector<String> args)
+	{
+		
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		
+		if (branch != null) {
+			if (args.size() < 1) {
+				plugin.sendMessage(sender, "BranchAnnouncements", branch.isAnnouncements());
+				return true;
+			}
+			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			boolean announcements = Utils.getBoolean(args.get(0));
+			branch.setAnnouncements(announcements);
+			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
+		}else{
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+		}
+		return true;		
+	}
+	
+	public boolean subCommand_close(CommandSender sender, Vector<String> args)
+	{
+		
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		
+		if (branch != null) {
+			if (args.size() < 1) {
+				plugin.sendMessage(sender, "BranchClose", Utils.intToTime(branch.getCloseHour()));
+				return true;
+			}
+			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			int hour = Utils.getInt(args.get(0));
+			if (hour < 0 || hour > 24) {
+				plugin.sendMessage(sender, "InvalidArgument");
+				return true;
+			}
+			branch.setCloseHour(hour);
+			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
+		}else{
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+		}
+		return true;		
+	}
+	
 	/*
 	 * Param list:
 	 * 		0: bank name
@@ -238,6 +284,31 @@ public final class CommandBranch implements TabExecutor {
 		return true;
 	}
 
+	public boolean subCommand_open(CommandSender sender, Vector<String> args)
+	{
+		
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		
+		if (branch != null) {
+			if (args.size() < 1) {
+				plugin.sendMessage(sender, "BranchOpen", Utils.intToTime(branch.getOpenHour()));
+				return true;
+			}
+			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			int hour = Utils.getInt(args.get(0));
+			if (hour < 0 || hour > 24) {
+				plugin.sendMessage(sender, "InvalidArgument");
+				return true;
+			}
+			branch.setOpenHour(hour);
+			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
+		}else{
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+		}
+		return true;		
+	}
+	
 	public boolean subCommand_title(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;

@@ -46,4 +46,5 @@ BankTotalDeposits:\u00A76Total Deposits on hand:\u00A79 %s
 BankDepositSuccess=Your deposit of %s was accepted.
 BankDepositFailed=You deposit of %s was rejected. 
 BankWithdrawSuccess=Your withdrawal of %s was accepted.
-BankWithdrawFailed=You withdrawal of %s was rejected. 
+BankWithdrawFailed=You withdrawal of %s was rejected.
+InvalidArgument=Invalid Argument to command used. 
