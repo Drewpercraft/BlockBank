@@ -140,7 +140,7 @@ public class Branch {
 	public boolean isOpen() {
 		World world = plugin.getServer().getWorld(this.config.getString("world"));
 		int hour = Utils.GetWorldHour(world.getTime());
-		return (hour >= this.config.getInt("openHour") && (hour <= this.config.getInt("closeHour")));
+		return (hour >= this.config.getInt("openHour") && (hour < this.config.getInt("closeHour")));
 	}
 	
 	public boolean isClosed() {
