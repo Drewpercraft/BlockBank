@@ -205,6 +205,16 @@ public class CommandBank implements TabExecutor {
 		return false;
 	}
 	
+	public boolean subCommand_title(CommandSender sender, Vector<String> args)
+	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		
+		String bankName = args.remove(0);
+		String title = 
+		Bank bank = plugin.getBank(bankName);
+		return true;		
+	}
+	
 	public boolean subCommand_vaults(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;

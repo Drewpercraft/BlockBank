@@ -1,5 +1,6 @@
 package com.drewpercraft.blockbank;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -23,7 +24,6 @@ public final class WorldGuard {
 		if (player == null) return false;
 		
 		ApplicableRegionSet regions = WGBukkit.getRegionManager(player.getWorld()).getApplicableRegions(player.getLocation());
-		
 		for(ProtectedRegion region : regions) {
 			if (region.getId().equalsIgnoreCase(regionName)) return true;
 		}
