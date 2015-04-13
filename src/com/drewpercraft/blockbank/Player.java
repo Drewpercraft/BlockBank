@@ -5,7 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,6 +32,26 @@ public class Player {
 		load();
 	}
 	
+	public static class BalanceCompare implements Comparator<UUID> {
+
+		Map<UUID, Player> base;
+		
+		public BalanceCompare(Map<UUID, Player> base)
+		{
+			this.base = base;
+		}
+
+		@Override
+		public int compare(UUID a, UUID b)
+		{
+			if (base.get(a).getWorth() <= base.get(b).getWorth()) {
+				return -1;
+			}
+			return 1;
+			
+		}
+	}
+
 	public File getPlayerFile()
 	{
 		return new File(filename);

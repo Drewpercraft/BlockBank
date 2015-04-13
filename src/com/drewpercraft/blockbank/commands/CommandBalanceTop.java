@@ -45,7 +45,7 @@ public class CommandBalanceTop implements TabExecutor {
 		
 		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
 		log.info(String.format("Found %d players", players.size()));
-		TreeMap<UUID, Player> sortedBalances = new TreeMap<UUID, Player>(new PlayerBalanceCompare(players));
+		TreeMap<UUID, Player> sortedBalances = new TreeMap<UUID, Player>(new Player.BalanceCompare(players));
 		double totalEconomy = 0.0;
 		for(UUID playerId : players.keySet()) {
 			if (players.get(playerId).getWorth() > 0 && !plugin.getServer().getOfflinePlayer(playerId).isBanned()) {
