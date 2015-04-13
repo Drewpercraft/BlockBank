@@ -1,5 +1,7 @@
 InvalidPlayer=%s is not a valid player name.
 WalletBalance=There is %s in %s wallet.
+BankBalance=\u00A79%s\u00A76 has \u00A7a%s\u00A76 on deposit.
+TotalWorth=%s total worth is \u00A7a%s.
 InsufficientFunds=You do not have %s in your wallet.
 Withdraw=%s was withdrawn from your wallet.
 Deposit=%s was placed into your wallet.

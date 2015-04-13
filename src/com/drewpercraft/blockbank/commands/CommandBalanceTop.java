@@ -69,10 +69,10 @@ public class CommandBalanceTop implements TabExecutor {
 		plugin.sendMessage(sender, "BalanceTopHeader", page, pageCount);
 		for(int i = index; i < lastIndex; i++ ) {
 			String name = players.get(keys[i]).getName();
-			Double balance = players.get(keys[i]).getBalance();
-			String formattedBalance = plugin.getVaultAPI().format(balance);
+			Double worth = players.get(keys[i]).getWorth();
+			String formattedBalance = plugin.getVaultAPI().format(worth);
 			DecimalFormat dFormat = new DecimalFormat("##.##"); 
-			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance, dFormat.format(balance * 100 / totalEconomy));
+			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance, dFormat.format(worth * 100 / totalEconomy));
 		}
 		return true;
 	}

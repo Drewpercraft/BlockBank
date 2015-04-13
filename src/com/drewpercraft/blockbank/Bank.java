@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -87,26 +88,31 @@ public class Bank {
 	
 	public boolean deposit(OfflinePlayer player, double amount)
 	{
-		String id = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		EconomyResponse response = plugin.getVaultAPI().withdrawPlayer(player, amount);
 		if (!response.transactionSuccess()) return false;
-		double previousBalance = accounts.getDouble(id, 0.0);
-		accounts.set(id, previousBalance + amount);
+		double previousBalance = getPlayerBalance(uuid);
+		accounts.set(uuid.toString(), previousBalance + amount);
 		this.plugin.saveConfig();
 		return true;
 	}
 	
 	public boolean withdraw(OfflinePlayer player, double amount)
 	{
-		String id = player.getUniqueId().toString();
-		double previousBalance = accounts.getDouble(id, 0.0);
+		UUID uuid = player.getUniqueId();
+		double previousBalance = getPlayerBalance(uuid);
 		if (previousBalance < amount) return false;
 		
 		EconomyResponse response = plugin.getVaultAPI().depositPlayer(player, amount);
 		if (!response.transactionSuccess()) return false;
-		accounts.set(id, previousBalance - amount);
+		accounts.set(uuid.toString(), previousBalance - amount);
 		this.plugin.saveConfig();
 		return true;		
+	}
+	
+	public double getPlayerBalance(UUID uuid)
+	{
+		return accounts.getDouble(uuid.toString(), 0.0);
 	}
 	
 	/**

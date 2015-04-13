@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
@@ -91,8 +93,12 @@ public class Player {
 	
 	public double getWorth()
 	{
-		//TODO Add in all bank balances
-		return getBalance();
+		Set<String> bankNames = plugin.getBanks().keySet();
+		double worth = getBalance();
+		for(String bankName : bankNames) {
+			worth += plugin.getBank(bankName).getPlayerBalance(uuid);
+		}
+		return worth;
 	}
 	
 	public double getBalance()
