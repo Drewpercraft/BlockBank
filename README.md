@@ -10,21 +10,13 @@ How To Use
 ==========
 As most bankers to, banks have operating hours and transactions can only occur when the bank is open. Check out the info for each bank for information on their hours of operation.
 
-Open an Account
----------------
-As a bank customer, the first step would be to open an account. Simply enter the bank and use
-
-/bank open 1500
-
-This will open your account with $1500. The bank can set a minimum balance, so check the info to see. 
-
 Make a Deposit
 --------------
-Depositing money is simple, and smart because the bank will pay you interest on your deposits. If you have multiple accounts, just specify the account number as well.
+Depositing money is simple, and smart because the bank will pay you interest on your deposits. 
 
-/bank deposit 475.29
+/deposit 475.29
 
-This will deposit $475.29. 
+This will deposit $475.29 into your bank account of the branch or atm you are currently in.
 
 Make a Withdrawal
 -----------------
@@ -40,23 +32,9 @@ The bank's security is pretty tight. If you attempt to open a vault that does no
 
 Commands
 ========
-Most commands can be shortened to the first letter of the command. For example:
+/bank list - Show the list of key names used to identify the banks
 
-/bank d 500
-
-will deposit $500 into your first bank account. Also, you can substitute {yes|no}, {1|0}, {true|false} anywhere the options are {on|off}
-
-/bank info - Show information the bank and branch locations.
-
-/bank balance - Show your savings and loan accounts.
-
-/bank deposit {amount} [account] - Deposits amount into the account specified (or the first account found)
-
-/bank withdraw {amount} [account] - Withdraws amount from the account specified (or from the first account found)
-
-/bank borrow {amount} - Opens a loan account if the bank finds you are credit worthy.
-
-/bank pay [amount] - May a payment on your loan(s). Amount defaults to the lesser of cash in hand or the loan balance.
+/bank info [name] - Show information about the bank and branch locations.
 
 /balance - Show the amount of money on hand and in all your BlockBank Accounts
 
@@ -66,15 +44,13 @@ OP Commands
 ===========
 /bank announcements {on|off} - Turn broadcast announcements for this bank on or off
 
-/bank branch {open|close} {name} - Creates a bank using the currently selected WorldGuard coordinates
+/branch create {bankName} {regionName} - Creates a branch for the bank using the WorldGuard region specified
 
 /bank rate {savings|loan} {rate} - The rate paid/charged for accounts
 
 /bank open - The minecraft hour the bank opens.
 
 /bank close - The minecraft hour the bank closes.
-
-/bank minimum {savings|loan} {amount} - Set the minimum amount to open an account.
 
 /bank maxOfflineInterest {days}- Number of days account owner can be offline before forfeiting any interest earned.
 
