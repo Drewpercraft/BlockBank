@@ -244,5 +244,13 @@ public class Bank {
 		branches.put(regionName, branch);
 		plugin.saveConfig();
 	}
+
+	public double getTotalDeposits() {
+		double totalDeposits = 0;
+		for(String uuid : accounts.getKeys(false)) {
+			totalDeposits += accounts.getDouble(uuid);
+		}
+		return totalDeposits;
+	}
 	
 }

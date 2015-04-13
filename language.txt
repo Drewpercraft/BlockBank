@@ -36,6 +36,13 @@ PlayerNotInBranch=You are not in a bank branch.
 BankUpdated=%s was updated.
 BranchUpdated=%s was updated.
 BranchClosed=%s is currently closed.
+BankTitle=\u00A76Bank:\u00A79 %s
+BranchTitle=\u00A76Branch:\u00A79 %s
+BranchOpen=\u00A76Opens:\u00A79 %s
+BranchClose=\u00A76Closes:\u00A79 %s
+BranchAnnouncements=\u00A76Announcements:\u00A79 %s
+BankSavings:\u00A76Savings Rate:\u00A79 %s%%
+BankTotalDeposits:\u00A76Total Deposits on hand:\u00A79 %s
 BankDepositSuccess=Your deposit of %s was accepted.
 BankDepositFailed=You deposit of %s was rejected. 
 BankWithdrawSuccess=Your withdrawal of %s was accepted.
