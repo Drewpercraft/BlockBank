@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -210,8 +211,14 @@ public class CommandBank implements TabExecutor {
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		String bankName = args.remove(0);
-		String title = 
+		String title = StringUtils.join(args, " ");
 		Bank bank = plugin.getBank(bankName);
+		if (bank != null) {
+			bank.setTitle(title);
+			plugin.sendMessage(sender, "BankUpdated", bank.getName());
+		}else{
+			plugin.sendMessage(sender, "BankNotFound");
+		}
 		return true;		
 	}
 	

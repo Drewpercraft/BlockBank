@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -211,5 +212,20 @@ public final class CommandBranch implements TabExecutor {
 		}
 		return true;
 	}
-			
+
+	public boolean subCommand_title(CommandSender sender, Vector<String> args)
+	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		
+		if (branch != null) {
+			String title = StringUtils.join(args, " ");
+			branch.setTitle(title);
+			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
+		}else{
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+		}
+		return true;		
+	}
 }
