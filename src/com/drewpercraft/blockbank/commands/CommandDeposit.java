@@ -29,7 +29,7 @@ private final BlockBank plugin;
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (args.length < 2) return false;
+		if (args.length < 1) return false;
 		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		if (offlinePlayer == null) {
@@ -37,7 +37,7 @@ private final BlockBank plugin;
 			return true;
 		}
 		//Verify the user has the deposit amount in hand
-		Double amount = Utils.getDouble(args[1]);
+		Double amount = Utils.getDouble(args[0]);
 		if (amount <= 0) {
 			plugin.sendMessage(sender, "NegativeAmountUsed");
 			return true;
