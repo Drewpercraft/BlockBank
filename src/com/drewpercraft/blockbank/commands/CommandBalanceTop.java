@@ -15,7 +15,6 @@ import org.bukkit.command.TabExecutor;
 import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.BlockBank;
 import com.drewpercraft.blockbank.Player;
-import com.drewpercraft.blockbank.PlayerBalanceCompare;
 
 public class CommandBalanceTop implements TabExecutor {
 
