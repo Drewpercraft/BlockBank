@@ -96,7 +96,7 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().info("Saving " + playerFile.getAbsolutePath());
+			plugin.getLogger().fine("Saving " + playerFile.getAbsolutePath());
 			os.write(data.toString());
 			os.close();
 		}

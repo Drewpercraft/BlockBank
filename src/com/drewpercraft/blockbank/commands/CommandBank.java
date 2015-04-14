@@ -1,6 +1,7 @@
 package com.drewpercraft.blockbank.commands;
 
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -17,6 +19,7 @@ import org.bukkit.command.TabExecutor;
 import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
+import com.drewpercraft.blockbank.Branch;
 
 public class CommandBank implements TabExecutor {
 
@@ -154,7 +157,30 @@ public class CommandBank implements TabExecutor {
 		}
 		return true;
 	}
+
+	public Boolean subCommand_info(CommandSender sender, Vector<String> args)
+	{
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		
+		if (offlinePlayer.getPlayer() == null) {
+			plugin.sendMessage(sender, "ConsoleNotAllowed");
+			return true;
+		}
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		if (branch == null) {
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+			return true;
+		}
+		DecimalFormat dFormat = new DecimalFormat("##.##"); 
+		plugin.sendMessage(sender, "BankTitle", branch.getBank().getTitle());
+		plugin.sendMessage(sender, "BranchTitle", branch.getTitle());
+		plugin.sendMessage(sender, "BranchAnnouncements", branch.isAnnouncements());
+		plugin.sendMessage(sender, "BranchOpen", Utils.intToTime(branch.getOpenHour()));
+		plugin.sendMessage(sender, "BranchClose", Utils.intToTime(branch.getCloseHour()));
+		plugin.sendMessage(sender, "BankSavings", dFormat.format(branch.getBank().getSavingsRate()));
+		plugin.sendMessage(sender, "BankTotalDeposits", plugin.getVaultAPI().format(branch.getBank().getTotalDeposits()));
+		return true;
+	}
 	/*
 	 * Param list:
 	 * 		0: page (optional)
