@@ -44,6 +44,8 @@ public class CommandBalance implements TabExecutor {
 				plugin.sendMessage(sender, "InvalidPlayer", playerName);
 				return true;
 			}
+			//Do this to get the formatting of the player's name right
+			playerName = player.getName();
 			walletName = Utils.getPossessive(playerName);
 		}
 		double amount = plugin.getVaultAPI().getBalance(player);
@@ -58,7 +60,9 @@ public class CommandBalance implements TabExecutor {
 				worth += balance;
 			}
 		}
-		plugin.sendMessage(sender, "TotalWorth", walletName, plugin.getVaultAPI().format(worth));
+		if (worth != amount) {
+			plugin.sendMessage(sender, "TotalWorth", walletName, plugin.getVaultAPI().format(worth));
+		}
 		return true;
 	}
 }

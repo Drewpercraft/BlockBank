@@ -12,7 +12,7 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
+
 
 public class Bank {
 	
@@ -22,7 +22,6 @@ public class Bank {
 	private Map<String, Branch> branches = new HashMap<String, Branch>();
 	private List<Location> atms = new ArrayList<Location>();	
 	private ConfigurationSection config = null;
-	private ConfigurationSection accounts = null;
 	
 	public Bank(BlockBank plugin, String name)
 	{
@@ -69,50 +68,24 @@ public class Bank {
     		atmConfigs = config.createSection("atms");
     	}
     	
-    	accounts = this.config.getConfigurationSection("accounts");
-    	if (accounts == null) {
-    		accounts = config.createSection("accounts");
-    	}
-    		
 	}
-		
-	public Account createAccount(Player player, double amount)
+			
+	public boolean deposit(OfflinePlayer offlinePlayer, double amount)
 	{
-		//TODO Verify player has amount of cash in hand
-		//TODO Get Bank player is standing in
-		//TODO Verify player does not already have an account
-		//TODO Create account
-		return null;
-	
+		Player player = plugin.getVaultAPI().getPlayer(offlinePlayer.getUniqueId());
+		return player.bankDeposit(name, amount);
 	}
 	
-	public boolean deposit(OfflinePlayer player, double amount)
+	public boolean withdraw(OfflinePlayer offlinePlayer, double amount)
 	{
-		UUID uuid = player.getUniqueId();
-		EconomyResponse response = plugin.getVaultAPI().withdrawPlayer(player, amount);
-		if (!response.transactionSuccess()) return false;
-		double previousBalance = getPlayerBalance(uuid);
-		accounts.set(uuid.toString(), previousBalance + amount);
-		this.plugin.saveConfig();
-		return true;
-	}
-	
-	public boolean withdraw(OfflinePlayer player, double amount)
-	{
-		UUID uuid = player.getUniqueId();
-		double previousBalance = getPlayerBalance(uuid);
-		if (previousBalance < amount) return false;
-		
-		EconomyResponse response = plugin.getVaultAPI().depositPlayer(player, amount);
-		if (!response.transactionSuccess()) return false;
-		accounts.set(uuid.toString(), previousBalance - amount);
-		this.plugin.saveConfig();
-		return true;		
+		Player player = plugin.getVaultAPI().getPlayer(offlinePlayer.getUniqueId());
+		return player.bankWithdraw(name, amount);		
 	}
 	
 	public double getPlayerBalance(UUID uuid)
 	{
-		return accounts.getDouble(uuid.toString(), 0.0);
+		Player player = plugin.getVaultAPI().getPlayer(uuid);
+		return player.getBankBalance(name);		
 	}
 	
 	/**
@@ -247,8 +220,9 @@ public class Bank {
 
 	public double getTotalDeposits() {
 		double totalDeposits = 0;
-		for(String uuid : accounts.getKeys(false)) {
-			totalDeposits += accounts.getDouble(uuid);
+		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
+		for(UUID uuid : players.keySet()) {
+			totalDeposits += players.get(uuid).getBankBalance(name);
 		}
 		return totalDeposits;
 	}

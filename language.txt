@@ -1,52 +1,59 @@
-InvalidPlayer=%s is not a valid player name.
-WalletBalance=There is %s in %s wallet.
+BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)
+BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
+Bank=Bank
+BankAlreadyExists=\u00A79A bank named \u00A74%s\u00A79 already exists.
 BankBalance=\u00A79%s\u00A76 has \u00A7a%s\u00A76 on deposit.
-TotalWorth=%s total worth is \u00A7a%s.
-InsufficientFunds=You do not have %s in your wallet.
-Withdraw=%s was withdrawn from your wallet.
-Deposit=%s was placed into your wallet.
-PaymentSent=You paid %s %s.
-PaymentReceived=You received %s from %s.
-NegativeAmountUsed=You may not use negative amounts.
-Your=your
-Enabled=enabled
+BankCreated=The %s bank was created.
+BankDepositFailed=\u00A79You deposit of \u00A76%s\u00A79 was rejected. 
+BankDepositSuccess=\u00A79Your deposit of \u00A76%s\u00A79 was accepted.
+BankDoesNotExist=The bank %s does not exist.
+BankNotFound=No bank with that name was found.
+BankSavings:\u00A76Savings Rate:\u00A79 %s%%
+BankTitle=\u00A76Bank:\u00A79 %s
+BankTotalDeposits:\u00A76Total Deposits on hand:\u00A79 %s
+BankUpdated=%s was updated.
+BankWithdrawFailed=\u00A79Your withdrawal of \u00A76%s\u00A79 was rejected.
+BankWithdrawSuccess=\u00A79Your withdrawal of \u00A76%s\u00A79 was accepted.
+Branch=Branch
+BranchAlreadyExists=\u00A74A branch is already using that region.
+BranchAnnouncements=\u00A76Announcements:\u00A79 %s
+BranchClose=\u00A76Closes:\u00A79 %s
+BranchOpen=\u00A79The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now open.
+BranchClosed=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is currently closed.
+BranchCreated=The %s bank added the %s branch.
+BranchListEntry=\u00A76%d) \u00A79%s
+BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
+BranchOpen=\u00A76Opens:\u00A79 %s
+BranchTitle=\u00A76Branch:\u00A79 %s
+BranchUpdated=%s was updated.
+CloseHourError=\u00A74Closing time must be after open time
+ConsoleNotAllowed=This command cannot be used at the console.
+DeathNotice=Your killer raided your pockets and took %s
+Deposit=\u00A76%s\u00A79 was placed into your wallet.
 Disabled=disabled
-InvalidConsoleCommand=You may not use the %s command from the console.
+Enabled=enabled
+ExceptionMessage=BlockBank command failed and has been logged.
 Global="global"
 GlobalSetAnnouncements=Announcements for all banks was %s.
-PermissionError=You do not have permission to do that.
-ExceptionMessage=BlockBank command failed and has been logged.
-ReloadSuccess=BlockBank reloaded succeded.
+InsufficientFunds=You do not have %s in your wallet.
+InvalidArgument=\u00A74Invalid Argument to command used.
+InvalidConsoleCommand=You may not use the %s command from the console.
+InvalidPlayer=%s is not a valid player name.
+KillerNotice=You were able to find %s in %s pockets.
+List=List
+ListEntry=\u00A76%d) \u00A79%s
+ListHeader=\u00A76----====[ \u00A79%s - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
+NegativeAmountUsed=\u00A74You may not use negative amounts.
+OpenHourError=\u00A74Open time must be before close time
+PaymentReceived=\u00A79You received \u00A76%s\u00A79 from \u00A76%s\u00A79.
+PaymentSent=\u00A79You paid \u00A76%s \u00A7A%s.
+PermissionError=\u00A74You do not have permission to do that.
+PlayerNotInBranch=\u00A74You are not in a bank branch.
+RegionDoesNotExist=\u00A79The region \u00A76%s\u00A79 does not exist.
 ReloadFail=BlockBank reload failed and has been \u00A74DISABLED!
-BankCreated=The %s bank was created.
-BranchCreated=The %s bank added the %s branch.
-BankAlreadyExists=A bank named \u00A74%s already exists.
-BankDoesNotExist=The bank %s does not exist.
-BankList=Available Banks: %s
-RegionDoesNotExist=The region %s does not exist.
-ConsoleNotAllowed=This command cannot be used at the console.
-BranchAlreadyExists=A branch is already using that region.
-BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
-BranchListEntry=\u00A76%d) \u00A79%s
+ReloadSuccess=\u00A7ABlockBank reloaded successfully.
 TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
-BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
-BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)
-BankNotFound=No bank with that name was found.
-PlayerNotInBranch=You are not in a bank branch.
-BankUpdated=%s was updated.
-BranchUpdated=%s was updated.
-BranchClosed=%s is currently closed.
-BankTitle=\u00A76Bank:\u00A79 %s
-BranchTitle=\u00A76Branch:\u00A79 %s
-BranchOpen=\u00A76Opens:\u00A79 %s
-BranchClose=\u00A76Closes:\u00A79 %s
-BranchAnnouncements=\u00A76Announcements:\u00A79 %s
-BankSavings:\u00A76Savings Rate:\u00A79 %s%%
-BankTotalDeposits:\u00A76Total Deposits on hand:\u00A79 %s
-BankDepositSuccess=Your deposit of %s was accepted.
-BankDepositFailed=You deposit of %s was rejected. 
-BankWithdrawSuccess=Your withdrawal of %s was accepted.
-BankWithdrawFailed=You withdrawal of %s was rejected.
-InvalidArgument=Invalid Argument to command used.
-OpenHourError=Open time must be before close time
-CloseHourError=Closing time must be after open time
+TotalWorth=%s total worth is \u00A7a%s.
+WalletBalance=\u00A79There is \u00A76%s\u00A79 in \u00A76%s\u00A79 wallet.
+Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
+Your=your

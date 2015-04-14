@@ -56,7 +56,7 @@ private final BlockBank plugin;
 		}else{
 			//Verify the branch is open
 			if (branch.isClosed()) {
-				plugin.sendMessage(sender, "BranchClosed", branch.getTitle());
+				plugin.sendMessage(sender, "BranchClosed", branch.getTitle(), branch.getBank().getTitle());
 				return true;
 			}
 		}

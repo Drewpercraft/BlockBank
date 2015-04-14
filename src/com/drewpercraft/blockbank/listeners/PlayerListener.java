@@ -46,9 +46,9 @@ public final class PlayerListener implements Listener {
 	    	
 	    	if (pocketCash > 0 && killer != null) {
 	    		plugin.getVaultAPI().withdrawPlayer(deadMan, pocketCash);
-	    		deadMan.sendMessage("Your killer raided your pockets and took " + plugin.getVaultAPI().format(pocketCash));
+	    		plugin.sendMessage(deadMan, "DeathNotice", plugin.getVaultAPI().format(pocketCash));
 	    		plugin.getVaultAPI().depositPlayer(killer, pocketCash);
-	    		killer.sendMessage("You were able to find " + plugin.getVaultAPI().format(pocketCash) + " in " + Utils.getPossessive(deadMan.getDisplayName()) + " pockets.");
+	    		plugin.sendMessage(killer, "KillerNotice", plugin.getVaultAPI().format(pocketCash), Utils.getPossessive(deadMan.getDisplayName()));
 	    	}
     	}
     }

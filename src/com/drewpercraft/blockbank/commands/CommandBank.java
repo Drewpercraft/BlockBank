@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.lang.StringUtils;
@@ -146,20 +147,46 @@ public class CommandBank implements TabExecutor {
 			if (plugin.getBank(bankName) == null) {
 				Bank bank = new Bank(plugin, bankName);
 				plugin.addBank(bank);
-				plugin.sendMessage(sender,  "BankCreated", bankName);
+				plugin.sendMessage(sender, "BankCreated", bankName);
 			}else{
 				plugin.sendMessage(sender, "BankAlreadyExists", bankName);
 			}
 		}
 		return true;
 	}
-	
-	public boolean subCommand_list(CommandSender sender, Vector<String> args)
-	{
-		Map<String, Bank> banks = plugin.getBanks();
-		List<String> message = new ArrayList<String>();
-		message.addAll(banks.keySet());
-		plugin.sendMessage(sender, "BankList", message);
+		
+	/*
+	 * Param list:
+	 * 		0: page (optional)
+	 */
+	public Boolean subCommand_list(CommandSender sender, Vector<String> args)
+	{	
+		
+		int page = 1;
+		if (args.size() > 0) {
+			page = Utils.getInt(args.get(0));
+		}
+		int index = (page - 1) * 10;
+		if (index < 0) index = 0;
+		
+		List<String> bankNames = new ArrayList<String>();
+		bankNames.addAll(plugin.getBanks().keySet());
+		
+		Collections.sort(bankNames);
+		
+		int pageCount = (bankNames.size() / 10) + 1;
+		
+		int lastIndex = index + 10;
+		if (lastIndex > bankNames.size()) {
+			lastIndex = bankNames.size();
+		}
+		
+		String title = plugin.getMessage("Bank") + " " + plugin.getMessage("List");
+		plugin.sendMessage(sender, "ListHeader", title, page, pageCount);
+		for(int i = index; i < lastIndex; i++ ) {			
+			String bankName = bankNames.get(i);
+			plugin.sendMessage(sender, "ListEntry", i+1, plugin.getBank(bankName) + " (" + bankName+ ")");
+		}
 		return true;
 	}
 	

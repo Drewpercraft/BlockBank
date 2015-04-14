@@ -117,7 +117,7 @@ public class Player {
 		Set<String> bankNames = plugin.getBanks().keySet();
 		double worth = getBalance();
 		for(String bankName : bankNames) {
-			worth += plugin.getBank(bankName).getPlayerBalance(uuid);
+			worth += getBankBalance(bankName);
 		}
 		return worth;
 	}
@@ -154,4 +154,41 @@ public class Player {
 		return newBalance;
 	}
 	
+	public double getBankBalance(String bankName)
+	{
+		if (data.containsKey(bankName)) {
+			Double balance = (Double) data.get(bankName);
+			return balance.doubleValue();
+		}
+		return 0.0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setBankBalance(String bankName, double amount)
+	{
+		//Round amount to the correct number of decimals
+		int decimals = plugin.getDecimals() * 100;
+		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		save();
+	}
+	
+	public boolean bankWithdraw(String bankName, double amount) 
+	{
+		if (amount > getBankBalance(bankName)) return false;
+		double newBankBalance = getBankBalance(bankName) - amount;
+		double newBalance = getBalance() + amount;
+		setBankBalance(bankName, newBankBalance);
+		setBalance(newBalance);
+		return true;
+	}
+	
+	public boolean bankDeposit(String bankName, double amount) 
+	{
+		if (amount > getBalance()) return false;
+		double newBankBalance = getBankBalance(bankName) + amount;
+		double newBalance = getBalance() - amount;
+		setBankBalance(bankName, newBankBalance);
+		setBalance(newBalance);
+		return true;
+	}
 }

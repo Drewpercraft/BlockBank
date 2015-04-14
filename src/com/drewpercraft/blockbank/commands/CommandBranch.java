@@ -280,10 +280,10 @@ public final class CommandBranch implements TabExecutor {
 			lastIndex = branchNames.size();
 		}
 		
-		plugin.getLogger().info(String.format("Showing branches #%d to %d", index+1, lastIndex));
-		plugin.sendMessage(sender, "BranchListHeader", page, pageCount);
+		String title = plugin.getMessage("Branch") + " " + plugin.getMessage("List");
+		plugin.sendMessage(sender, "ListHeader", title, page, pageCount);
 		for(int i = index; i < lastIndex; i++ ) {			
-			plugin.sendMessage(sender, "BranchListEntry", i+1, branchNames.get(i));
+			plugin.sendMessage(sender, "ListEntry", i+1, branchNames.get(i));
 		}
 		return true;
 	}
