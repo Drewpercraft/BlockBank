@@ -145,6 +145,10 @@ public final class CommandBranch implements TabExecutor {
 				plugin.sendMessage(sender, "InvalidArgument");
 				return true;
 			}
+			if (hour <= branch.getOpenHour()) {
+				plugin.sendMessage(sender, "CloseHourError");
+				return true;
+			}
 			branch.setCloseHour(hour);
 			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
 		}else{
@@ -301,6 +305,11 @@ public final class CommandBranch implements TabExecutor {
 				plugin.sendMessage(sender, "InvalidArgument");
 				return true;
 			}
+			if (hour >= branch.getCloseHour()) {
+				plugin.sendMessage(sender, "OpenHourError");
+				return true;
+			}
+
 			branch.setOpenHour(hour);
 			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
 		}else{

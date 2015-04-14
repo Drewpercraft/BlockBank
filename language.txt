@@ -47,4 +47,6 @@ BankDepositSuccess=Your deposit of %s was accepted.
 BankDepositFailed=You deposit of %s was rejected. 
 BankWithdrawSuccess=Your withdrawal of %s was accepted.
 BankWithdrawFailed=You withdrawal of %s was rejected.
-InvalidArgument=Invalid Argument to command used. 
+InvalidArgument=Invalid Argument to command used.
+OpenHourError=Open time must be before close time
+CloseHourError=Closing time must be after open time
