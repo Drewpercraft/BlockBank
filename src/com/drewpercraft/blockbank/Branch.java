@@ -1,35 +1,48 @@
 package com.drewpercraft.blockbank;
 
 import java.util.logging.Logger;
-import java.util.UUID;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 
-import com.sk89q.worldedit.regions.Region;
+import com.drewpercraft.Utils;
 
 public class Branch {
 	
 	private BlockBank plugin;
 	private final Logger log;
 	private final Bank bank;
-	private final UUID id;
-	private Region region = null;
+	private final String name;
 	
 	private ConfigurationSection config = null;
 	
-	public Branch(Bank bank, UUID id)
+	public Branch(Bank bank, String name)
 	{
 		this.plugin = bank.getPlugin();
 		this.log = plugin.getLogger();
 		this.bank = bank;
-		this.id = id;
+		this.name = name;
 		loadConfiguration();
 	}
 	
 	public void loadConfiguration()
 	{
-		this.config = this.bank.getConfig().getConfigurationSection("branches").getConfigurationSection(this.id.toString());
 		log.info(String.format("\tLoading Branch: %s", getName()));
+		ConfigurationSection branches = bank.getConfig().getConfigurationSection("branches");
+		if (branches == null) {
+			branches = bank.getConfig().createSection("branches");
+		}
+		config = branches.getConfigurationSection(name);
+		if (config == null) {			
+			config = bank.getConfig().getConfigurationSection("branches").createSection(name);
+			config.set("announcements", bank.getConfig().getBoolean("announcements", true));
+			config.set("openHour", bank.getConfig().getInt("openHour", 8));
+			config.set("closeHour", bank.getConfig().getInt("closeHour", 17));
+			config.set("maxVaults", bank.getConfig().getInt("maxVaults", 10));
+			config.set("title", name);
+			plugin.saveConfig();
+		}
 	}
 	
 	/* (non-Javadoc)
@@ -37,34 +50,50 @@ public class Branch {
 	 */
 	@Override
 	public String toString() {
-		return String.format("%s branch of %s, name, bank");
+		return String.format("%s branch of %s", config.getString("title"), bank);
 	}
 
+	public boolean isPlayerInBranch(OfflinePlayer offlinePlayer)
+	{
+		return WorldGuard.isPlayerInRegion(offlinePlayer, name);
+	}
 
 	/**
 	 * @return the bank
 	 */
 	public Bank getBank() {
-		return bank;
+		return this.bank;
 	}
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return this.config.getString("name", "Un-named Bank");
+		return this.name;
 	}
 
+	public String getTitle() {
+		return this.config.getString("title", getName());
+	}
+	
+	public String getWorld() {
+		return this.config.getString("world", "Unknown");
+	}
 	/**
-	 * @param name the name to set
+	 * @param title the display name of this branch
 	 */
-	public void setName(String name) {
+	public void setTitle(String title) {
 		//TODO Check to make sure we're not renaming this bank to a name already in use
 		//TODO Implement setting error
-		if (name.length() < 1) return;
-		this.config.set("name", name);
+		if (title.length() < 1) return;
+		this.config.set("title", title);
 		this.plugin.saveConfig();
 	}
-
+	
+	public void setWorld(String world) {
+		//TODO worldName should be verified
+		this.config.set("world", world);
+		this.plugin.saveConfig();
+	}
 	/**
 	 * @return the announcements
 	 */
@@ -107,18 +136,15 @@ public class Branch {
 		this.config.set("closeHour", closeHour);
 		this.plugin.saveConfig();
 	}
-	/**
-	 * @return the region
-	 */
-	public Region getRegion() {
-		return region;
+
+	public boolean isOpen() {
+		World world = plugin.getServer().getWorld(this.config.getString("world"));
+		int hour = Utils.GetWorldHour(world.getTime());
+		return (hour >= this.config.getInt("openHour") && (hour < this.config.getInt("closeHour")));
 	}
-	/**
-	 * @param region the region to set
-	 */
-	public void setRegion(String region) {
-		this.config.set("region", region);
-		this.plugin.saveConfig();
+	
+	public boolean isClosed() {
+		return !isOpen();
 	}
 	
 	

@@ -5,6 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.json.simple.JSONObject;
@@ -29,7 +32,26 @@ public class Player {
 		load();
 	}
 	
-	
+	public static class BalanceCompare implements Comparator<UUID> {
+
+		Map<UUID, Player> base;
+		
+		public BalanceCompare(Map<UUID, Player> base)
+		{
+			this.base = base;
+		}
+
+		@Override
+		public int compare(UUID a, UUID b)
+		{
+			if (base.get(a).getWorth() <= base.get(b).getWorth()) {
+				return -1;
+			}
+			return 1;
+			
+		}
+	}
+
 	public File getPlayerFile()
 	{
 		return new File(filename);
@@ -39,27 +61,31 @@ public class Player {
 	public void load()
 	{
 		File playerFile = getPlayerFile();
+		String playerName = "";
 		try
 		{
 			boolean newPlayer = playerFile.createNewFile();
-			String playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
+			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
 			data.put("uuid", uuid.toString());
 			data.put("playerName", playerName);
-			if (newPlayer) {
-				data.put("balance", 0.0);
-			}else{
+			data.put("balance", 0.0);
+			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				Object obj = parser.parse(new FileReader(playerFile));
-				data = (JSONObject) obj;
-			}
+				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));
+				if (obj.containsKey("balance")) {
+					data.put("balance", obj.get("balance"));
+				}else{
+					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
+				}
+			} 
 		}
 		catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
+            plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is corrupt");
         } 
 	}
 	
@@ -70,7 +96,7 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().info("Saving " + playerFile.getAbsolutePath());
+			plugin.getLogger().fine("Saving " + playerFile.getAbsolutePath());
 			os.write(data.toString());
 			os.close();
 		}
@@ -79,6 +105,21 @@ public class Player {
         } catch (IOException e) {
             e.printStackTrace();
         }	
+	}
+	
+	public String getName()
+	{
+		return (String) data.get("playerName");
+	}
+	
+	public double getWorth()
+	{
+		Set<String> bankNames = plugin.getBanks().keySet();
+		double worth = getBalance();
+		for(String bankName : bankNames) {
+			worth += getBankBalance(bankName);
+		}
+		return worth;
 	}
 	
 	public double getBalance()
@@ -90,22 +131,64 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public void setBalance(double amount)
 	{
-		data.put("balance", amount);
+		//Round amount to the correct number of decimals
+		int decimals = plugin.getDecimals() * 100;
+		data.put("balance", (double) Math.round(amount * decimals) / decimals);
 		save();
 	}
 
 	/*
 	 *  Withdraw allows for overdraft
 	 */
-	public double withdraw(double amount) {
+	public double withdraw(double amount) 
+	{
 		double newBalance = getBalance() - amount;
 		setBalance(newBalance);
 		return newBalance;
 	}
 	
-	public double deposit(double amount) {
+	public double deposit(double amount) 
+	{
 		double newBalance = getBalance() + amount;
 		setBalance(newBalance);
 		return newBalance;
+	}
+	
+	public double getBankBalance(String bankName)
+	{
+		if (data.containsKey(bankName)) {
+			Double balance = (Double) data.get(bankName);
+			return balance.doubleValue();
+		}
+		return 0.0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setBankBalance(String bankName, double amount)
+	{
+		//Round amount to the correct number of decimals
+		int decimals = plugin.getDecimals() * 100;
+		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		save();
+	}
+	
+	public boolean bankWithdraw(String bankName, double amount) 
+	{
+		if (amount > getBankBalance(bankName)) return false;
+		double newBankBalance = getBankBalance(bankName) - amount;
+		double newBalance = getBalance() + amount;
+		setBankBalance(bankName, newBankBalance);
+		setBalance(newBalance);
+		return true;
+	}
+	
+	public boolean bankDeposit(String bankName, double amount) 
+	{
+		if (amount > getBalance()) return false;
+		double newBankBalance = getBankBalance(bankName) + amount;
+		double newBalance = getBalance() - amount;
+		setBankBalance(bankName, newBankBalance);
+		setBalance(newBalance);
+		return true;
 	}
 }

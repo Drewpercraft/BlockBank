@@ -47,6 +47,11 @@ public class VaultEconomy implements Economy {
 		
 	}
 
+	public Map<UUID, Player> getPlayerBalances()
+	{
+		return players;
+	}
+	
 	/* (non-Javadoc)
 	 * @see net.milkbowl.vault.economy.Economy#bankBalance(java.lang.String)
 	 */
@@ -104,8 +109,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse createBank(String bankName, String playerName) 
 	{
-		// TODO Auto-generated method stub
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		return createBank(bankName, Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -215,12 +219,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public EconomyResponse depositPlayer(String playerName, String worldName, double amount) {
-		// TODO Auto-generated method stub
-		if (amount < 0) {
-			return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot deposit negative funds");
-		}
-
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		return depositPlayer(Utils.getPlayerByName(playerName), amount);
 	}
 
 	/* (non-Javadoc)
@@ -265,8 +264,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playerName) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getBalance(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)
@@ -274,8 +272,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(String playerName, String worldName) {
-		// TODO Auto-generated method stub
-		return 0;
+		return getBalance(Utils.getPlayerByName(playerName));
 	}
 
 	/* (non-Javadoc)

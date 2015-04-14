@@ -11,9 +11,15 @@ commands:
     bank:
         description: Manage your bank accounts.
         usage: /bank [command] see /bank help for more info.
-        permission: blockbank.user
-        permission-message: You can not have a bank account.
+        permission: blockbank.admin
+        permission-message: You must be an admin.
         aliases: [eco]
+        
+    branch:
+        description: Manage bank branches.
+        usage: /branch [bank name] see /branch help for more info.
+        permission: blockbank.admin
+        permission-message: You must be an admin
         
     balance:
         description: Get the balance in all your accounts.
@@ -23,6 +29,29 @@ commands:
     pay:
         description: Pay another player out of your pocket.
         usage: /pay [player] [amount]
+        
+    deposit:
+        description: Deposit money into your bank account.
+        permission: blockbank.user
+        permission-message: You are not authorized to use banking services.
+        usage: /deposit [amount]
+    
+    withdraw:
+        description: Withdraw money from your bank account.
+        permission: blockbank.user
+        permission-message: You are not authorized to use banking services.
+        usage: /withdraw [amount]
+        
+    borrow:
+        description: Borrow money from the bank.
+        permission: blockbank.loan
+        permission-message: You are not authorized to borrow money.
+        usage: /borrow [amount]
+        
+    credit:
+        description: Determine how much the bank is willing to lend you.
+        permission: blockbank.loan
+        usage: /credit
 
     balancetop:
         description: Show your ranking in cash assets along with the top 10 players.

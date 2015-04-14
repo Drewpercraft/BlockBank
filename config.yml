@@ -3,12 +3,9 @@
 # |             Drewpercraft - BlockBank.jar             | #
 # +------------------------------------------------------+ #
 ############################################################
-announcements: true
-savingsRate: 0
-loanRate: -1
-openHour: 8
-closeHour: 17
-maxVaults: 10
+# These optins apply to all banks and
+# cannot be set in game
+######################################
 currencySymbol: $
 currencySingular: dollar
 currencyPlural: dollars
@@ -16,5 +13,38 @@ decimals: 2
 dialogPrefix: &6
 dialogSuffix: 
 dropMoney: true
+allowLoans: false
+maxATM: 10
+maxBranches: 3
+logTransactions: true
+
+######################################
+# How ofter to save the player data
+# files
+######################################
+#saveInterval: 10
+
+######################################
+# Banks can be related to the world
+# name, faction name or all
+######################################
+bankRelation: world
+
+######################################
+# The options apply to banks unless
+# they are changed in the bank section
+#######################################
+announcements: true
+savingsRate: 0
+loanRate: 0
+maxVaults: 10
+
+######################################
+# The options apply to branches unless
+# they are changed in the bank section
+#######################################
+openHour: 8
+closeHour: 17
+maxVaults: 10
 
 banks:
