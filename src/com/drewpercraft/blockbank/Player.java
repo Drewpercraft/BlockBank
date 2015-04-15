@@ -72,11 +72,16 @@ public class Player {
 			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));
+				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));				
 				if (obj.containsKey("balance")) {
 					data.put("balance", obj.get("balance"));
 				}else{
 					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
+				}
+				for(String bankName : plugin.getBanks().keySet()) {
+					if (obj.containsKey(bankName)) {
+						data.put(bankName, obj.get(bankName));
+					}
 				}
 			} 
 		}

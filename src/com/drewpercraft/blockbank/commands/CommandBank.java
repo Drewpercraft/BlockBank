@@ -158,7 +158,7 @@ public class CommandBank implements TabExecutor {
 		return true;
 	}
 
-	public Boolean subCommand_info(CommandSender sender, Vector<String> args)
+	public boolean subCommand_info(CommandSender sender, Vector<String> args)
 	{
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		
@@ -181,11 +181,17 @@ public class CommandBank implements TabExecutor {
 		plugin.sendMessage(sender, "BankTotalDeposits", plugin.getVaultAPI().format(branch.getBank().getTotalDeposits()));
 		return true;
 	}
+	
+	public boolean subCommand_help(CommandSender sender, Vector<String> args)
+	{
+		plugin.sendMessage(sender, "Help is in the works....");
+		return true;
+	}
 	/*
 	 * Param list:
 	 * 		0: page (optional)
 	 */
-	public Boolean subCommand_list(CommandSender sender, Vector<String> args)
+	public boolean subCommand_list(CommandSender sender, Vector<String> args)
 	{	
 		
 		int page = 1;
