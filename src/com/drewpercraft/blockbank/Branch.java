@@ -132,7 +132,7 @@ public class Branch {
 	 * @param closeHour the closeHour to set
 	 */
 	public void setCloseHour(int closeHour) {
-		if (closeHour < 0 || closeHour > 23) return;
+		if (closeHour < 1 || closeHour > 24) return;
 		this.config.set("closeHour", closeHour);
 		this.plugin.saveConfig();
 	}
