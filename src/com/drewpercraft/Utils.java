@@ -25,7 +25,7 @@ public final class Utils {
 		OfflinePlayer[] players = Bukkit.getServer().getOfflinePlayers();
 		for (OfflinePlayer player : players) {
 			if (player.getName().equalsIgnoreCase(playerName)) {
-				Bukkit.getServer().getLogger().info(String.format("Converted %s to %s", playerName, player.getUniqueId()));
+				Bukkit.getServer().getLogger().fine(String.format("Converted %s to %s", playerName, player.getUniqueId()));
 				return player;				
 			}
 		}
