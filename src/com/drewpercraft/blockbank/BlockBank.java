@@ -99,11 +99,6 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getBoolean("allowLoans", false);
 	}
 	
-	public int getMaxATM() 
-	{
-		return getConfig().getInt("maxATM", 10);
-	}
-	
 	public int getMaxBranches() 
 	{
 		return getConfig().getInt("maxBranches", 3);

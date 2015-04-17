@@ -184,6 +184,9 @@ public class Player {
 		double newBalance = getBalance() + amount;
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Withdraw Bank %s: %s %s%12.2f", player.getName(), plugin.getCurrencySymbol(), amount));
+		}
 		return true;
 	}
 	
@@ -194,6 +197,9 @@ public class Player {
 		double newBalance = getBalance() - amount;
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Deposit Bank %s: %s %s%12.2f", bankName, player.getName(), plugin.getCurrencySymbol(), amount));
+		}
 		return true;
 	}
 }

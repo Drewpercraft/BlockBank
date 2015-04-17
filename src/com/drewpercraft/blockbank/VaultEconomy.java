@@ -192,6 +192,9 @@ public class VaultEconomy implements Economy {
 		if (amount < 0) {
 			return new EconomyResponse(amount, balance, ResponseType.FAILURE, plugin.getMessage("NegativeAmountUsed"));
 		}
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Deposit Player: %s %s%12.2f", player.getName(), plugin.getCurrencySymbol(), amount));
+		}
 		return new EconomyResponse(amount, balance, ResponseType.SUCCESS, plugin.getMessage("Deposit", format(balance)));
 	}
 
@@ -448,6 +451,9 @@ public class VaultEconomy implements Economy {
 			return new EconomyResponse(amount, balance, ResponseType.FAILURE, String.format(plugin.getMessage("InsufficientFunds"), displayAmount));
 		}
 		balance = players.get(player.getUniqueId()).withdraw(amount);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Withdraw Player: %s %s%12.2f", player.getName(), plugin.getCurrencySymbol(), amount));
+		}
 		return new EconomyResponse(amount, balance, ResponseType.SUCCESS, String.format(plugin.getMessage("Withdraw"), displayAmount));
 	}
 
