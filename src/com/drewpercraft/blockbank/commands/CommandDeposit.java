@@ -29,26 +29,28 @@ private final BlockBank plugin;
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (args.length < 1) {
-			args[0] = "0";
-		}
-		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		if (offlinePlayer == null) {
 			plugin.sendMessage(sender, "InvalidConsoleCommand");
 			return true;
 		}
-		//Verify the user has the deposit amount in hand
-		Double amount = Utils.getDouble(args[0]);
+		
+		double amount = 0.0;
+		if (args.length > 0) {
+			amount = Utils.getDouble(args[0]);
+		}
+		
 		if (amount < 0) {
 			plugin.sendMessage(sender, "NegativeAmountUsed");
 			return true;
 		}
-		if (amount == 0) {
+		if (amount == 0.0) {
 			amount = plugin.getVaultAPI().getBalance(offlinePlayer);
 		}
+		
+		//Verify the user has the deposit amount in hand
 		if (!plugin.getVaultAPI().has(offlinePlayer, amount)) {
-			plugin.sendMessage(sender, "InsufficientFunds", plugin.getCurrencySymbol(), amount);
+			plugin.sendMessage(sender, "InsufficientFunds", plugin.getVaultAPI().format(amount));
 			return true;
 		}
 		

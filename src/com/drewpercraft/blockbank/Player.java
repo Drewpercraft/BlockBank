@@ -190,7 +190,7 @@ public class Player {
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
 		if (plugin.getLogTransactions()) {
-			plugin.getLogger().info(String.format("Withdraw Bank %s: %s %s%12.2f", plugin.getServer().getPlayer(uuid).getName(), plugin.getCurrencySymbol(), amount));
+			plugin.getLogger().info(String.format("Withdraw Bank %s: %s %s", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getVaultAPI().format(amount)));
 		}
 		return true;
 	}
@@ -203,7 +203,7 @@ public class Player {
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
 		if (plugin.getLogTransactions()) {
-			plugin.getLogger().info(String.format("Deposit Bank %s: %s %s%12.2f", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getCurrencySymbol(), amount));
+			plugin.getLogger().info(String.format("Deposit Bank %s: %s %s", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getVaultAPI().format(amount)));
 		}
 		return true;
 	}
