@@ -67,7 +67,7 @@ public class CommandBank implements TabExecutor {
 		//Pop the "bank" param out of the args and pass the rest of the params to the appropriate handler		
 		Vector<String> params = new Vector<String>(Arrays.asList(args));
 		String subParam = "subCommand_" + params.remove(0).toLowerCase();
-		plugin.getLogger().info("Looking for " + subParam);
+		plugin.getLogger().fine("Looking for " + subParam);
 		Method method = getMethodByName(subParam);
 		if (method != null) {
 			Boolean result = new Boolean(false);
@@ -226,17 +226,24 @@ public class CommandBank implements TabExecutor {
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
-		if (args.size() == 0) {
-			plugin.getLogger().info("Missing loan rate");
-			return false;
+		//TODO Add Help statement
+		//TODO If only one argument passed try to get the bank the player is standing in
+		if (args.size() < 2) return false;
+		
+		String bankName = args.remove(0);
+		double rate = Utils.getDouble(args.remove(0));
+		if (rate < 0) {
+			plugin.sendMessage(sender, "NegativeAmountUsed");
+			return true;
 		}
 		
-		double setting = Utils.getDouble(args.get(0));
-		
-		String status = String.format("%.2f", setting);
-		plugin.getConfig().set("loanRate", setting);
-		plugin.getLogger().info("Global Announcements set to " + status);
-		plugin.sendMessage(sender, "GlobalSetAnnouncements", status);
+		Bank bank = plugin.getBank(bankName);
+		if (bank != null) {
+			bank.setLoanRate(rate);
+			plugin.sendMessage(sender, "BankUpdated", bank.getName());
+		}else{
+			plugin.sendMessage(sender, "BankNotFound");
+		}
 		return true;
 	}
 	
@@ -261,14 +268,37 @@ public class CommandBank implements TabExecutor {
 
 	public boolean subCommand_savings(CommandSender sender, Vector<String> args)
 	{
-		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
-		return false;
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;		
+
+		if (args.size() < 2) return false;
+		//TODO Add Help statement
+		//TODO If only one argument passed try to get the bank the player is standing in
+
+		String bankName = args.remove(0);
+		double rate = Utils.getDouble(args.remove(0));
+		if (rate < 0) {
+			plugin.sendMessage(sender, "NegativeAmountUsed");
+			return true;
+		}
+		
+		Bank bank = plugin.getBank(bankName);
+		if (bank != null) {
+			bank.setSavingsRate(rate);
+			plugin.sendMessage(sender, "BankUpdated", bank.getName());
+		}else{
+			plugin.sendMessage(sender, "BankNotFound");
+		}
+		return true;
 	}
 	
 	public boolean subCommand_title(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
+		if (args.size() < 2) return false;
+		//TODO Add Help statement
+		//TODO If only one argument passed try to get the bank the player is standing in
+
 		String bankName = args.remove(0);
 		String title = StringUtils.join(args, " ");
 		Bank bank = plugin.getBank(bankName);
@@ -285,7 +315,25 @@ public class CommandBank implements TabExecutor {
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
-		return false;
+		if (args.size() < 2) return false;
+		//TODO Add Help statement
+		//TODO If only one argument passed try to get the bank the player is standing in
+
+		String bankName = args.remove(0);
+		int maxVaults = Utils.getInt(args.remove(0));
+		if (maxVaults < 0) {
+			plugin.sendMessage(sender, "NegativeAmountUsed");
+			return true;
+		}
+		
+		Bank bank = plugin.getBank(bankName);
+		if (bank != null) {
+			bank.setMaxVaults(maxVaults);
+			plugin.sendMessage(sender, "BankUpdated", bank.getName());
+		}else{
+			plugin.sendMessage(sender, "BankNotFound");
+		}
+		return true;
 	}
 	
 }

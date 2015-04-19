@@ -79,7 +79,7 @@ public final class CommandBranch implements TabExecutor {
 		//Pop the "branch" param out of the args and pass the rest of the params to the appropriate handler		
 		Vector<String> params = new Vector<String>(Arrays.asList(args));
 		String subParam = "subCommand_" + params.remove(0).toLowerCase();
-		plugin.getLogger().info("Looking for " + subParam);
+		plugin.getLogger().fine("Looking for " + subParam);
 		Method method = getMethodByName(subParam);
 		if (method != null) {
 			Boolean result = new Boolean(false);
