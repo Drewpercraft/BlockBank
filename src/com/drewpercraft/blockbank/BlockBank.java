@@ -30,6 +30,8 @@ import com.drewpercraft.blockbank.commands.CommandDeposit;
 import com.drewpercraft.blockbank.commands.CommandPay;
 import com.drewpercraft.blockbank.commands.CommandWithdraw;
 import com.drewpercraft.blockbank.listeners.PlayerListener;
+import com.drewpercraft.blockbank.listeners.WorldListener;
+import com.drewpercraft.blockbank.tasks.CalculateInterestTask;
 
 
 public final class BlockBank extends JavaPlugin {
@@ -38,6 +40,7 @@ public final class BlockBank extends JavaPlugin {
 	private Map<String, Bank> banks = new HashMap<String, Bank>();
 	private VaultEconomy vaultAPI = null;	
 	private ResourceBundle userMessages;
+	private CalculateInterestTask interestTask = null;
  
     public String getCurrencyPlural() 
     {
@@ -256,6 +259,9 @@ public final class BlockBank extends JavaPlugin {
     public void onDisable() 
 	{
         // TODO Insert logic to be performed when the plugin is disabled
+		if (interestTask != null) {
+			interestTask.cancel();
+		}
     	log.info(String.format("%s Disabled", this.getName()));
     }
 
@@ -308,21 +314,20 @@ public final class BlockBank extends JavaPlugin {
     	
         	log.info(String.format("Enabling %s event handlers", this.getName()));
         	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        	getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 	    	//TODO Start Security
-	    	//TODO Start InterestManager
-        	//TODO Start Background data file saver
-	    	/*
-			BukkitRunnable interestManager = new InterestManagerTask(this);
+	    	
+        	//Start the Interest Manager
+        	World world = getServer().getWorlds().get(0);
+        	getLogger().info("Using world " + world.getName() + " as the master clock");
+        	interestTask = new CalculateInterestTask(this, world.getUID());        	
 			// Run the interestManager at the stroke of midnight (18000)
-			String worldName = getServer().getWorlds().get(0).getName();
-			long delay = 18000 - getServer().getWorld(worldName).getTime();
+
+			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
-			interestManager.runTaskTimer(this, delay, 24000);
-			getServer().getPluginManager().registerEvents(this, this);
-			log.info(String.format("%s has been enabled.", getDescription().getName()));	    	  
-	    	 
-	    	*/
-	    	log.info(String.format("%s enabled", this.getName()));
+			interestTask.runTaskTimer(this, delay, 24000);
+			
+			log.info(String.format("%s enabled", this.getName()));
     	}
     }
 

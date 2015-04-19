@@ -56,4 +56,5 @@ TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
 TotalWorth=%s total worth is \u00A7a%s.
 WalletBalance=\u00A79There is \u00A76%s\u00A79 in \u00A76%s\u00A79 wallet.
 Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
+InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s%7.2f
 Your=your

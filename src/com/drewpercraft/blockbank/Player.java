@@ -117,6 +117,11 @@ public class Player {
 		return (String) data.get("playerName");
 	}
 	
+	public UUID getUID()
+	{
+		return uuid;
+	}
+	
 	public double getWorth()
 	{
 		Set<String> bankNames = plugin.getBanks().keySet();
