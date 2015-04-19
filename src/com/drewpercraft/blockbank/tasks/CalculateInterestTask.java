@@ -1,5 +1,6 @@
 package com.drewpercraft.blockbank.tasks;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,25 +39,33 @@ public class CalculateInterestTask extends BukkitRunnable {
 		Map<String, Double> totalInterestPaid = new HashMap<String, Double>();
 		Map<String, Bank> banks = plugin.getBanks();
 		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
+		long now = new Date().getTime();
 		for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
 			UUID uuid = playerIT.next();
 			Player player = players.get(uuid);
+			
 			//TODO Verify player has been on the server and has not abandoned the account
 			for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
 				String bankName = bankNameIT.next();
 				double balance = player.getBankBalance(bankName);
 				if (balance > 0) {
-					double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
-					if (interestEarned >= 0.01) {
-						player.setBankBalance(bankName, balance + interestEarned);
-						plugin.getLogger().info(String.format("%s paid %s %s%6.2f in interest", bankName, player.getName(), plugin.getCurrencySymbol(), interestEarned));
-						double interestPaid = 0;
-						if (totalInterestPaid.containsKey(bankName)) {
-							 interestPaid = totalInterestPaid.get(bankName); 
-						}
-						totalInterestPaid.put(bankName, interestPaid + interestEarned);
-						if (plugin.getServer().getPlayer(player.getUID()).isOnline()) {
-							plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getCurrencySymbol(), interestPaid);
+					long lastSeen = plugin.getServer().getOfflinePlayer(player.getUID()).getLastPlayed();
+					int lastSeenDays = Math.round((now - lastSeen) / 86400000);
+					if (lastSeenDays > plugin.getMaxOfflineDays()) {
+						plugin.getLogger().info(player.getName() + " has been offline for " + lastSeenDays + " days - no interest paid");
+					}else{
+						double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
+						if (interestEarned >= 0.01) {
+							player.setBankBalance(bankName, balance + interestEarned);
+							plugin.getLogger().info(String.format("%s paid %s %s%6.2f in interest", bankName, player.getName(), plugin.getCurrencySymbol(), interestEarned));
+							double interestPaid = 0;
+							if (totalInterestPaid.containsKey(bankName)) {
+								 interestPaid = totalInterestPaid.get(bankName); 
+							}
+							totalInterestPaid.put(bankName, interestPaid + interestEarned);
+							if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
+								plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getCurrencySymbol(), interestEarned);
+							}
 						}
 					}
 				}

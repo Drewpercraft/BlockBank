@@ -190,6 +190,11 @@ public final class CommandBranch implements TabExecutor {
 			return true;
 		}
 		
+		if (bank.getBranches().size() >= plugin.getMaxBranches()) {
+			plugin.sendMessage(sender, "BankHasMaxBranches", bank.getTitle());
+			return true;
+		}
+		
 		if (!WorldGuard.isValidRegion(worldName, regionName)) {
 			plugin.sendMessage(sender, "RegionDoesNotExist", worldName, regionName);
 			return true;

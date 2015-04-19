@@ -14,9 +14,9 @@ dialogPrefix: &6
 dialogSuffix: 
 dropMoney: true
 allowLoans: false
-maxATM: 10
-maxBranches: 3
+maxBranches: 5
 logTransactions: true
+maxOfflineDays: 3
 
 ######################################
 # How ofter to save the player data
@@ -25,17 +25,17 @@ logTransactions: true
 #saveInterval: 10
 
 ######################################
-# Banks can be related to the world
-# name, faction name or all
+# Banks can be limited to:
+# world, faction, none
 ######################################
-bankRelation: world
+bankRelation: none
 
 ######################################
 # The options apply to banks unless
 # they are changed in the bank section
 #######################################
 announcements: true
-savingsRate: 0
+savingsRate: 1
 loanRate: 0
 maxVaults: 10
 

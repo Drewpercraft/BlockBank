@@ -28,7 +28,9 @@ private final BlockBank plugin;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,	String label, String[] args) {
-		if (args.length < 1) return false;
+		if (args.length < 1) {
+			args[0] = "0";
+		}
 		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		if (offlinePlayer == null) {
@@ -53,9 +55,13 @@ private final BlockBank plugin;
 		Bank bank = branch.getBank();
 				
 		Double amount = Utils.getDouble(args[0]);
-		if (amount <= 0) {
+		if (amount < 0) {
 			plugin.sendMessage(sender, "NegativeAmountUsed");
 			return true;
+		}
+		
+		if (amount == 0) {
+			amount = bank.getPlayerBalance(offlinePlayer.getUniqueId());
 		}
 		
 		//Verify the user has the withdrawal amount in bank

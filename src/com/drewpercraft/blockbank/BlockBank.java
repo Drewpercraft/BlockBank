@@ -107,6 +107,11 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getInt("maxBranches", 3);
 	}
 	
+	public int getMaxOfflineDays()
+	{
+		return getConfig().getInt("maxOfflineDays", 3);
+	}
+	
 	public boolean getLogTransactions() 
 	{
 		return getConfig().getBoolean("logTransactions", true);
@@ -325,6 +330,7 @@ public final class BlockBank extends JavaPlugin {
 
 			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
+			//TODO Should this really be synchronous or asynchronous?
 			interestTask.runTaskTimer(this, delay, 24000);
 			
 			log.info(String.format("%s enabled", this.getName()));
@@ -351,13 +357,15 @@ public final class BlockBank extends JavaPlugin {
 	public List<String> getValidBankNames() 
 	{
 		String relationType = getConfig().getString("bankRelation").toLowerCase();
+		if (relationType != "world" && relationType != "factions") return null;
+		
 		List<String> results = new ArrayList<String>();
 		if (relationType.equals("world") || relationType.equals("all")) {
 			for(World world : Bukkit.getWorlds()) {
 				results.add(world.getName().toLowerCase());
 			}			
 		}
-		if (relationType.equals("factions") || relationType.equals("all")) {
+		if (relationType.equals("factions")) {
 			//TODO Relating to factions is not implemented yet
 			//for(Faction faction : ?.getFactions()) {
 			//	results.add(faction.getName());
