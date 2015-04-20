@@ -341,6 +341,7 @@ public final class BlockBank extends JavaPlugin {
 			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
 			//TODO Should this really be synchronous or asynchronous?
+			log.info("Calcualte interest task delay: " + delay);
 			interestTask.runTaskTimer(this, delay, 24000);
 			
 			log.info(String.format("%s enabled", this.getName()));
@@ -410,12 +411,6 @@ public final class BlockBank extends JavaPlugin {
 			}
 		}
 		return null;
-	}
-
-	public void removePlayer(Player player) {
-		if (player.deletePlayerFile()) {
-			getVaultAPI().getPlayerBalances().remove(player);
-		}
 	}
 
 	public void broadcastMessage(String key, Object... args) 

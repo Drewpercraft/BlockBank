@@ -68,7 +68,8 @@ public class CalculateInterestTask extends BukkitRunnable {
 					plugin.getLogger().info(String.format("%s abandoned %s", player.getName(), plugin.getVaultAPI().format(playerAbandoned)));
 					abandonedMoney += playerAbandoned;
 				}
-				plugin.removePlayer(player);
+				plugin.getLogger().info("Removing " + player.getName());
+				plugin.getVaultAPI().getPlayerBalances().remove(playerIT);
 			}else{
 				for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
 					String bankName = bankNameIT.next();
