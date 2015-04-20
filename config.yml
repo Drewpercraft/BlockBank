@@ -17,6 +17,8 @@ allowLoans: false
 maxBranches: 5
 logTransactions: true
 maxOfflineDays: 3
+abandonedAccountDays: 30
+abandonedDistribution: even
 
 ######################################
 # How ofter to save the player data

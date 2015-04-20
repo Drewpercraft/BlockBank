@@ -5,6 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
@@ -55,6 +59,18 @@ public class Player {
 	public File getPlayerFile()
 	{
 		return new File(filename);
+	}
+	
+	public boolean deletePlayerFile()
+	{
+		try {
+			Path path = FileSystems.getDefault().getPath(filename);
+			Files.deleteIfExists(path); 
+		} catch (IOException e) {
+			plugin.getLogger().warning("Unable to delete " + filename);
+			return false;
+		}
+		return true;
 	}
 	
 	@SuppressWarnings("unchecked")

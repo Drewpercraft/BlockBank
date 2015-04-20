@@ -42,7 +42,17 @@ public final class BlockBank extends JavaPlugin {
 	private ResourceBundle userMessages;
 	private CalculateInterestTask interestTask = null;
  
-    public String getCurrencyPlural() 
+	public int getAbandonedAccountDays()
+	{
+		return getConfig().getInt("abandonedAccountDays", 30);
+	}
+	
+	public String getAbandonedDistribution()
+	{
+		return getConfig().getString("abandonedDistribution", "even");
+	}
+
+	public String getCurrencyPlural() 
     {
 		return getConfig().getString("currencyPlural", "dollars");
 	}
@@ -400,6 +410,17 @@ public final class BlockBank extends JavaPlugin {
 			}
 		}
 		return null;
+	}
+
+	public void removePlayer(Player player) {
+		if (player.deletePlayerFile()) {
+			getVaultAPI().getPlayerBalances().remove(player);
+		}
+	}
+
+	public void broadcastMessage(String key, Object... args) 
+	{
+		getServer().broadcastMessage(getMessage(key, args));		
 	}
 
 	

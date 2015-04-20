@@ -46,7 +46,8 @@ ListEntry=\u00A76%d) \u00A79%s
 ListHeader=\u00A76----====[ \u00A79%s - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 NegativeAmountUsed=\u00A74You may not use negative amounts.
 OpenHourError=\u00A74Open time must be before close time
-PaymentReceived=\u00A79You received \u00A76%s\u00A79 from \u00A76%s\u00A79.
+PayAbandonedMoney=\u00A76Server Dividend:\u00A79 paid you \u00A76%s\u00A79 due to accounts being abandoned.
+PaymentReceived=\u00A76%s\u00A79 paid you \u00A76%s\u00A79.
 PaymentSent=\u00A79You paid \u00A76%s \u00A7A%s.
 PermissionError=\u00A74You do not have permission to do that.
 PlayerNotInBranch=\u00A74You are not in a bank branch.
@@ -57,5 +58,5 @@ TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
 TotalWorth=%s total worth is \u00A7a%s.
 WalletBalance=\u00A79There is \u00A76%s\u00A79 in \u00A76%s\u00A79 wallet.
 Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
-InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s%7.2f
+InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s
 Your=your

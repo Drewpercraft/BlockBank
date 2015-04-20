@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.BanList.Type;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -34,37 +36,55 @@ public class CalculateInterestTask extends BukkitRunnable {
 	public void run() 
 	{
 		if (alreadyRun()) return;
-		World world = plugin.getServer().getWorld(uuid);
 		plugin.getLogger().info("Starting Interest Calculation");
-		Map<String, Double> totalInterestPaid = new HashMap<String, Double>();
 		Map<String, Bank> banks = plugin.getBanks();
+		Map<String, Double> totalInterestPaid = new HashMap<String, Double>();		
+		double abandonedMoney = 0;
+		for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
+			String bankName = bankNameIT.next();
+			totalInterestPaid.put(bankName, 0.0);
+		}
 		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
 		long now = new Date().getTime();
 		for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
 			UUID uuid = playerIT.next();
 			Player player = players.get(uuid);
+			long lastSeen = plugin.getServer().getOfflinePlayer(player.getUID()).getLastPlayed();
+			int lastSeenDays = Math.round((now - lastSeen) / 86400000);
+
+			boolean accountAbandoned = (lastSeenDays > plugin.getAbandonedAccountDays());
 			
-			//TODO Verify player has been on the server and has not abandoned the account
-			for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
-				String bankName = bankNameIT.next();
-				double balance = player.getBankBalance(bankName);
-				if (balance > 0) {
-					long lastSeen = plugin.getServer().getOfflinePlayer(player.getUID()).getLastPlayed();
-					int lastSeenDays = Math.round((now - lastSeen) / 86400000);
-					if (lastSeenDays > plugin.getMaxOfflineDays()) {
-						plugin.getLogger().info(player.getName() + " has been offline for " + lastSeenDays + " days - no interest paid");
-					}else{
-						double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
-						if (interestEarned >= 0.01) {
-							player.setBankBalance(bankName, balance + interestEarned);
-							plugin.getLogger().info(String.format("%s paid %s %s%6.2f in interest", bankName, player.getName(), plugin.getCurrencySymbol(), interestEarned));
-							double interestPaid = 0;
-							if (totalInterestPaid.containsKey(bankName)) {
-								 interestPaid = totalInterestPaid.get(bankName); 
-							}
-							totalInterestPaid.put(bankName, interestPaid + interestEarned);
-							if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
-								plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getCurrencySymbol(), interestEarned);
+			// Old way is just to look here...
+			//boolean isBanned = plugin.getServer().getOfflinePlayer(uuid).isBanned();
+			// Only consider the player banned if it is a permanent ban
+			boolean isBanned = Bukkit.getBanList(Type.NAME).isBanned(plugin.getServer().getOfflinePlayer(uuid).getName());
+			if (isBanned) {
+				isBanned = (Bukkit.getBanList(Type.NAME).getBanEntry(plugin.getServer().getOfflinePlayer(uuid).getName()).getExpiration() == null);
+			}
+			
+			if (accountAbandoned || isBanned) {
+				double playerAbandoned = player.getWorth();
+				if (playerAbandoned > 0.0) {
+					plugin.getLogger().info(String.format("%s abandoned %s", player.getName(), plugin.getVaultAPI().format(playerAbandoned)));
+					abandonedMoney += playerAbandoned;
+				}
+				plugin.removePlayer(player);
+			}else{
+				for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
+					String bankName = bankNameIT.next();
+					double balance = player.getBankBalance(bankName);
+					if (balance > 0) {
+						if (lastSeenDays > plugin.getMaxOfflineDays()) {
+							plugin.getLogger().info(player.getName() + " has been offline for " + lastSeenDays + " days - no interest paid");
+						}else{
+							double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
+							if (interestEarned >= 0.01) {
+								player.setBankBalance(bankName, balance + interestEarned);
+								plugin.getLogger().info(String.format("%s paid %s %s in interest", bankName, player.getName(), plugin.getVaultAPI().format(interestEarned)));
+								totalInterestPaid.put(bankName, totalInterestPaid.get(bankName) + interestEarned);
+								if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
+									plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getVaultAPI().format(interestEarned));
+								}
 							}
 						}
 					}
@@ -73,7 +93,23 @@ public class CalculateInterestTask extends BukkitRunnable {
 		}
 		for(Iterator<String> bankNameIT = totalInterestPaid.keySet().iterator(); bankNameIT.hasNext();) {
 			String bankName = bankNameIT.next();
-			plugin.getLogger().info(String.format("%s paid %s%9.2f in interest", bankName, plugin.getCurrencySymbol(), totalInterestPaid.get(bankName)));
+			if (totalInterestPaid.get(bankName) > 0.0) {
+				plugin.getLogger().info(String.format("%s paid %s in interest", bankName, plugin.getVaultAPI().format(totalInterestPaid.get(bankName))));
+			}
+		}
+		if (abandonedMoney > 0.0) {
+			plugin.getLogger().info(String.format("Found %s in abandoned accounts", plugin.getVaultAPI().format(abandonedMoney)));
+			if (plugin.getAbandonedDistribution().equals("even") && players.size() > 0) {
+				double distribution = abandonedMoney / players.size();
+				if (distribution > 1) {
+					for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
+						UUID uid = playerIT.next();
+						players.get(uid).deposit(distribution);
+					}
+				}
+				plugin.broadcastMessage("PayAbandonedMoney", plugin.getVaultAPI().format(distribution));
+
+			}
 		}
 		plugin.getLogger().info("Interest Calculation Complete");
 	}
@@ -86,7 +122,7 @@ public class CalculateInterestTask extends BukkitRunnable {
 		long currentTime = plugin.getServer().getWorld(uuid).getTime();
 		if (currentTime > lastTimeCheck) {
 			lastTimeCheck = currentTime;
-			plugin.getLogger().info("Not running interest calc");
+			plugin.getLogger().fine("Not running interest calc at this time");
 			return true;
 		}
 		lastTimeCheck = 0;
