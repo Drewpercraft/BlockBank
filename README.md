@@ -1,5 +1,4 @@
-[travis-status]: https://travis-ci.org/Drewpercraft/BlockBank.svg?branch=master  "Travis-CI Status"
-BlockBank ![Travis Status][travis-status]
+BlockBank [![Build Status](https://travis-ci.org/Drewpercraft/BlockBank.svg?branch=master)](https://travis-ci.org/Drewpercraft/BlockBank)
 =========
 BlockBank was developed in order to provide a complete banking system for RPG/Adventure servers that prefer that their banking system be more realistic. BlockBank allows players to establish banks that other players can deposit/withdraw money from and create safety deposit chests. Players can earn interest on their deposits and pay interest on their loans. Each bank can set their hours of operations, location, the interest rates paid/charged, and if the "creepy bill collectors" are sent to collect on delinquent accounts. 
 
