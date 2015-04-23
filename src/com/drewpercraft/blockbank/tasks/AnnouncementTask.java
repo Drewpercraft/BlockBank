@@ -42,10 +42,10 @@ public class AnnouncementTask extends BukkitRunnable {
 						int closeHour = branch.getCloseHour();
 						if (branch.isAnnouncements()) {
 							if (openHour == hour) {
-								plugin.broadcastMessage("BranchOpening", branches.get(branchName).getTitle());
+								plugin.broadcastMessage("BranchOpening", branch.getTitle(), banks.get(bankName).getTitle());
 							}
 							if (closeHour == hour) {
-								plugin.broadcastMessage("BranchClosing", branches.get(branchName).getTitle());
+								plugin.broadcastMessage("BranchClosing", branch.getTitle(), banks.get(bankName).getTitle());
 							}
 						}
 					}
