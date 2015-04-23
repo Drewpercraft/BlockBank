@@ -26,10 +26,10 @@ public class AnnouncementTask extends BukkitRunnable {
 
 	@Override
 	public void run() {
-		plugin.getLogger().info("Running Announcement Task for " + worldName);
 		World world = plugin.getServer().getWorld(worldName);
 		int hour = Utils.GetWorldHour(world.getTime());
 		if (hour != lastHourChecked) {
+			plugin.getLogger().fine("Running Announcement Task for " + worldName + " hour: " + hour + " lastHourChecked: " + lastHourChecked);
 			Map<String, Bank> banks = plugin.getBanks();
 			for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();) {
 				String bankName = bankNameIT.next();
@@ -37,14 +37,16 @@ public class AnnouncementTask extends BukkitRunnable {
 				for(Iterator<String> branchNameIT = branches.keySet().iterator(); branchNameIT.hasNext();) {
 					String branchName = branchNameIT.next();
 					Branch branch = branches.get(branchName);
-					int openHour = branch.getOpenHour();
-					int closeHour = branch.getCloseHour();
-					if (branch.isAnnouncements()) {
-						if (openHour == hour) {
-							plugin.broadcastMessage("BranchOpening", branches.get(branchName).getTitle());
-						}
-						if (closeHour == hour) {
-							plugin.broadcastMessage("BranchClosing", branches.get(branchName).getTitle());
+					if (branch.getWorld().equals(worldName)) {
+						int openHour = branch.getOpenHour();
+						int closeHour = branch.getCloseHour();
+						if (branch.isAnnouncements()) {
+							if (openHour == hour) {
+								plugin.broadcastMessage("BranchOpening", branches.get(branchName).getTitle());
+							}
+							if (closeHour == hour) {
+								plugin.broadcastMessage("BranchClosing", branches.get(branchName).getTitle());
+							}
 						}
 					}
 				}
