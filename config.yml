@@ -17,6 +17,7 @@ allowLoans: false
 maxBranches: 5
 logTransactions: true
 maxOfflineDays: 3
+abandonedCheck : false
 abandonedAccountDays: 30
 abandonedDistribution: even
 

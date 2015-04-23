@@ -47,6 +47,11 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getInt("abandonedAccountDays", 30);
 	}
 	
+	public boolean getAbandonedCheck()
+	{
+		return getConfig().getBoolean("abandonedCheck", false);
+	}
+	
 	public String getAbandonedDistribution()
 	{
 		return getConfig().getString("abandonedDistribution", "even");
@@ -85,6 +90,19 @@ public final class BlockBank extends JavaPlugin {
 	public double getDefaultLoanRate() 
 	{
 		return getConfig().getDouble("loanRate", 0);
+	}
+	
+	public World getMasterWorld()
+	{
+		String worldName = getConfig().getString("masterWorld");
+		if (worldName == null) {
+			return getServer().getWorlds().get(0);
+		}
+		World world = getServer().getWorld(worldName);
+		if (world == null) {
+			return getServer().getWorlds().get(0);
+		}
+		return world;
 	}
 	
 	public int getDefaultMaxVaults() 
@@ -333,7 +351,7 @@ public final class BlockBank extends JavaPlugin {
 	    	//TODO Start Security
 	    	
         	//Start the Interest Manager
-        	World world = getServer().getWorlds().get(0);
+        	World world = getMasterWorld();
         	getLogger().info("Using world " + world.getName() + " as the master clock");
         	interestTask = new CalculateInterestTask(this, world.getUID());        	
 			// Run the interestManager at the stroke of midnight (18000)
@@ -341,7 +359,7 @@ public final class BlockBank extends JavaPlugin {
 			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
 			//TODO Should this really be synchronous or asynchronous?
-			log.info("Calcualte interest task delay: " + delay);
+			log.info("Calculate interest task delay: " + delay);
 			interestTask.runTaskTimer(this, delay, 24000);
 			
 			log.info(String.format("%s enabled", this.getName()));
