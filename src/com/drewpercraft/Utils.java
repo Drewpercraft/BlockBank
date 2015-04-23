@@ -78,7 +78,9 @@ public final class Utils {
 	}
 	
 	public static boolean getBoolean(String string) {
+		/*
 		String value = string.toLowerCase();
+		
 		if (Integer.parseInt("0" + value) != 0 || 
 				value.equals("on") || 
 				value.startsWith("y") || 
@@ -86,12 +88,12 @@ public final class Utils {
 			return true;
 		
 		return false;
-
-		//if (string.equalsIgnoreCase("on")) return true;
-		//if (string.equalsIgnoreCase("yes")) return true;
-		//if (string.equalsIgnoreCase("1")) return true;
-		//if (string.equalsIgnoreCase("enable")) return true;
-		//return false;
+		*/
+		if (string.equalsIgnoreCase("on")) return true;
+		if (string.equalsIgnoreCase("yes")) return true;
+		if (string.equalsIgnoreCase("enable")) return true;
+		if (getInt(string) != 0) return true;
+		return false;
 	}
 
 	/*
