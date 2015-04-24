@@ -10,10 +10,8 @@ import java.util.UUID;
 
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
-import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
 import com.drewpercraft.blockbank.Player;
@@ -38,7 +36,8 @@ public class CalculateInterestTask extends BukkitRunnable {
 	@Override
 	public void run() 
 	{
-		if (alreadyRun()) return;
+		//FIXME If the clock is modified (sleep, time, etc) then the calculation
+		// no longer runs at midnight and doesn't match the Minecraft day count
 		plugin.getLogger().info("Starting Interest Calculation");
 		Map<String, Bank> banks = plugin.getBanks();
 		Map<String, Double> totalInterestPaid = new HashMap<String, Double>();
@@ -139,22 +138,4 @@ public class CalculateInterestTask extends BukkitRunnable {
 		plugin.getLogger().info("Interest Calculation Complete");
 	}
 	
-	/*
-	 * Ensure the task only runs once per day at the first check after 6am Minecraft time
-	 */
-	private boolean alreadyRun()
-	{
-		return false;
-		/*
-		int currentHour = Utils.GetWorldHour(plugin.getServer().getWorld(uuid).getTime());
-		if (currentTime > lastTimeCheck) {
-			lastTimeCheck = currentTime;
-			plugin.getLogger().fine("Not running interest calc at this time");
-			return true;
-		}
-		lastTimeCheck = 0;
-		return false;
-		*/
-	}
-
 }

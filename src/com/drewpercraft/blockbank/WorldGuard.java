@@ -1,6 +1,5 @@
 package com.drewpercraft.blockbank;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import org.bukkit.Bukkit;

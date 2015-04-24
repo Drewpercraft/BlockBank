@@ -22,9 +22,9 @@ private final BlockBank plugin;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender player, Command command,	String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		//TODO Borrow Command
-		plugin.sendMessage(Sender, "CommandNotImplemented");
+		plugin.sendMessage(sender, "CommandNotImplemented");
 		return true;
 	}
 

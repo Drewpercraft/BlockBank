@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import net.milkbowl.vault.economy.EconomyResponse;
-
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
