@@ -24,8 +24,10 @@ private final BlockBank plugin;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		// TODO Auto-generated method stub
-		return false;
+		//TODO Credit Command
+		plugin.sendMessage(sender, "CommandNotImplemented");
+		return true;
+
 	}
 
 }

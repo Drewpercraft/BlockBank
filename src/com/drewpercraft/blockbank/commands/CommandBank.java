@@ -175,8 +175,8 @@ public class CommandBank implements TabExecutor {
 	
 	public boolean subCommand_help(CommandSender sender, Vector<String> args)
 	{
-		
-		plugin.sendMessage(sender, "Help is in the works....");
+		//TODO Bank Help Command
+		plugin.sendMessage(sender, "CommandNotImplemented");
 		return true;
 	}
 	/*
@@ -259,7 +259,8 @@ public class CommandBank implements TabExecutor {
 	public boolean subCommand_remove(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
-		plugin.sendMessage(sender, "This command is under construction");
+		//TODO Bank Remove Command
+		plugin.sendMessage(sender, "CommandNotImplemented");
 		return true;
 	}
 
