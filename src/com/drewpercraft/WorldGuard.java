@@ -1,4 +1,4 @@
-package com.drewpercraft.blockbank;
+package com.drewpercraft;
 
 import java.util.Map;
 
@@ -13,8 +13,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public final class WorldGuard {
 
-	private WorldGuard() {
-		// TODO Auto-generated constructor stub
+	private WorldGuard() 
+	{
+
 	}
 
 	public static boolean isPlayerInRegion(OfflinePlayer offlinePlayer, String regionName)

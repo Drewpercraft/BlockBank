@@ -18,10 +18,10 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.drewpercraft.Utils;
+import com.drewpercraft.WorldGuard;
 import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
 import com.drewpercraft.blockbank.Branch;
-import com.drewpercraft.blockbank.WorldGuard;
 import com.sk89q.worldguard.bukkit.WGBukkit;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 

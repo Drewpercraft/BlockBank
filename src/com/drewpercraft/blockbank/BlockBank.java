@@ -20,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.drewpercraft.WorldGuard;
 import com.drewpercraft.blockbank.commands.CommandBalance;
 import com.drewpercraft.blockbank.commands.CommandBalanceTop;
 import com.drewpercraft.blockbank.commands.CommandBank;
