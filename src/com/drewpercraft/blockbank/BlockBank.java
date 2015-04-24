@@ -340,10 +340,6 @@ public final class BlockBank extends JavaPlugin {
         	CommandWithdraw commandWithdraw = new CommandWithdraw(this);
         	getCommand("withdraw").setExecutor(commandWithdraw);
         	getCommand("withdraw").setTabCompleter(commandWithdraw);
-        	
-        	
-        	
-        	
     	
         	log.info(String.format("Enabling %s event handlers", this.getName()));
         	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
