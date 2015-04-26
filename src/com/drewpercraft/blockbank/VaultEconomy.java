@@ -485,7 +485,7 @@ public class VaultEconomy implements Economy {
 	}
 
 	public void savePlayers() {
-		plugin.getLogger().info("Saving modified player accounts:");
+		plugin.getLogger().fine("Saving modified player accounts:");
 		Set<UUID> keys = players.keySet();
 		synchronized (players) {
 			for(Iterator<UUID> uid = keys.iterator(); uid.hasNext();) {

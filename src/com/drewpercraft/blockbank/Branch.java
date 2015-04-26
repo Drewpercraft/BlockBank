@@ -42,6 +42,7 @@ public class Branch {
 	/**
 	 * @return the out of order status
 	 */
+	@SuppressWarnings("unused")
 	public boolean isOutOfOrder() {
 		//Only branches that are open 24/7 can fail
 		plugin.getLogger().info("Checking out of order status for " + getTitle());
