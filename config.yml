@@ -22,6 +22,14 @@ abandonedAccountDays: 30
 abandonedDistribution: even
 
 ######################################
+# Branches with open/close set to 0/24
+# can be set to fail randomly as if
+# they are being serviced.
+######################################
+atmFailRate = 25
+atmOfflineTime = 2000
+
+######################################
 # How ofter to save the player data
 # files
 ######################################
@@ -40,7 +48,7 @@ bankRelation: none
 announcements: true
 savingsRate: 1
 loanRate: 0
-maxVaults: 10
+
 
 ######################################
 # The options apply to branches unless
@@ -48,6 +56,6 @@ maxVaults: 10
 #######################################
 openHour: 8
 closeHour: 17
-maxVaults: 10
+
 
 banks:

@@ -1,3 +1,4 @@
+ATMOutOfOrder=%s is currently out of order. We apologize for the inconvenience.
 BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)
 BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 Bank=Bank

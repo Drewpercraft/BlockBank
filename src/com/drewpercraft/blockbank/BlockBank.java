@@ -58,6 +58,16 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getString("abandonedDistribution", "even");
 	}
 
+	public int getATMFailRate()
+	{
+		return getConfig().getInt("atmFailRate", 0);
+	}
+
+	public int getATMOfflineTime()
+	{
+		return getConfig().getInt("atmOfflineTime");
+	}
+	
 	public String getCurrencyPlural() 
     {
 		return getConfig().getString("currencyPlural", "dollars");

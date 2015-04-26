@@ -68,6 +68,11 @@ private final BlockBank plugin;
 			}
 		}
 		
+		if (branch.isOutOfOrder()) {
+			plugin.sendMessage(sender, "ATMOutOfOrder", branch.getTitle());
+			return true;
+		}
+		
 		Bank bank = branch.getBank();
 		if (bank.deposit(offlinePlayer, amount)) {
 			plugin.sendMessage(sender, "BankDepositSuccess", plugin.getVaultAPI().format(amount));
