@@ -29,21 +29,28 @@ private final BlockBank plugin;
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		
-		if (args.length < 1) return false;
-		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		if (offlinePlayer == null) {
 			plugin.sendMessage(sender, "InvalidConsoleCommand");
 			return true;
 		}
-		//Verify the user has the deposit amount in hand
-		Double amount = Utils.getDouble(args[0]);
-		if (amount <= 0) {
+		
+		double amount = 0.0;
+		if (args.length > 0) {
+			amount = Utils.getDouble(args[0]);
+		}
+		
+		if (amount < 0) {
 			plugin.sendMessage(sender, "NegativeAmountUsed");
 			return true;
 		}
+		if (amount == 0.0) {
+			amount = plugin.getVaultAPI().getBalance(offlinePlayer);
+		}
+		
+		//Verify the user has the deposit amount in hand
 		if (!plugin.getVaultAPI().has(offlinePlayer, amount)) {
-			plugin.sendMessage(sender, "InsufficientFunds", amount);
+			plugin.sendMessage(sender, "InsufficientFunds", plugin.getVaultAPI().format(amount));
 			return true;
 		}
 		
@@ -59,6 +66,11 @@ private final BlockBank plugin;
 				plugin.sendMessage(sender, "BranchClosed", branch.getTitle(), branch.getBank().getTitle());
 				return true;
 			}
+		}
+		
+		if (branch.isOutOfOrder()) {
+			plugin.sendMessage(sender, "ATMOutOfOrder", branch.getTitle());
+			return true;
 		}
 		
 		Bank bank = branch.getBank();

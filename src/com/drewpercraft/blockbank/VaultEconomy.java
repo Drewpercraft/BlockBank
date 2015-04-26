@@ -2,9 +2,12 @@ package com.drewpercraft.blockbank;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -25,7 +28,7 @@ public class VaultEconomy implements Economy {
 
 	BlockBank plugin = null;
 	Logger log = null;
-	private Map<UUID, Player> players = new HashMap<UUID, Player>();
+	private Map<UUID, Player> players = Collections.synchronizedMap(new HashMap<UUID, Player>());
 	
 	public VaultEconomy(BlockBank plugin) 
 	{
@@ -191,6 +194,9 @@ public class VaultEconomy implements Economy {
 		double balance = player.deposit(amount);
 		if (amount < 0) {
 			return new EconomyResponse(amount, balance, ResponseType.FAILURE, plugin.getMessage("NegativeAmountUsed"));
+		}
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Deposit Player: %s %s%12.2f", player.getName(), plugin.getCurrencySymbol(), amount));
 		}
 		return new EconomyResponse(amount, balance, ResponseType.SUCCESS, plugin.getMessage("Deposit", format(balance)));
 	}
@@ -448,6 +454,9 @@ public class VaultEconomy implements Economy {
 			return new EconomyResponse(amount, balance, ResponseType.FAILURE, String.format(plugin.getMessage("InsufficientFunds"), displayAmount));
 		}
 		balance = players.get(player.getUniqueId()).withdraw(amount);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Withdraw Player: %s %s%12.2f", player.getName(), plugin.getCurrencySymbol(), amount));
+		}
 		return new EconomyResponse(amount, balance, ResponseType.SUCCESS, String.format(plugin.getMessage("Withdraw"), displayAmount));
 	}
 
@@ -473,6 +482,20 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
 		return withdrawPlayer(Utils.getPlayerByName(playerName), amount);
+	}
+
+	public void savePlayers() {
+		plugin.getLogger().fine("Saving modified player accounts:");
+		Set<UUID> keys = players.keySet();
+		synchronized (players) {
+			for(Iterator<UUID> uid = keys.iterator(); uid.hasNext();) {
+				Player player = players.get(uid.next());
+				if (player.isModified()) {
+					player.save();
+				}
+			}
+		}
+		
 	}
 
 	

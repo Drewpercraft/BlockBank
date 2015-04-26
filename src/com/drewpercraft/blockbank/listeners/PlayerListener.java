@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.drewpercraft.blockbank.listeners;
 
 import org.bukkit.entity.Player;
@@ -13,11 +10,6 @@ import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.BlockBank;
 
 
-
-/**
- * @author jjarrell
- *
- */
 public final class PlayerListener implements Listener {
 
 	private BlockBank plugin;
@@ -30,9 +22,10 @@ public final class PlayerListener implements Listener {
     public void onLogin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();
+    	
     	if (player.hasPermission("blockbank.user")) {
 	    	plugin.getVaultAPI().createPlayerAccount(player);
-    	}
+    	}    	
     }
     
     @EventHandler

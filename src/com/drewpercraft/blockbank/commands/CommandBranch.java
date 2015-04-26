@@ -18,12 +18,11 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import com.drewpercraft.Utils;
+import com.drewpercraft.WorldGuard;
 import com.drewpercraft.blockbank.Bank;
 import com.drewpercraft.blockbank.BlockBank;
 import com.drewpercraft.blockbank.Branch;
-import com.drewpercraft.blockbank.WorldGuard;
 import com.sk89q.worldguard.bukkit.WGBukkit;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public final class CommandBranch implements TabExecutor {
@@ -79,7 +78,7 @@ public final class CommandBranch implements TabExecutor {
 		//Pop the "branch" param out of the args and pass the rest of the params to the appropriate handler		
 		Vector<String> params = new Vector<String>(Arrays.asList(args));
 		String subParam = "subCommand_" + params.remove(0).toLowerCase();
-		plugin.getLogger().info("Looking for " + subParam);
+		plugin.getLogger().fine("Looking for " + subParam);
 		Method method = getMethodByName(subParam);
 		if (method != null) {
 			Boolean result = new Boolean(false);
@@ -187,6 +186,11 @@ public final class CommandBranch implements TabExecutor {
 		Bank bank = plugin.getBank(args.get(0));
 		if (bank == null) {
 			plugin.sendMessage(sender, "BankDoesNotExist", bankName);
+			return true;
+		}
+		
+		if (bank.getBranches().size() >= plugin.getMaxBranches()) {
+			plugin.sendMessage(sender, "BankHasMaxBranches", bank.getTitle());
 			return true;
 		}
 		

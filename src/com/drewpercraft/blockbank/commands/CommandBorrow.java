@@ -18,14 +18,14 @@ private final BlockBank plugin;
 
 	@Override
 	public List<String> onTabComplete(CommandSender player, Command command, String alias, String[] args) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender player, Command command,	String label, String[] args) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		//TODO Borrow Command
+		plugin.sendMessage(sender, "CommandNotImplemented");
+		return true;
 	}
 
 }

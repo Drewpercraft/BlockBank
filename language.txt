@@ -1,3 +1,4 @@
+ATMOutOfOrder=%s is currently out of order. We apologize for the inconvenience.
 BalanceTopEntry=\u00A76%d) \u00A79%-16s  \u00A7a%s \u00A7f(%s%%)
 BalanceTopHeader=\u00A76----====[ \u00A79Top Balances - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 Bank=Bank
@@ -7,6 +8,7 @@ BankCreated=The %s bank was created.
 BankDepositFailed=\u00A79You deposit of \u00A76%s\u00A79 was rejected. 
 BankDepositSuccess=\u00A79Your deposit of \u00A76%s\u00A79 was accepted.
 BankDoesNotExist=The bank %s does not exist.
+BankHasMaxBranches=\u00A76%s\u00A79 already has the maximum number of branches allowed.
 BankNotFound=No bank with that name was found.
 BankSavings:\u00A76Savings Rate:\u00A79 %s%%
 BankTitle=\u00A76Bank:\u00A79 %s
@@ -25,7 +27,10 @@ BranchListEntry=\u00A76%d) \u00A79%s
 BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 BranchOpen=\u00A76Opens:\u00A79 %s
 BranchTitle=\u00A76Branch:\u00A79 %s
+BranchOpening=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now open.
+BranchClosing=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now closed.
 BranchUpdated=%s was updated.
+CommandNotImplemented=\u00A74That command has not been implemented yet.
 CloseHourError=\u00A74Closing time must be after open time
 ConsoleNotAllowed=This command cannot be used at the console.
 DeathNotice=Your killer raided your pockets and took %s
@@ -45,7 +50,8 @@ ListEntry=\u00A76%d) \u00A79%s
 ListHeader=\u00A76----====[ \u00A79%s - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 NegativeAmountUsed=\u00A74You may not use negative amounts.
 OpenHourError=\u00A74Open time must be before close time
-PaymentReceived=\u00A79You received \u00A76%s\u00A79 from \u00A76%s\u00A79.
+PayAbandonedMoney=\u00A76Server Dividend:\u00A79 paid you \u00A76%s\u00A79 due to accounts being abandoned.
+PaymentReceived=\u00A76%s\u00A79 paid you \u00A76%s\u00A79.
 PaymentSent=\u00A79You paid \u00A76%s \u00A7A%s.
 PermissionError=\u00A74You do not have permission to do that.
 PlayerNotInBranch=\u00A74You are not in a bank branch.
@@ -56,4 +62,5 @@ TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
 TotalWorth=%s total worth is \u00A7a%s.
 WalletBalance=\u00A79There is \u00A76%s\u00A79 in \u00A76%s\u00A79 wallet.
 Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
+InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s
 Your=your

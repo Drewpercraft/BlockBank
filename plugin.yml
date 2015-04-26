@@ -1,6 +1,6 @@
 name: BlockBank
 author: hitechwizard
-version: 2.0.0_SNAPSHOT
+version: 2.0.0-SNAPSHOT
 main: com.drewpercraft.blockbank.BlockBank
 name: BlockBank
 website: www.drewpercraft.com
@@ -72,10 +72,6 @@ permissions:
         description: Allow user to access BlockBank accounts
         default: true
         
-    blockbank.vault:
-        description: Allow user to use BlockBank vaults.
-        default: true
-
     blockbank.borrow:
         description: Allow user to borrow money from BlockBank.
         default: true

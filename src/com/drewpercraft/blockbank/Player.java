@@ -21,6 +21,7 @@ public class Player {
 	private final String filename;
 	private final UUID uuid;
 	private JSONObject data = new JSONObject();
+	private boolean modified = false;
 
 	
 	public Player(BlockBank plugin, UUID uuid) {
@@ -57,6 +58,12 @@ public class Player {
 		return new File(filename);
 	}
 	
+	public boolean deletePlayerFile()
+	{
+		plugin.getLogger().info("Deleting " + filename);
+		return getPlayerFile().delete();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void load()
 	{
@@ -72,11 +79,16 @@ public class Player {
 			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));
+				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));				
 				if (obj.containsKey("balance")) {
 					data.put("balance", obj.get("balance"));
 				}else{
 					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
+				}
+				for(String bankName : plugin.getBanks().keySet()) {
+					if (obj.containsKey(bankName)) {
+						data.put(bankName, obj.get(bankName));
+					}
 				}
 			} 
 		}
@@ -96,9 +108,10 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().fine("Saving " + playerFile.getAbsolutePath());
+			plugin.getLogger().info("Saving " + getName());
 			os.write(data.toString());
 			os.close();
+			modified = false;
 		}
 		catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -107,9 +120,19 @@ public class Player {
         }	
 	}
 	
+	public boolean isModified()
+	{
+		return modified;
+	}
+	
 	public String getName()
 	{
 		return (String) data.get("playerName");
+	}
+	
+	public UUID getUID()
+	{
+		return uuid;
 	}
 	
 	public double getWorth()
@@ -134,7 +157,7 @@ public class Player {
 		//Round amount to the correct number of decimals
 		int decimals = plugin.getDecimals() * 100;
 		data.put("balance", (double) Math.round(amount * decimals) / decimals);
-		save();
+		modified = true;
 	}
 
 	/*
@@ -169,7 +192,7 @@ public class Player {
 		//Round amount to the correct number of decimals
 		int decimals = plugin.getDecimals() * 100;
 		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
-		save();
+		modified = true;
 	}
 	
 	public boolean bankWithdraw(String bankName, double amount) 
@@ -179,6 +202,9 @@ public class Player {
 		double newBalance = getBalance() + amount;
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Withdraw Bank %s: %s %s", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getVaultAPI().format(amount)));
+		}
 		return true;
 	}
 	
@@ -189,6 +215,9 @@ public class Player {
 		double newBalance = getBalance() - amount;
 		setBankBalance(bankName, newBankBalance);
 		setBalance(newBalance);
+		if (plugin.getLogTransactions()) {
+			plugin.getLogger().info(String.format("Deposit Bank %s: %s %s", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getVaultAPI().format(amount)));
+		}
 		return true;
 	}
 }

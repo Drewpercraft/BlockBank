@@ -20,6 +20,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.drewpercraft.WorldGuard;
 import com.drewpercraft.blockbank.commands.CommandBalance;
 import com.drewpercraft.blockbank.commands.CommandBalanceTop;
 import com.drewpercraft.blockbank.commands.CommandBank;
@@ -30,6 +31,9 @@ import com.drewpercraft.blockbank.commands.CommandDeposit;
 import com.drewpercraft.blockbank.commands.CommandPay;
 import com.drewpercraft.blockbank.commands.CommandWithdraw;
 import com.drewpercraft.blockbank.listeners.PlayerListener;
+import com.drewpercraft.blockbank.listeners.WorldListener;
+import com.drewpercraft.blockbank.tasks.CalculateInterestTask;
+import com.drewpercraft.blockbank.tasks.SavePlayersTask;
 
 
 public final class BlockBank extends JavaPlugin {
@@ -38,8 +42,35 @@ public final class BlockBank extends JavaPlugin {
 	private Map<String, Bank> banks = new HashMap<String, Bank>();
 	private VaultEconomy vaultAPI = null;	
 	private ResourceBundle userMessages;
+	private CalculateInterestTask interestTask = null;
+	private SavePlayersTask savePlayersTask = null;
  
-    public String getCurrencyPlural() 
+	public int getAbandonedAccountDays()
+	{
+		return getConfig().getInt("abandonedAccountDays", 30);
+	}
+	
+	public boolean getAbandonedCheck()
+	{
+		return getConfig().getBoolean("abandonedCheck", false);
+	}
+	
+	public String getAbandonedDistribution()
+	{
+		return getConfig().getString("abandonedDistribution", "even");
+	}
+
+	public int getATMFailRate()
+	{
+		return getConfig().getInt("atmFailRate", 0);
+	}
+
+	public int getATMOfflineTime()
+	{
+		return getConfig().getInt("atmOfflineTime");
+	}
+	
+	public String getCurrencyPlural() 
     {
 		return getConfig().getString("currencyPlural", "dollars");
 	}
@@ -74,6 +105,19 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getDouble("loanRate", 0);
 	}
 	
+	public World getMasterWorld()
+	{
+		String worldName = getConfig().getString("masterWorld");
+		if (worldName == null) {
+			return getServer().getWorlds().get(0);
+		}
+		World world = getServer().getWorld(worldName);
+		if (world == null) {
+			return getServer().getWorlds().get(0);
+		}
+		return world;
+	}
+	
 	public int getDefaultMaxVaults() 
 	{
 		return getConfig().getInt("maxVaults", 10);
@@ -99,14 +143,14 @@ public final class BlockBank extends JavaPlugin {
 		return getConfig().getBoolean("allowLoans", false);
 	}
 	
-	public int getMaxATM() 
-	{
-		return getConfig().getInt("maxATM", 10);
-	}
-	
 	public int getMaxBranches() 
 	{
 		return getConfig().getInt("maxBranches", 3);
+	}
+	
+	public int getMaxOfflineDays()
+	{
+		return getConfig().getInt("maxOfflineDays", 3);
 	}
 	
 	public boolean getLogTransactions() 
@@ -261,6 +305,13 @@ public final class BlockBank extends JavaPlugin {
     public void onDisable() 
 	{
         // TODO Insert logic to be performed when the plugin is disabled
+		if (interestTask != null) {
+			interestTask.cancel();
+		}
+		if (savePlayersTask != null) {
+			savePlayersTask.cancel();
+		}
+		vaultAPI.savePlayers();
     	log.info(String.format("%s Disabled", this.getName()));
     }
 
@@ -306,28 +357,28 @@ public final class BlockBank extends JavaPlugin {
         	CommandWithdraw commandWithdraw = new CommandWithdraw(this);
         	getCommand("withdraw").setExecutor(commandWithdraw);
         	getCommand("withdraw").setTabCompleter(commandWithdraw);
-        	
-        	
-        	
-        	
     	
         	log.info(String.format("Enabling %s event handlers", this.getName()));
         	getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        	getServer().getPluginManager().registerEvents(new WorldListener(this), this);
 	    	//TODO Start Security
-	    	//TODO Start InterestManager
-        	//TODO Start Background data file saver
-	    	/*
-			BukkitRunnable interestManager = new InterestManagerTask(this);
+	    	
+        	//Start the Interest Manager
+        	World world = getMasterWorld();
+        	getLogger().info("Using world " + world.getName() + " as the master clock");
+        	interestTask = new CalculateInterestTask(this);        	
 			// Run the interestManager at the stroke of midnight (18000)
-			String worldName = getServer().getWorlds().get(0).getName();
-			long delay = 18000 - getServer().getWorld(worldName).getTime();
+
+			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
-			interestManager.runTaskTimer(this, delay, 24000);
-			getServer().getPluginManager().registerEvents(this, this);
-			log.info(String.format("%s has been enabled.", getDescription().getName()));	    	  
-	    	 
-	    	*/
-	    	log.info(String.format("%s enabled", this.getName()));
+			//TODO Should this really be synchronous or asynchronous?
+			log.info("Calculate interest task delay: " + delay);
+			interestTask.runTaskTimerAsynchronously(this, delay, 24000);
+			
+			savePlayersTask = new SavePlayersTask(this);
+			savePlayersTask.runTaskTimerAsynchronously(this, 1000, 1000);
+			
+			log.info(String.format("%s enabled", this.getName()));
     	}
     }
 
@@ -351,13 +402,15 @@ public final class BlockBank extends JavaPlugin {
 	public List<String> getValidBankNames() 
 	{
 		String relationType = getConfig().getString("bankRelation").toLowerCase();
+		if (relationType != "world" && relationType != "factions") return null;
+		
 		List<String> results = new ArrayList<String>();
 		if (relationType.equals("world") || relationType.equals("all")) {
 			for(World world : Bukkit.getWorlds()) {
 				results.add(world.getName().toLowerCase());
 			}			
 		}
-		if (relationType.equals("factions") || relationType.equals("all")) {
+		if (relationType.equals("factions")) {
 			//TODO Relating to factions is not implemented yet
 			//for(Faction faction : ?.getFactions()) {
 			//	results.add(faction.getName());
@@ -394,5 +447,9 @@ public final class BlockBank extends JavaPlugin {
 		return null;
 	}
 
-	
+	public void broadcastMessage(String key, Object... args) 
+	{
+		getServer().broadcastMessage(getMessage(key, args));		
+	}
+
 }
