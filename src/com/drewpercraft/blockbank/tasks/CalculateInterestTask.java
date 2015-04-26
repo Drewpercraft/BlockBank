@@ -23,16 +23,17 @@ public class CalculateInterestTask extends BukkitRunnable {
 	public static final int Minecraft_Days_In_Year = Minecraft_Days_In_Month * Minecraft_Months_In_Year;
 
 	private final BlockBank plugin;
-	private final UUID uuid;
-	private int lastTimeCheck = 0;
 	
-	
-	public CalculateInterestTask(BlockBank plugin, UUID uuid) 
+	public CalculateInterestTask(BlockBank plugin) 
 	{
 		this.plugin = plugin;
-		this.uuid = uuid;
 	}
 
+	@Override
+	public String toString() {
+		return "BlockBank Calculate Interest Task";
+	}
+	
 	@Override
 	public void run() 
 	{

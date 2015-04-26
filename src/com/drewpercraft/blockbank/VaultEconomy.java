@@ -2,9 +2,12 @@ package com.drewpercraft.blockbank;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -25,7 +28,7 @@ public class VaultEconomy implements Economy {
 
 	BlockBank plugin = null;
 	Logger log = null;
-	private Map<UUID, Player> players = new HashMap<UUID, Player>();
+	private Map<UUID, Player> players = Collections.synchronizedMap(new HashMap<UUID, Player>());
 	
 	public VaultEconomy(BlockBank plugin) 
 	{
@@ -479,6 +482,20 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse withdrawPlayer(String playerName, String worldName, double amount) {
 		return withdrawPlayer(Utils.getPlayerByName(playerName), amount);
+	}
+
+	public void savePlayers() {
+		plugin.getLogger().info("Saving modified player accounts:");
+		Set<UUID> keys = players.keySet();
+		synchronized (players) {
+			for(Iterator<UUID> uid = keys.iterator(); uid.hasNext();) {
+				Player player = players.get(uid.next());
+				if (player.isModified()) {
+					player.save();
+				}
+			}
+		}
+		
 	}
 
 	

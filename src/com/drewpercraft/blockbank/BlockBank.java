@@ -33,6 +33,7 @@ import com.drewpercraft.blockbank.commands.CommandWithdraw;
 import com.drewpercraft.blockbank.listeners.PlayerListener;
 import com.drewpercraft.blockbank.listeners.WorldListener;
 import com.drewpercraft.blockbank.tasks.CalculateInterestTask;
+import com.drewpercraft.blockbank.tasks.SavePlayersTask;
 
 
 public final class BlockBank extends JavaPlugin {
@@ -42,6 +43,7 @@ public final class BlockBank extends JavaPlugin {
 	private VaultEconomy vaultAPI = null;	
 	private ResourceBundle userMessages;
 	private CalculateInterestTask interestTask = null;
+	private SavePlayersTask savePlayersTask = null;
  
 	public int getAbandonedAccountDays()
 	{
@@ -306,6 +308,10 @@ public final class BlockBank extends JavaPlugin {
 		if (interestTask != null) {
 			interestTask.cancel();
 		}
+		if (savePlayersTask != null) {
+			savePlayersTask.cancel();
+		}
+		vaultAPI.savePlayers();
     	log.info(String.format("%s Disabled", this.getName()));
     }
 
@@ -360,14 +366,17 @@ public final class BlockBank extends JavaPlugin {
         	//Start the Interest Manager
         	World world = getMasterWorld();
         	getLogger().info("Using world " + world.getName() + " as the master clock");
-        	interestTask = new CalculateInterestTask(this, world.getUID());        	
+        	interestTask = new CalculateInterestTask(this);        	
 			// Run the interestManager at the stroke of midnight (18000)
 
 			long delay = 18000 - world.getTime();
 			if (delay < 0) delay += 24000;
 			//TODO Should this really be synchronous or asynchronous?
 			log.info("Calculate interest task delay: " + delay);
-			interestTask.runTaskTimer(this, delay, 24000);
+			interestTask.runTaskTimerAsynchronously(this, delay, 24000);
+			
+			savePlayersTask = new SavePlayersTask(this);
+			savePlayersTask.runTaskTimerAsynchronously(this, 1000, 1000);
 			
 			log.info(String.format("%s enabled", this.getName()));
     	}
@@ -443,5 +452,4 @@ public final class BlockBank extends JavaPlugin {
 		getServer().broadcastMessage(getMessage(key, args));		
 	}
 
-	
 }

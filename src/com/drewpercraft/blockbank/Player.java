@@ -21,6 +21,7 @@ public class Player {
 	private final String filename;
 	private final UUID uuid;
 	private JSONObject data = new JSONObject();
+	private boolean modified = false;
 
 	
 	public Player(BlockBank plugin, UUID uuid) {
@@ -107,15 +108,21 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().fine("Saving " + playerFile.getAbsolutePath());
+			plugin.getLogger().info("Saving " + getName());
 			os.write(data.toString());
 			os.close();
+			modified = false;
 		}
 		catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }	
+	}
+	
+	public boolean isModified()
+	{
+		return modified;
 	}
 	
 	public String getName()
@@ -150,7 +157,7 @@ public class Player {
 		//Round amount to the correct number of decimals
 		int decimals = plugin.getDecimals() * 100;
 		data.put("balance", (double) Math.round(amount * decimals) / decimals);
-		save();
+		modified = true;
 	}
 
 	/*
@@ -185,7 +192,7 @@ public class Player {
 		//Round amount to the correct number of decimals
 		int decimals = plugin.getDecimals() * 100;
 		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
-		save();
+		modified = true;
 	}
 	
 	public boolean bankWithdraw(String bankName, double amount) 
