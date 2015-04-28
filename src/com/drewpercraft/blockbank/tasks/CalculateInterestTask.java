@@ -97,6 +97,8 @@ public class CalculateInterestTask extends BukkitRunnable {
 									totalInterestPaid.put(bankName, totalInterestPaid.get(bankName) + interestEarned);
 									if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
 										plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getVaultAPI().format(interestEarned));
+									}else{
+										player.addOfflineInterest(bankName, interestEarned);
 									}
 								}
 							}
@@ -136,6 +138,9 @@ public class CalculateInterestTask extends BukkitRunnable {
 						for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
 							UUID uid = playerIT.next();
 							players.get(uid).deposit(distribution);
+							if (!plugin.getServer().getPlayer(uid).isOnline()) {
+								players.get(uid).addOfflineDividend(distribution);
+							}
 						}
 					}
 				}

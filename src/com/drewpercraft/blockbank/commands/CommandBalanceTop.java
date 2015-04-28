@@ -2,9 +2,7 @@ package com.drewpercraft.blockbank.commands;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Map;
 import java.util.NavigableSet;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -14,7 +12,6 @@ import org.bukkit.command.TabExecutor;
 
 import com.drewpercraft.Utils;
 import com.drewpercraft.blockbank.BlockBank;
-import com.drewpercraft.blockbank.Player;
 
 public class CommandBalanceTop implements TabExecutor {
 
@@ -42,19 +39,9 @@ public class CommandBalanceTop implements TabExecutor {
 		int index = (page - 1) * 10;
 		if (index < 0) index = 0;
 		
-		Map<UUID, Player> players = plugin.getVaultAPI().getPlayerBalances();
-		log.info(String.format("Found %d players", players.size()));
-		TreeMap<UUID, Player> sortedBalances = new TreeMap<UUID, Player>(new Player.BalanceCompare(players));
-		double totalEconomy = 0.0;
-		for(UUID playerId : players.keySet()) {
-			if (players.get(playerId).getWorth() > 0 && !plugin.getServer().getOfflinePlayer(playerId).isBanned()) {
-				sortedBalances.put(playerId, players.get(playerId));
-				totalEconomy += players.get(playerId).getWorth();
-			}
-		}
-		log.info(String.format("Found %d sortedBalances", sortedBalances.size()));
-		NavigableSet<UUID> keySet = sortedBalances.descendingKeySet();
-		UUID[] keys = keySet.toArray(new UUID[sortedBalances.size()]);
+		
+		NavigableSet<UUID> keySet = plugin.getVaultAPI().getSortedBalances().descendingKeySet();
+		UUID[] keys = keySet.toArray(new UUID[keySet.size()]);
 		
 		int pageCount = (keys.length / 10) + 1;
 		
@@ -64,14 +51,14 @@ public class CommandBalanceTop implements TabExecutor {
 		}
 		
 		log.info(String.format("Showing balances #%d to %d", index+1, lastIndex));
-		plugin.sendMessage(sender, "TotalEconomy", plugin.getVaultAPI().format(totalEconomy));
+		plugin.sendMessage(sender, "TotalEconomy", plugin.getVaultAPI().format(plugin.getVaultAPI().getTotalEconomy()));
 		plugin.sendMessage(sender, "BalanceTopHeader", page, pageCount);
 		for(int i = index; i < lastIndex; i++ ) {
-			String name = players.get(keys[i]).getName();
-			Double worth = players.get(keys[i]).getWorth();
+			String name = plugin.getVaultAPI().getPlayer(keys[i]).getName();
+			Double worth = plugin.getVaultAPI().getPlayer(keys[i]).getWorth();
 			String formattedBalance = plugin.getVaultAPI().format(worth);
 			DecimalFormat dFormat = new DecimalFormat("##.##"); 
-			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance, dFormat.format(worth * 100 / totalEconomy));
+			plugin.sendMessage(sender, "BalanceTopEntry", i+1, name, formattedBalance, dFormat.format(worth * 100 / plugin.getVaultAPI().getTotalEconomy()));
 		}
 		return true;
 	}
