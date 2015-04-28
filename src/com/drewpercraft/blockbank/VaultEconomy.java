@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -26,10 +27,15 @@ import com.drewpercraft.blockbank.Player;
  */
 public class VaultEconomy implements Economy {
 
-	BlockBank plugin = null;
-	Logger log = null;
+	private BlockBank plugin = null;
+	private Logger log = null;
 	private Map<UUID, Player> players = Collections.synchronizedMap(new HashMap<UUID, Player>());
+	private double totalEconomy = 0.0;
+	private TreeMap<UUID, Player> sortedBalances = new TreeMap<UUID, Player>(new Player.BalanceCompare(players));
 	
+	
+	
+
 	public VaultEconomy(BlockBank plugin) 
 	{
 		this.plugin = plugin;
@@ -47,7 +53,7 @@ public class VaultEconomy implements Economy {
 			}
 			
 		}
-		
+		updateBalanceTop();
 	}
 
 	public Map<UUID, Player> getPlayerBalances()
@@ -498,5 +504,27 @@ public class VaultEconomy implements Economy {
 		
 	}
 
-	
+	public void updateBalanceTop() {
+		sortedBalances.clear(); 
+		totalEconomy = 0.0;
+		synchronized(players) {
+			for(UUID playerId : players.keySet()) {
+				if (players.get(playerId).getWorth() > 0 && !plugin.getServer().getOfflinePlayer(playerId).isBanned()) {
+					sortedBalances.put(playerId, players.get(playerId));
+					totalEconomy += players.get(playerId).getWorth();
+				}
+			}
+		}
+	}
+
+	public double getTotalEconomy() {
+		return totalEconomy;
+	}
+
+	/**
+	 * @return the sortedBalances
+	 */
+	public TreeMap<UUID, Player> getSortedBalances() {
+		return sortedBalances;
+	}
 }

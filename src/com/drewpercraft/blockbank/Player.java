@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -219,5 +220,78 @@ public class Player {
 			plugin.getLogger().info(String.format("Deposit Bank %s: %s %s", bankName, plugin.getServer().getPlayer(uuid).getName(), plugin.getVaultAPI().format(amount)));
 		}
 		return true;
+	}
+	
+	public double getOfflineDividend()
+	{
+		if (data.containsKey("offlineDividend")) {
+			Double offlineDividend = (Double) data.get("offlineDividend");
+			return offlineDividend.doubleValue();
+		}
+		return 0.0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addOfflineDividend(double amount)
+	{
+		double previousOfflineDividend = 0.0;
+		if (data.containsKey("offlineDividend")) {
+			previousOfflineDividend = (Double) data.get("offlineDividend");
+		}
+		data.put("offlineDividend", previousOfflineDividend + amount);
+		modified = true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void resetOfflineDividend()
+	{
+		data.put("offlineDividend", 0.0);
+		modified = true;
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	public double getOfflineInterest(String bankName)
+	{
+		plugin.getLogger().info("Checking: " + data.toJSONString());
+		if (data.containsKey("offlineInterest")) {
+			Map<String, Double> offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
+			if (offlineInterestMap.containsKey(bankName)) {
+				plugin.getLogger().info(bankName + ": " + offlineInterestMap.toString());
+				Double offlineInterest = offlineInterestMap.get(bankName);
+				return offlineInterest.doubleValue();
+			}
+		}
+		return 0.0;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void addOfflineInterest(String bankName, double amount)
+	{
+		Map<String, Double> offlineInterestMap = null;
+		double previousEarnings = 0.0;
+		if (data.containsKey("offlineInterest")) {
+			offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
+			previousEarnings = offlineInterestMap.get(bankName);
+		}else{
+			offlineInterestMap = new HashMap<String, Double>();			
+		}
+		offlineInterestMap.put(bankName, previousEarnings + amount);
+		data.put("offlineInterest", offlineInterestMap);
+		modified = true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void resetOfflineInterest(String bankName)
+	{
+		Map<String, Double> offlineInterestMap = null;
+		if (data.containsKey("offlineInterest")) {
+			offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
+		}else{
+			offlineInterestMap = new HashMap<String, Double>();
+		}			
+		offlineInterestMap.put(bankName, 0.0);
+		data.put("offlineInterest", offlineInterestMap);
+		modified = true;
 	}
 }

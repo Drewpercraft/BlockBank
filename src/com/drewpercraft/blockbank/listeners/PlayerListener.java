@@ -1,5 +1,8 @@
 package com.drewpercraft.blockbank.listeners;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -19,12 +22,29 @@ public final class PlayerListener implements Listener {
     }
 	
     @EventHandler
-    public void onLogin(PlayerJoinEvent event)
+    public void onPlayerJoin(PlayerJoinEvent event)
     {
     	Player player = event.getPlayer();
     	
     	if (player.hasPermission("blockbank.user")) {
 	    	plugin.getVaultAPI().createPlayerAccount(player);
+	    	plugin.getLogger().fine("Checking for offline interest and dividends");
+	    	double offlineDividend = plugin.getVaultAPI().getPlayer(player.getUniqueId()).getOfflineDividend();
+	    	if (offlineDividend > 0.0) {
+	    		plugin.sendMessage(player, "OfflineDividends", plugin.getVaultAPI().format(offlineDividend));
+	    		plugin.getLogger().fine("Offline Dividend reported: " + plugin.getVaultAPI().format(offlineDividend));
+	    		plugin.getVaultAPI().getPlayer(player.getUniqueId()).resetOfflineDividend();
+	    	}
+    		Set<String> bankNames = plugin.getBanks().keySet();
+    		for(Iterator<String> bankNameIT = bankNames.iterator(); bankNameIT.hasNext();) {
+    			String bankName = bankNameIT.next();
+    			double offlineInterest = plugin.getVaultAPI().getPlayer(player.getUniqueId()).getOfflineInterest(bankName);
+    			if (offlineInterest > 0.0) {
+    				plugin.getLogger().fine("Offline Interest reported: " + bankName + " : " + plugin.getVaultAPI().format(offlineInterest));
+    				plugin.sendMessage(player, "OfflineInterest", plugin.getBank(bankName).getTitle(), plugin.getVaultAPI().format(offlineInterest));
+    				plugin.getVaultAPI().getPlayer(player.getUniqueId()).resetOfflineInterest(bankName);
+    			}
+    		}	    	
     	}    	
     }
     

@@ -67,7 +67,7 @@ public final class BlockBank extends JavaPlugin {
 
 	public int getATMOfflineTime()
 	{
-		return getConfig().getInt("atmOfflineTime");
+		return getConfig().getInt("atmOfflineTime", 2000);
 	}
 	
 	public String getCurrencyPlural() 
@@ -388,6 +388,7 @@ public final class BlockBank extends JavaPlugin {
 	 */
 	public void sendMessage(CommandSender player, String key, Object... args) 
 	{
+		log.fine(player.getName() + " : " + key);
 		player.sendMessage(getMessage(key, args));		
 	}
 
