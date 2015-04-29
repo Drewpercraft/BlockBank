@@ -10,6 +10,7 @@ import java.util.UUID;
 
 import org.bukkit.BanList.Type;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.drewpercraft.blockbank.Bank;
@@ -138,8 +139,11 @@ public class CalculateInterestTask extends BukkitRunnable {
 						for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
 							UUID uid = playerIT.next();
 							players.get(uid).deposit(distribution);
-							if (!plugin.getServer().getPlayer(uid).isOnline()) {
-								players.get(uid).addOfflineDividend(distribution);
+							OfflinePlayer offlinePlayer = plugin.getServer().getPlayer(uid);
+							if (offlinePlayer != null) {
+								if (!offlinePlayer.isOnline()) {
+									players.get(uid).addOfflineDividend(distribution);
+								}
 							}
 						}
 					}

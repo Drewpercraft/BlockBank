@@ -253,11 +253,11 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public double getOfflineInterest(String bankName)
 	{
-		plugin.getLogger().info("Checking: " + data.toJSONString());
+		plugin.getLogger().fine("Checking: " + data.toJSONString());
 		if (data.containsKey("offlineInterest")) {
 			Map<String, Double> offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
 			if (offlineInterestMap.containsKey(bankName)) {
-				plugin.getLogger().info(bankName + ": " + offlineInterestMap.toString());
+				plugin.getLogger().fine(bankName + ": " + offlineInterestMap.toString());
 				Double offlineInterest = offlineInterestMap.get(bankName);
 				return offlineInterest.doubleValue();
 			}
@@ -272,7 +272,9 @@ public class Player {
 		double previousEarnings = 0.0;
 		if (data.containsKey("offlineInterest")) {
 			offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
-			previousEarnings = offlineInterestMap.get(bankName);
+			if (offlineInterestMap.containsKey(bankName)) {
+				previousEarnings = offlineInterestMap.get(bankName);
+			}
 		}else{
 			offlineInterestMap = new HashMap<String, Double>();			
 		}
