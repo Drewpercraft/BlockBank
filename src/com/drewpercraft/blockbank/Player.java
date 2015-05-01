@@ -21,7 +21,7 @@ public class Player {
 	private final String filePath;
 	private final String filename;
 	private final UUID uuid;
-	private JSONObject data = new JSONObject();
+	private JSONObject data = null;
 	private boolean modified = false;
 
 	
@@ -72,25 +72,14 @@ public class Player {
 		String playerName = "";
 		try
 		{
-			boolean newPlayer = playerFile.createNewFile();
 			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
-			data.put("uuid", uuid.toString());
-			data.put("playerName", playerName);
-			data.put("balance", 0.0);
-			if (!newPlayer) {
+			boolean newPlayer = playerFile.createNewFile();
+			if (newPlayer) {
+				data = new JSONObject();
+			}else{
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));				
-				if (obj.containsKey("balance")) {
-					data.put("balance", obj.get("balance"));
-				}else{
-					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
-				}
-				for(String bankName : plugin.getBanks().keySet()) {
-					if (obj.containsKey(bankName)) {
-						data.put(bankName, obj.get(bankName));
-					}
-				}
+				data = (JSONObject) parser.parse(new FileReader(playerFile));
 			} 
 		}
 		catch (FileNotFoundException e) {
@@ -99,7 +88,15 @@ public class Player {
             e.printStackTrace();
         } catch (ParseException e) {
             plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is corrupt");
-        } 
+        }
+		if (!data.containsKey("balance")) {
+			plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " was missing a balance field");
+			data.put("balance", 0.0);
+		}
+		data.put("uuid", uuid);
+		//This will catch name updates. The uuid and the player name in the file are not used, 
+		//but are there to make data mining easier		
+		data.put("playerName", playerName);
 	}
 	
 	public void save()
