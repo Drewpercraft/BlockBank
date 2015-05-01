@@ -65,11 +65,13 @@ public class VaultEconomy implements Economy {
 	 * @see net.milkbowl.vault.economy.Economy#bankBalance(java.lang.String)
 	 */
 	@Override
-	public EconomyResponse bankBalance(String arg0) 
+	public EconomyResponse bankBalance(String bankName) 
 	{
-		// TODO Auto-generated method stub
-		//return new EconomyResponse(0, 0, ResponseType.FAILURE, "That bank does not exist!");
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		if (!plugin.getBanks().containsKey(bankName)) {
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, "That bank does not exist!");
+		}
+		Bank bank = plugin.getBank(bankName);
+		return new EconomyResponse(0, bank.getTotalDeposits(), ResponseType.SUCCESS, "Total of all deposits");
 	}
 
 	/* (non-Javadoc)
@@ -108,8 +110,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse createBank(String bankName, OfflinePlayer player) 
 	{
-		// TODO Auto-generated method stub
-		return new EconomyResponse(0, 0, ResponseType.NOT_IMPLEMENTED, "BlockBank Implementation in progress");
+		return createBank(bankName, player);
 	}
 
 	/* (non-Javadoc)
@@ -304,7 +305,7 @@ public class VaultEconomy implements Economy {
 		return "BlockBank";
 	}
 
-	private Player getPlayer(OfflinePlayer offlinePlayer) {
+	public Player getPlayer(OfflinePlayer offlinePlayer) {
 		return getPlayer(offlinePlayer.getUniqueId());
 	}
 

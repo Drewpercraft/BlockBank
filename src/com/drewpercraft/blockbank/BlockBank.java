@@ -311,7 +311,9 @@ public final class BlockBank extends JavaPlugin {
 		if (savePlayersTask != null) {
 			savePlayersTask.cancel();
 		}
-		vaultAPI.savePlayers();
+		if (vaultAPI != null) {
+			vaultAPI.savePlayers();
+		}
     	log.info(String.format("%s Disabled", this.getName()));
     }
 

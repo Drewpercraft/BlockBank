@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -14,6 +15,8 @@ import java.util.UUID;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import com.drewpercraft.JSONWriter;
 
 public class Player {
 
@@ -72,14 +75,29 @@ public class Player {
 		String playerName = "";
 		try
 		{
+			data = new JSONObject();
 			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
 			boolean newPlayer = playerFile.createNewFile();
-			if (newPlayer) {
-				data = new JSONObject();
-			}else{
+			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
 				data = (JSONObject) parser.parse(new FileReader(playerFile));
+				
+				//Upgrade file to new format
+				if (!data.containsKey("banks")) {
+					plugin.log.info("Upgrading file format for " + playerName);
+					JSONObject bankMap = new JSONObject();
+					Set<String> banks = plugin.getBanks().keySet();
+					for(Iterator<String> bankNameIT = banks.iterator(); bankNameIT.hasNext();) {
+						String bankName = bankNameIT.next();
+						if (data.containsKey(bankName)) {
+							bankMap.put(bankName, (Double) data.get(bankName));
+							data.remove(bankName);
+						}
+					}
+					data.put("banks", bankMap);
+					save();
+				}
 			} 
 		}
 		catch (FileNotFoundException e) {
@@ -88,12 +106,13 @@ public class Player {
             e.printStackTrace();
         } catch (ParseException e) {
             plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is corrupt");
+            
         }
 		if (!data.containsKey("balance")) {
 			plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " was missing a balance field");
 			data.put("balance", 0.0);
 		}
-		data.put("uuid", uuid);
+		data.put("uuid", uuid.toString());
 		//This will catch name updates. The uuid and the player name in the file are not used, 
 		//but are there to make data mining easier		
 		data.put("playerName", playerName);
@@ -106,8 +125,11 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().info("Saving " + getName());
-			os.write(data.toString());
+			plugin.getLogger().info("Saving " + getName() + " with JSONWriter2");
+			JSONWriter jWriter = new JSONWriter();
+			jWriter.write(data.toString());
+			os.write(jWriter.toString());
+			jWriter.close();
 			os.close();
 			modified = false;
 		}
@@ -177,8 +199,9 @@ public class Player {
 	
 	public double getBankBalance(String bankName)
 	{
-		if (data.containsKey(bankName)) {
-			Double balance = (Double) data.get(bankName);
+		JSONObject bankMap = (JSONObject) data.get("banks");
+		if (bankMap.containsKey(bankName)) {
+			Double balance = (Double) bankMap.get(bankName);
 			return balance.doubleValue();
 		}
 		return 0.0;
@@ -189,7 +212,9 @@ public class Player {
 	{
 		//Round amount to the correct number of decimals
 		int decimals = plugin.getDecimals() * 100;
-		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		JSONObject bankMap = (JSONObject) data.get("banks");		
+		bankMap.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		data.put("banks", bankMap);
 		modified = true;
 	}
 	

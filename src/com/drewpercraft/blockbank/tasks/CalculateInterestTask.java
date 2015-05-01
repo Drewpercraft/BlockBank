@@ -147,9 +147,8 @@ public class CalculateInterestTask extends BukkitRunnable {
 							}
 						}
 					}
+					plugin.broadcastMessage("PayAbandonedMoney", plugin.getVaultAPI().format(distribution));
 				}
-				plugin.broadcastMessage("PayAbandonedMoney", plugin.getVaultAPI().format(distribution));
-
 			}
 		}
 		
