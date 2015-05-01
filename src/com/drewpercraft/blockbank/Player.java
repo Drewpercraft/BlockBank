@@ -125,11 +125,12 @@ public class Player {
 		{
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
-			plugin.getLogger().info("Saving " + getName() + " with JSONWriter2");
+			plugin.getLogger().info("Saving " + getName());
 			JSONWriter jWriter = new JSONWriter();
 			jWriter.write(data.toString());
 			os.write(jWriter.toString());
 			jWriter.close();
+			os.write(System.lineSeparator());
 			os.close();
 			modified = false;
 		}
