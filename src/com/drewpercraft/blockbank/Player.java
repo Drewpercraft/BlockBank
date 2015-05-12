@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -77,6 +79,9 @@ public class Player {
 		{
 			data = new JSONObject();
 			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
+			if (playerName == null) {
+				playerName = "Unknown";
+			}
 			boolean newPlayer = playerFile.createNewFile();
 			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
@@ -112,6 +117,19 @@ public class Player {
 			plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " was missing a balance field");
 			data.put("balance", 0.0);
 		}
+		
+		if (!data.containsKey("banks")) {
+			data.put("banks", new JSONObject());
+		}
+		
+		if (!data.containsKey("offlineInterest")) {
+			data.put("offlineInterest", new JSONObject());
+		}
+
+		if (!data.containsKey("offlineDividends")) {
+			data.put("offlineDividends", new JSONObject());
+		}
+
 		data.put("uuid", uuid.toString());
 		//This will catch name updates. The uuid and the player name in the file are not used, 
 		//but are there to make data mining easier		
@@ -176,8 +194,8 @@ public class Player {
 	public void setBalance(double amount)
 	{
 		//Round amount to the correct number of decimals
-		int decimals = plugin.getDecimals() * 100;
-		data.put("balance", (double) Math.round(amount * decimals) / decimals);
+		BigDecimal balance = new BigDecimal(amount).setScale(plugin.getDecimals(), RoundingMode.HALF_EVEN);
+		data.put("balance", (double) balance.doubleValue());
 		modified = true;
 	}
 
@@ -211,10 +229,9 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public void setBankBalance(String bankName, double amount)
 	{
-		//Round amount to the correct number of decimals
-		int decimals = plugin.getDecimals() * 100;
-		JSONObject bankMap = (JSONObject) data.get("banks");		
-		bankMap.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		JSONObject bankMap = (JSONObject) data.get("banks");
+		BigDecimal balance = new BigDecimal(amount).setScale(plugin.getDecimals(), RoundingMode.HALF_EVEN);
+		bankMap.put(bankName, (double) balance.doubleValue());
 		data.put("banks", bankMap);
 		modified = true;
 	}

@@ -55,56 +55,66 @@ public class CalculateInterestTask extends BukkitRunnable {
 		synchronized (players) {
 			for(Iterator<UUID> playerIT = players.keySet().iterator(); playerIT.hasNext();) {
 				UUID uuid = playerIT.next();
-				Player player = players.get(uuid);
-				long lastSeen = plugin.getServer().getOfflinePlayer(player.getUID()).getLastPlayed(); 
-				int lastSeenDays = Math.round((now - lastSeen) / 86400000);
-				//If the player is currently on the server for the first time, getLastPlayer() returns 0
-				if (lastSeen < 1 || !plugin.getServer().getOfflinePlayer(player.getUID()).hasPlayedBefore()) lastSeenDays = 0;
-				
-				//If the player has not logged in, the account is considered abandoned
-				boolean accountAbandoned = (lastSeenDays >= plugin.getAbandonedAccountDays());
-				
-				//Check to see if the account has been banned
-				boolean isBanned = false;
-				if (!accountAbandoned) {
-					// Old way is just to look here...
-					//boolean isBanned = plugin.getServer().getOfflinePlayer(uuid).isBanned();
-					// Only consider the player banned if it is a permanent ban							
-					org.bukkit.OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
-					if (offlinePlayer == null) {
-						isBanned = true;
-					}else{
-						isBanned = Bukkit.getBanList(Type.NAME).isBanned(offlinePlayer.getName());
-						//If the player is banned, make sure it is a permanent ban
-						if (isBanned) {
-							isBanned = (Bukkit.getBanList(Type.NAME).getBanEntry(offlinePlayer.getName()).getExpiration() == null);
+				try {
+					Player player = players.get(uuid);
+					OfflinePlayer offlinePlayer = plugin.getServer().getOfflinePlayer(player.getUID());
+					long lastSeen = offlinePlayer.getLastPlayed(); 
+					int lastSeenDays = Math.round((now - lastSeen) / 86400000);
+					//If the player is currently on the server for the first time, getLastPlayer() returns 0
+					if (lastSeen < 1 || !offlinePlayer.hasPlayedBefore()) lastSeenDays = 0;
+					
+					//If the player has not logged in, the account is considered abandoned
+					boolean accountAbandoned = (lastSeenDays >= plugin.getAbandonedAccountDays());
+
+					if (player.getName() == null) {
+						plugin.getLogger().info("UUID " + player.getUID() + " no longer exists on this server");
+						accountAbandoned = true;
+					}
+
+					//Check to see if the account has been banned
+					boolean isBanned = false;
+					if (!accountAbandoned) {
+						// Old way is just to look here...
+						//boolean isBanned = plugin.getServer().getOfflinePlayer(uuid).isBanned();
+						// Only consider the player banned if it is a permanent ban							
+						if (offlinePlayer == null) {
+							isBanned = true;
+						}else{
+							isBanned = Bukkit.getBanList(Type.NAME).isBanned(offlinePlayer.getName());
+							//If the player is banned, make sure it is a permanent ban
+							if (isBanned) {
+								isBanned = (Bukkit.getBanList(Type.NAME).getBanEntry(offlinePlayer.getName()).getExpiration() == null);
+							}
 						}
 					}
-				}
-				if (accountAbandoned || isBanned) {
-					abandonedAccounts.add(player.getUID());
-				}else{
-					for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
-						String bankName = bankNameIT.next();
-						double balance = player.getBankBalance(bankName);
-						if (balance > 0) {
-							if (lastSeenDays > plugin.getMaxOfflineDays()) {
-								plugin.getLogger().info(player.getName() + " has been offline for " + lastSeenDays + " days - no interest paid");
-							}else{
-								double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
-								if (interestEarned >= 0.01) {
-									player.setBankBalance(bankName, balance + interestEarned);
-									plugin.getLogger().info(String.format("%s paid %s %s in interest", bankName, player.getName(), plugin.getVaultAPI().format(interestEarned)));
-									totalInterestPaid.put(bankName, totalInterestPaid.get(bankName) + interestEarned);
-									if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
-										plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getVaultAPI().format(interestEarned));
-									}else{
-										player.addOfflineInterest(bankName, interestEarned);
+					if (accountAbandoned || isBanned) {
+						abandonedAccounts.add(player.getUID());
+					}else{
+						for(Iterator<String> bankNameIT = banks.keySet().iterator(); bankNameIT.hasNext();){
+							String bankName = bankNameIT.next();
+							double balance = player.getBankBalance(bankName);
+							if (balance > 0) {
+								if (lastSeenDays > plugin.getMaxOfflineDays()) {
+									plugin.getLogger().info(player.getName() + " has been offline for " + lastSeenDays + " days - no interest paid");
+								}else{
+									double interestEarned = balance * banks.get(bankName).getSavingsRate() / Minecraft_Days_In_Year / 100;
+									if (interestEarned >= 0.01) {
+										player.setBankBalance(bankName, balance + interestEarned);
+										plugin.getLogger().info(String.format("%s paid %s %s in interest", bankName, player.getName(), plugin.getVaultAPI().format(interestEarned)));
+										totalInterestPaid.put(bankName, totalInterestPaid.get(bankName) + interestEarned);
+										if (plugin.getServer().getOfflinePlayer(player.getUID()).isOnline()) {
+											plugin.sendMessage(plugin.getServer().getPlayer(player.getUID()), "InterestEarned", plugin.getBank(bankName).getTitle(), plugin.getVaultAPI().format(interestEarned));
+										}else{
+											player.addOfflineInterest(bankName, interestEarned);
+										}
 									}
 								}
 							}
 						}
 					}
+				}
+				catch (Exception e) {
+					plugin.getLogger().warning("Error processing interest for " + uuid);
 				}
 			}
 		}
