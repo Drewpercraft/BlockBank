@@ -108,6 +108,7 @@ public final class CommandBranch implements TabExecutor {
 	
 	public boolean subCommand_announcements(CommandSender sender, Vector<String> args)
 	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
 		Branch branch = plugin.getPlayerBranch(offlinePlayer);
@@ -117,7 +118,7 @@ public final class CommandBranch implements TabExecutor {
 				plugin.sendMessage(sender, "BranchAnnouncements", branch.isAnnouncements());
 				return true;
 			}
-			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			
 			boolean announcements = Utils.getBoolean(args.get(0));
 			branch.setAnnouncements(announcements);
 			plugin.sendMessage(sender, "BranchUpdated", branch.getName());
@@ -129,6 +130,7 @@ public final class CommandBranch implements TabExecutor {
 	
 	public boolean subCommand_close(CommandSender sender, Vector<String> args)
 	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
 		Branch branch = plugin.getPlayerBranch(offlinePlayer);
@@ -137,8 +139,7 @@ public final class CommandBranch implements TabExecutor {
 			if (args.size() < 1) {
 				plugin.sendMessage(sender, "BranchClose", Utils.intToTime(branch.getCloseHour()));
 				return true;
-			}
-			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			}			
 			int hour = Utils.getInt(args.get(0));
 			if (hour < 0 || hour > 24) {
 				plugin.sendMessage(sender, "InvalidArgument");
@@ -163,14 +164,14 @@ public final class CommandBranch implements TabExecutor {
 	 *      2: world name (optional)
 	 */
 	public Boolean subCommand_create(CommandSender sender, Vector<String> args)
-	{		
+	{	
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		
 		OfflinePlayer player = (OfflinePlayer) sender;
 		if (player.getPlayer() == null) {
 			plugin.sendMessage(sender, "ConsoleNotAllowed");
 			return true;
 		}
-		
-		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		if (args.size() < 2) return false;
 		
@@ -212,6 +213,7 @@ public final class CommandBranch implements TabExecutor {
 	public Boolean subCommand_debug(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		
 		OfflinePlayer player = (OfflinePlayer) sender;
 		
 		Bank bank = plugin.getPlayerBank(player);
@@ -229,6 +231,8 @@ public final class CommandBranch implements TabExecutor {
 
 	public Boolean subCommand_info(CommandSender sender, Vector<String> args)
 	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.user", plugin.getMessage("PermissionError"))) return true;
+		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		
 		if (offlinePlayer.getPlayer() == null) {
@@ -258,6 +262,7 @@ public final class CommandBranch implements TabExecutor {
 	 */
 	public Boolean subCommand_list(CommandSender sender, Vector<String> args)
 	{	
+		if (Utils.PermissionCheckFailed(sender, "blockbank.user", plugin.getMessage("PermissionError"))) return true;
 		
 		int page = 1;
 		if (args.size() > 0) {
@@ -294,6 +299,7 @@ public final class CommandBranch implements TabExecutor {
 
 	public boolean subCommand_open(CommandSender sender, Vector<String> args)
 	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
 		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
 		Branch branch = plugin.getPlayerBranch(offlinePlayer);
@@ -303,7 +309,7 @@ public final class CommandBranch implements TabExecutor {
 				plugin.sendMessage(sender, "BranchOpen", Utils.intToTime(branch.getOpenHour()));
 				return true;
 			}
-			if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+			
 			int hour = Utils.getInt(args.get(0));
 			if (hour < 0 || hour > 24) {
 				plugin.sendMessage(sender, "InvalidArgument");
@@ -325,6 +331,7 @@ public final class CommandBranch implements TabExecutor {
 	public boolean subCommand_title(CommandSender sender, Vector<String> args)
 	{
 		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
 		Branch branch = plugin.getPlayerBranch(offlinePlayer);
 		

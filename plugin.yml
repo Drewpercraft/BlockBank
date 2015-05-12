@@ -11,15 +11,15 @@ commands:
     bank:
         description: Manage your bank accounts.
         usage: /bank [command] see /bank help for more info.
-        permission: blockbank.admin
-        permission-message: You must be an admin.
+        permission: blockbank.user
+        permission-message: You must be a BlockBank user.
         aliases: [eco]
         
     branch:
         description: Manage bank branches.
         usage: /branch [bank name] see /branch help for more info.
-        permission: blockbank.admin
-        permission-message: You must be an admin
+        permission: blockbank.user
+        permission-message: You must be a BlockBank user.
         
     balance:
         description: Get the balance in all your accounts.
@@ -44,13 +44,13 @@ commands:
         
     borrow:
         description: Borrow money from the bank.
-        permission: blockbank.loan
+        permission: blockbank.borrow
         permission-message: You are not authorized to borrow money.
         usage: /borrow [amount]
         
     credit:
         description: Determine how much the bank is willing to lend you.
-        permission: blockbank.loan
+        permission: blockbank.borrow
         usage: /credit
 
     balancetop:
@@ -64,7 +64,6 @@ permissions:
         description: Gives user access to all Bank commands
         children:
             blockbank.user: true
-            blockbank.vault: true
             blockbank.borrow: true
             blockbank.admin: true
               

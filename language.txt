@@ -65,4 +65,4 @@ Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
 InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s
 Your=your
 OfflineDividend=\u00A76Server Dividend:\u00A79 While you were away, the server paid you \u00A76%s\u00A79 due to accounts being abandoned.
-OfflineInterest=While you were away, \u00A76%s\u00A79 paid you \u00A76%s\u00A79 in interest.
+OfflineInterest=\u00A79While you were away, \u00A76%s\u00A79 paid you \u00A76%s\u00A79 in interest.

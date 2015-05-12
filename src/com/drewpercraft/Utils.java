@@ -10,6 +10,8 @@ public final class Utils {
 		//Singleton implementation
 	}
 
+	
+	
 	public final class Pair<X, Y>
 	{
 		public final X x;

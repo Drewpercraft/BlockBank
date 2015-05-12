@@ -149,6 +149,8 @@ public class CommandBank implements TabExecutor {
 
 	public boolean subCommand_info(CommandSender sender, Vector<String> args)
 	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.user", plugin.getMessage("PermissionError"))) return true;
+		
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;
 		
 		if (offlinePlayer.getPlayer() == null) {
@@ -183,7 +185,7 @@ public class CommandBank implements TabExecutor {
 	 */
 	public boolean subCommand_list(CommandSender sender, Vector<String> args)
 	{	
-		
+		if (Utils.PermissionCheckFailed(sender, "blockbank.user", plugin.getMessage("PermissionError"))) return true;
 		int page = 1;
 		if (args.size() > 0) {
 			page = Utils.getInt(args.get(0));
@@ -207,7 +209,7 @@ public class CommandBank implements TabExecutor {
 		plugin.sendMessage(sender, "ListHeader", title, page, pageCount);
 		for(int i = index; i < lastIndex; i++ ) {			
 			String bankName = bankNames.get(i);
-			plugin.sendMessage(sender, "ListEntry", i+1, plugin.getBank(bankName) + " (" + bankName+ ")");
+			plugin.sendMessage(sender, "ListEntry", i+1, String.format("%s (%s) %s", plugin.getBank(bankName), bankName, plugin.getVaultAPI().format(plugin.getBank(bankName).getTotalDeposits())));
 		}
 		return true;
 	}

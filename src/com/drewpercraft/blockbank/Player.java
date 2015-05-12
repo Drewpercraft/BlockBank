@@ -5,8 +5,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -15,13 +18,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.drewpercraft.JSONWriter;
+
 public class Player {
 
 	private final BlockBank plugin;
 	private final String filePath;
 	private final String filename;
 	private final UUID uuid;
-	private JSONObject data = new JSONObject();
+	private JSONObject data = null;
 	private boolean modified = false;
 
 	
@@ -72,24 +77,31 @@ public class Player {
 		String playerName = "";
 		try
 		{
-			boolean newPlayer = playerFile.createNewFile();
+			data = new JSONObject();
 			playerName = plugin.getServer().getOfflinePlayer(uuid).getName();
-			data.put("uuid", uuid.toString());
-			data.put("playerName", playerName);
-			data.put("balance", 0.0);
+			if (playerName == null) {
+				playerName = "Unknown";
+			}
+			boolean newPlayer = playerFile.createNewFile();
 			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				JSONObject obj = (JSONObject) parser.parse(new FileReader(playerFile));				
-				if (obj.containsKey("balance")) {
-					data.put("balance", obj.get("balance"));
-				}else{
-					plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is missing a balance field");
-				}
-				for(String bankName : plugin.getBanks().keySet()) {
-					if (obj.containsKey(bankName)) {
-						data.put(bankName, obj.get(bankName));
+				data = (JSONObject) parser.parse(new FileReader(playerFile));
+				
+				//Upgrade file to new format
+				if (!data.containsKey("banks")) {
+					plugin.log.info("Upgrading file format for " + playerName);
+					JSONObject bankMap = new JSONObject();
+					Set<String> banks = plugin.getBanks().keySet();
+					for(Iterator<String> bankNameIT = banks.iterator(); bankNameIT.hasNext();) {
+						String bankName = bankNameIT.next();
+						if (data.containsKey(bankName)) {
+							bankMap.put(bankName, (Double) data.get(bankName));
+							data.remove(bankName);
+						}
 					}
+					data.put("banks", bankMap);
+					save();
 				}
 			} 
 		}
@@ -99,7 +111,29 @@ public class Player {
             e.printStackTrace();
         } catch (ParseException e) {
             plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " is corrupt");
-        } 
+            
+        }
+		if (!data.containsKey("balance")) {
+			plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " was missing a balance field");
+			data.put("balance", 0.0);
+		}
+		
+		if (!data.containsKey("banks")) {
+			data.put("banks", new JSONObject());
+		}
+		
+		if (!data.containsKey("offlineInterest")) {
+			data.put("offlineInterest", new JSONObject());
+		}
+
+		if (!data.containsKey("offlineDividends")) {
+			data.put("offlineDividends", new JSONObject());
+		}
+
+		data.put("uuid", uuid.toString());
+		//This will catch name updates. The uuid and the player name in the file are not used, 
+		//but are there to make data mining easier		
+		data.put("playerName", playerName);
 	}
 	
 	public void save()
@@ -110,7 +144,11 @@ public class Player {
 			playerFile.createNewFile();
 			FileWriter os = new FileWriter(playerFile);
 			plugin.getLogger().info("Saving " + getName());
-			os.write(data.toString());
+			JSONWriter jWriter = new JSONWriter();
+			jWriter.write(data.toString());
+			os.write(jWriter.toString());
+			jWriter.close();
+			os.write(System.lineSeparator());
 			os.close();
 			modified = false;
 		}
@@ -156,8 +194,8 @@ public class Player {
 	public void setBalance(double amount)
 	{
 		//Round amount to the correct number of decimals
-		int decimals = plugin.getDecimals() * 100;
-		data.put("balance", (double) Math.round(amount * decimals) / decimals);
+		BigDecimal balance = new BigDecimal(amount).setScale(plugin.getDecimals(), RoundingMode.HALF_EVEN);
+		data.put("balance", (double) balance.doubleValue());
 		modified = true;
 	}
 
@@ -180,8 +218,9 @@ public class Player {
 	
 	public double getBankBalance(String bankName)
 	{
-		if (data.containsKey(bankName)) {
-			Double balance = (Double) data.get(bankName);
+		JSONObject bankMap = (JSONObject) data.get("banks");
+		if (bankMap.containsKey(bankName)) {
+			Double balance = (Double) bankMap.get(bankName);
 			return balance.doubleValue();
 		}
 		return 0.0;
@@ -190,9 +229,10 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public void setBankBalance(String bankName, double amount)
 	{
-		//Round amount to the correct number of decimals
-		int decimals = plugin.getDecimals() * 100;
-		data.put(bankName, (double) Math.round(amount * decimals) / decimals);
+		JSONObject bankMap = (JSONObject) data.get("banks");
+		BigDecimal balance = new BigDecimal(amount).setScale(plugin.getDecimals(), RoundingMode.HALF_EVEN);
+		bankMap.put(bankName, (double) balance.doubleValue());
+		data.put("banks", bankMap);
 		modified = true;
 	}
 	
@@ -253,11 +293,11 @@ public class Player {
 	@SuppressWarnings("unchecked")
 	public double getOfflineInterest(String bankName)
 	{
-		plugin.getLogger().info("Checking: " + data.toJSONString());
+		plugin.getLogger().fine("Checking: " + data.toJSONString());
 		if (data.containsKey("offlineInterest")) {
 			Map<String, Double> offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
 			if (offlineInterestMap.containsKey(bankName)) {
-				plugin.getLogger().info(bankName + ": " + offlineInterestMap.toString());
+				plugin.getLogger().fine(bankName + ": " + offlineInterestMap.toString());
 				Double offlineInterest = offlineInterestMap.get(bankName);
 				return offlineInterest.doubleValue();
 			}
@@ -272,7 +312,9 @@ public class Player {
 		double previousEarnings = 0.0;
 		if (data.containsKey("offlineInterest")) {
 			offlineInterestMap = (Map<String, Double>) data.get("offlineInterest");
-			previousEarnings = offlineInterestMap.get(bankName);
+			if (offlineInterestMap.containsKey(bankName)) {
+				previousEarnings = offlineInterestMap.get(bankName);
+			}
 		}else{
 			offlineInterestMap = new HashMap<String, Double>();			
 		}
