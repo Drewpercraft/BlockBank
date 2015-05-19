@@ -126,8 +126,8 @@ public class Player {
 			data.put("offlineInterest", new JSONObject());
 		}
 
-		if (!data.containsKey("offlineDividends")) {
-			data.put("offlineDividends", new JSONObject());
+		if (!data.containsKey("offlineDividend")) {
+			data.put("offlineDividend", 0.0);
 		}
 
 		data.put("uuid", uuid.toString());
