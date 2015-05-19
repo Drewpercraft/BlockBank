@@ -66,7 +66,7 @@ public class CalculateInterestTask extends BukkitRunnable {
 					//If the player has not logged in, the account is considered abandoned
 					boolean accountAbandoned = (lastSeenDays >= plugin.getAbandonedAccountDays());
 
-					if (player.getName() == null) {
+					if (offlinePlayer.getName() == null) {
 						plugin.getLogger().info("UUID " + player.getUID() + " no longer exists on this server");
 						accountAbandoned = true;
 					}
@@ -77,14 +77,11 @@ public class CalculateInterestTask extends BukkitRunnable {
 						// Old way is just to look here...
 						//boolean isBanned = plugin.getServer().getOfflinePlayer(uuid).isBanned();
 						// Only consider the player banned if it is a permanent ban							
-						if (offlinePlayer == null) {
-							isBanned = true;
-						}else{
-							isBanned = Bukkit.getBanList(Type.NAME).isBanned(offlinePlayer.getName());
-							//If the player is banned, make sure it is a permanent ban
-							if (isBanned) {
-								isBanned = (Bukkit.getBanList(Type.NAME).getBanEntry(offlinePlayer.getName()).getExpiration() == null);
-							}
+						
+						isBanned = Bukkit.getBanList(Type.NAME).isBanned(offlinePlayer.getName());
+						//If the player is banned, make sure it is a permanent ban
+						if (isBanned) {
+							isBanned = (Bukkit.getBanList(Type.NAME).getBanEntry(offlinePlayer.getName()).getExpiration() == null);
 						}
 					}
 					if (accountAbandoned || isBanned) {

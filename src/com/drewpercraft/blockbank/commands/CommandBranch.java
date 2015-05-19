@@ -247,6 +247,7 @@ public final class CommandBranch implements TabExecutor {
 		DecimalFormat dFormat = new DecimalFormat("##.##"); 
 		plugin.sendMessage(sender, "BankTitle", branch.getBank().getTitle());
 		plugin.sendMessage(sender, "BranchTitle", branch.getTitle());
+		plugin.sendMessage(sender, "BranchRegion", branch.getName());
 		plugin.sendMessage(sender, "BranchAnnouncements", branch.isAnnouncements());
 		plugin.sendMessage(sender, "BranchOpen", Utils.intToTime(branch.getOpenHour()));
 		plugin.sendMessage(sender, "BranchClose", Utils.intToTime(branch.getCloseHour()));
@@ -276,7 +277,7 @@ public final class CommandBranch implements TabExecutor {
 
 		for(String bankName : bankNames) {
 			for(String branchName : plugin.getBank(bankName).getBranches().keySet()) {
-				branchNames.add(plugin.getBank(bankName).getTitle() + " / " + plugin.getBank(bankName).getBranch(branchName).getTitle());
+				branchNames.add(plugin.getBank(bankName).getTitle() + " / " + plugin.getBank(bankName).getBranch(branchName).getTitle() + " / " + plugin.getBank(bankName).getBranch(branchName).getName());
 			}
 		}
 		

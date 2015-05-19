@@ -26,6 +26,7 @@ BranchCreated=The %s bank added the %s branch.
 BranchListEntry=\u00A76%d) \u00A79%s
 BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79of \u00A7f%d \u00A76]====----
 BranchOpen=\u00A76Opens:\u00A79 %s
+BranchRegion=\u00A76Region:\u00A79 %s
 BranchTitle=\u00A76Branch:\u00A79 %s
 BranchOpening=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now open.
 BranchClosing=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now closed.
@@ -59,10 +60,10 @@ RegionDoesNotExist=\u00A79The region \u00A76%s\u00A79 does not exist.
 ReloadFail=BlockBank reload failed and has been \u00A74DISABLED!
 ReloadSuccess=\u00A7ABlockBank reloaded successfully.
 TotalEconomy=\u00A76----====[ \u00A79Total Economy -  \u00A7a%s \u00A76]====----
-TotalWorth=%s total worth is \u00A7a%s.
+TotalWorth=\u00A76%s\u00A79 total worth is \u00A7a%s.
 WalletBalance=\u00A79There is \u00A76%s\u00A79 in \u00A76%s\u00A79 wallet.
 Withdraw=\u00A76%s\u00A79 was withdrawn from your wallet.
 InterestEarned=\u00A79Your account at \u00A76%s\u00A79 earned \u00A76%s
-Your=your
+Your=Your
 OfflineDividend=\u00A76Server Dividend:\u00A79 While you were away, the server paid you \u00A76%s\u00A79 due to accounts being abandoned.
 OfflineInterest=\u00A79While you were away, \u00A76%s\u00A79 paid you \u00A76%s\u00A79 in interest.
