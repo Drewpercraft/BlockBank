@@ -66,7 +66,7 @@ public class CalculateInterestTask extends BukkitRunnable {
 					//If the player has not logged in, the account is considered abandoned
 					boolean accountAbandoned = (lastSeenDays >= plugin.getAbandonedAccountDays());
 
-					if (player.getName() == null) {
+					if (offlinePlayer.getName() == null) {
 						plugin.getLogger().info("UUID " + player.getUID() + " no longer exists on this server");
 						accountAbandoned = true;
 					}
