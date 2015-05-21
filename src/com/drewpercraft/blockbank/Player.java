@@ -86,23 +86,7 @@ public class Player {
 			if (!newPlayer) {
 				plugin.getLogger().info("Loading " + playerName + " / " + uuid.toString());
 				JSONParser parser = new JSONParser();
-				data = (JSONObject) parser.parse(new FileReader(playerFile));
-				
-				//Upgrade file to new format
-				if (!data.containsKey("banks")) {
-					plugin.log.info("Upgrading file format for " + playerName);
-					JSONObject bankMap = new JSONObject();
-					Set<String> banks = plugin.getBanks().keySet();
-					for(Iterator<String> bankNameIT = banks.iterator(); bankNameIT.hasNext();) {
-						String bankName = bankNameIT.next();
-						if (data.containsKey(bankName)) {
-							bankMap.put(bankName, (Double) data.get(bankName));
-							data.remove(bankName);
-						}
-					}
-					data.put("banks", bankMap);
-					save();
-				}
+				data = (JSONObject) parser.parse(new FileReader(playerFile));								
 			} 
 		}
 		catch (FileNotFoundException e) {
@@ -114,26 +98,41 @@ public class Player {
             
         }
 		if (!data.containsKey("balance")) {
-			plugin.log.warning("Data file for " + playerName + " / " + uuid.toString() + " was missing a balance field");
 			data.put("balance", 0.0);
+			modified = true;
 		}
 		
 		if (!data.containsKey("banks")) {
 			data.put("banks", new JSONObject());
+			modified = true;
 		}
 		
 		if (!data.containsKey("offlineInterest")) {
 			data.put("offlineInterest", new JSONObject());
+			modified = true;
 		}
 
 		if (!data.containsKey("offlineDividend")) {
 			data.put("offlineDividend", 0.0);
+			modified = true;
 		}
 
-		data.put("uuid", uuid.toString());
+		if (!data.containsKey("uuid")) {
+			modified = true;
+			data.put("uuid", uuid.toString());
+		}
+
 		//This will catch name updates. The uuid and the player name in the file are not used, 
-		//but are there to make data mining easier		
-		data.put("playerName", playerName);
+		//but are there to make data mining easier
+		if (!data.containsKey("playerName")) {
+			data.put("playerName", playerName);
+			modified = true;
+		}
+		
+		if (!data.get("playerName").equals(playerName)) {
+			data.put("playerName", playerName);
+			modified = true;			
+		}
 	}
 	
 	public void save()
