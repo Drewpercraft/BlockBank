@@ -1,6 +1,6 @@
 name: BlockBank
 author: hitechwizard
-version: 2.0.0-SNAPSHOT
+version: maven-version-number
 main: com.drewpercraft.blockbank.BlockBank
 name: BlockBank
 website: www.drewpercraft.com
