@@ -348,4 +348,9 @@ public class CommandBank implements TabExecutor {
 		return true;
 	}
 	
+	public boolean subCommand_version(CommandSender sender, Vector<String> args)
+	{
+		plugin.sendMessage(sender, "Version", plugin.getDescription().getVersion());
+		return true;
+	}
 }
