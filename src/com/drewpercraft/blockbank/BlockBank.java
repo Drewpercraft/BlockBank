@@ -367,7 +367,7 @@ public final class BlockBank extends JavaPlugin {
 	    	
         	//Start the Interest Manager
         	World world = getMasterWorld();
-        	getLogger().info("Using world " + world.getName() + " as the master clock");
+        	log.info("Using world " + world.getName() + " as the master clock");
         	interestTask = new CalculateInterestTask(this);        	
 			// Run the interestManager at the stroke of midnight (18000)
 
