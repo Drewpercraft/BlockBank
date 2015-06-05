@@ -128,6 +128,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public boolean createPlayerAccount(OfflinePlayer player) 
 	{
+		if (player == null) return false;
 		getPlayer(player.getUniqueId()).save();
 		return true;
 	}
