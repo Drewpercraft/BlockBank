@@ -259,6 +259,8 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public double getBalance(OfflinePlayer offlinePlayer) {
+		if (offlinePlayer == null) return 0.0;
+		
 		Player player = players.get(offlinePlayer.getUniqueId());
 		if (player instanceof Player) return player.getBalance();
 		return 0.0;
