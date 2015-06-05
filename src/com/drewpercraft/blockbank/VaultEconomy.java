@@ -198,6 +198,10 @@ public class VaultEconomy implements Economy {
 	@Override
 	public EconomyResponse depositPlayer(OfflinePlayer offlinePlayer, double amount) 
 	{
+		if (!(offlinePlayer instanceof OfflinePlayer)) {
+			return new EconomyResponse(0, 0, ResponseType.FAILURE, String.format(plugin.getMessage("InvalidPlayer"), "Unknown"));
+		}
+		
 		Player player = getPlayer(offlinePlayer);
 		double balance = player.deposit(amount);
 		if (amount < 0) {
