@@ -44,6 +44,7 @@ private final BlockBank plugin;
 			plugin.sendMessage(sender, "NegativeAmountUsed");
 			return true;
 		}
+		
 		if (amount == 0.0) {
 			amount = plugin.getVaultAPI().getBalance(offlinePlayer);
 		}
@@ -73,6 +74,11 @@ private final BlockBank plugin;
 			return true;
 		}
 		
+		if (amount < branch.getTransactionFee()) {
+			plugin.sendMessage(sender, "DepositTransactionFee", plugin.getVaultAPI().format(branch.getTransactionFee()));
+			return true;
+		}
+			
 		Bank bank = branch.getBank();
 		if (bank.deposit(offlinePlayer, amount)) {
 			plugin.sendMessage(sender, "BankDepositSuccess", plugin.getVaultAPI().format(amount));

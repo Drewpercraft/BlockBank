@@ -6,6 +6,8 @@
 # These optins apply to all banks and
 # cannot be set in game
 ######################################
+
+bankDay: minecraft
 currencySymbol: $
 currencySingular: dollar
 currencyPlural: dollars
@@ -20,13 +22,14 @@ maxOfflineDays: 3
 abandonedCheck : false
 abandonedAccountDays: 30
 abandonedDistribution: even
+maxTransactionFee: 100.0
 
 ######################################
 # Branches with open/close set to 0/24
 # can be set to fail randomly as if
 # they are being serviced.
 ######################################
-atmFailRate: 25
+atmFailRate: 15
 atmOfflineTime: 2000
 
 ######################################

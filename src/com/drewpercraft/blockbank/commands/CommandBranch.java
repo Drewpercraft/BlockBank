@@ -336,6 +336,11 @@ public final class CommandBranch implements TabExecutor {
 		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
 		Branch branch = plugin.getPlayerBranch(offlinePlayer);
 		
+		if (args.size() == 0) {
+			plugin.sendMessage(sender, "MissingArgument");
+			return true;
+		}
+		
 		if (branch != null) {
 			String title = StringUtils.join(args, " ");
 			branch.setTitle(title);
@@ -344,5 +349,29 @@ public final class CommandBranch implements TabExecutor {
 			plugin.sendMessage(sender, "PlayerNotInBranch");
 		}
 		return true;		
+	}
+	
+	public boolean subCommand_transactionfee(CommandSender sender, Vector<String> args)
+	{
+		if (Utils.PermissionCheckFailed(sender, "blockbank.admin", plugin.getMessage("PermissionError"))) return true;
+		OfflinePlayer offlinePlayer = (OfflinePlayer) sender;		
+		Branch branch = plugin.getPlayerBranch(offlinePlayer);
+		
+		if (args.size() == 0) {
+			plugin.sendMessage(sender, "InvalidArgument");
+			return true;
+		}
+		
+		if (branch != null) {
+			double fee = Double.parseDouble(args.get(0));		
+			if (branch.setTransactionFee(fee)) {
+				plugin.sendMessage(sender, "BranchUpdated", branch.getName());
+			}else{
+				plugin.sendMessage(sender, "InvalidArgument");
+			}
+		}else{
+			plugin.sendMessage(sender, "PlayerNotInBranch");
+		}
+		return true;
 	}
 }

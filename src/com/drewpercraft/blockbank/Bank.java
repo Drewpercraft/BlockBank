@@ -194,15 +194,6 @@ public class Bank {
 		return branches;
 	}
 
-	/**
-	 * @return the atms
-	 */
-	public List<Location> getAtms() 
-	{
-		return atms;
-	}
-
-
 	public ConfigurationSection getConfig() {
 		// TODO Auto-generated method stub
 		return this.config;

@@ -455,4 +455,8 @@ public final class BlockBank extends JavaPlugin {
 		getServer().broadcastMessage(getMessage(key, args));		
 	}
 
+	public double getMaxTransactionFee() {
+		return getConfig().getDouble("maxTransactionFee", 0.0);
+	}
+
 }

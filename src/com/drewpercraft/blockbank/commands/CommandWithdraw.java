@@ -66,11 +66,17 @@ private final BlockBank plugin;
 		
 		Bank bank = branch.getBank();
 		if (amount == 0.0) {
-			amount = bank.getPlayerBalance(offlinePlayer.getUniqueId());
+			amount = bank.getPlayerBalance(offlinePlayer.getUniqueId()) + branch.getTransactionFee();
+		}
+		
+		if (amount < branch.getTransactionFee()) {
+			plugin.sendMessage(sender, "WithdrawTransactionFee", plugin.getVaultAPI().format(branch.getTransactionFee()));
 		}
 		
 		//Verify the user has the withdrawal amount in bank
 		if (bank.withdraw(offlinePlayer, amount)) {
+			//Collect the transaction fee
+			plugin.getVaultAPI().getPlayer(offlinePlayer).withdraw(branch.getTransactionFee());
 			plugin.sendMessage(sender, "BankWithdrawSuccess", plugin.getVaultAPI().format(amount));
 		}else{
 			plugin.sendMessage(sender, "BankWithdrawFailed", plugin.getVaultAPI().format(amount));
