@@ -81,6 +81,7 @@ private final BlockBank plugin;
 			
 		Bank bank = branch.getBank();
 		if (bank.deposit(offlinePlayer, amount)) {
+			plugin.getVaultAPI().getPlayer(offlinePlayer).withdraw(branch.getTransactionFee());
 			plugin.sendMessage(sender, "BankDepositSuccess", plugin.getVaultAPI().format(amount));
 		}else{
 			plugin.sendMessage(sender, "BankDepositFailed", plugin.getVaultAPI().format(amount));
