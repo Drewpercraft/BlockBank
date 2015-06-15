@@ -251,8 +251,10 @@ public final class CommandBranch implements TabExecutor {
 		plugin.sendMessage(sender, "BranchAnnouncements", branch.isAnnouncements());
 		plugin.sendMessage(sender, "BranchOpen", Utils.intToTime(branch.getOpenHour()));
 		plugin.sendMessage(sender, "BranchClose", Utils.intToTime(branch.getCloseHour()));
+		plugin.sendMessage(sender, "BranchTransactionFee", plugin.getVaultAPI().format(branch.getTransactionFee()));
 		plugin.sendMessage(sender, "BankSavings", dFormat.format(branch.getBank().getSavingsRate()));
 		plugin.sendMessage(sender, "BankTotalDeposits", plugin.getVaultAPI().format(branch.getBank().getTotalDeposits()));
+		
 		return true;
 	}
 	

@@ -28,6 +28,7 @@ BranchListHeader=\u00A76----====[ \u00A79Bank Branches - Page \u00A7f%d \u00A79o
 BranchOpen=\u00A76Opens:\u00A79 %s
 BranchRegion=\u00A76Region:\u00A79 %s
 BranchTitle=\u00A76Branch:\u00A79 %s
+BranchTransactionFee=\u00A76Transaction Fee:\u00A79 %s
 BranchOpening=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now open.
 BranchClosing=The \u00A76%s\u00A79 of \u00A76%s\u00A79 is now closed.
 BranchUpdated=%s was updated.
