@@ -215,5 +215,13 @@ public class Bank {
 		}
 		return totalDeposits;
 	}
+
+	public boolean deduct(OfflinePlayer offlinePlayer, double amount) {
+		Player player = plugin.getVaultAPI().getPlayer(offlinePlayer);
+		double balance = player.getBankBalance(this.getName());
+		if (amount > balance) return false;
+		player.setBankBalance(this.getName(), balance - amount);
+		return true;
+	}
 	
 }
