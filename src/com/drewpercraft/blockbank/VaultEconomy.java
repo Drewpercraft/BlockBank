@@ -150,6 +150,7 @@ public class VaultEconomy implements Economy {
 	@Override
 	public boolean createPlayerAccount(String playerName) 
 	{
+		plugin.getLogger().info("Creating player name: " + playerName);
 		return createPlayerAccount(Utils.getPlayerByName(playerName));
 	}
 
@@ -360,8 +361,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(OfflinePlayer player) {
-		// TODO Auto-generated method stub
-		return false;
+		return players.containsKey(player.getUniqueId());
 	}
 
 	/* (non-Javadoc)
