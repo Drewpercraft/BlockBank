@@ -314,6 +314,7 @@ public class VaultEconomy implements Economy {
 	}
 
 	public Player getPlayer(OfflinePlayer offlinePlayer) {
+		if (offlinePlayer == null) return null;
 		return getPlayer(offlinePlayer.getUniqueId());
 	}
 
@@ -329,6 +330,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public boolean has(OfflinePlayer player, double amount) {
+		if (player == null) return false;
 		return getBalance(player) >= amount;
 	}
 
@@ -361,6 +363,7 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasAccount(OfflinePlayer player) {
+		if (player == null) return false;
 		return players.containsKey(player.getUniqueId());
 	}
 
@@ -378,6 +381,7 @@ public class VaultEconomy implements Economy {
 	@Deprecated
 	@Override
 	public boolean hasAccount(String playerName) {
+		plugin.getLogger().warning("Getting player " + playerName + " by name is deprecated.");
 		return hasAccount(Utils.getPlayerByName(playerName));
 	}
 
@@ -395,7 +399,6 @@ public class VaultEconomy implements Economy {
 	 */
 	@Override
 	public boolean hasBankSupport() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
