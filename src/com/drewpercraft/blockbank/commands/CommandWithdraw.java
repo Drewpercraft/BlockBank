@@ -87,9 +87,11 @@ private final BlockBank plugin;
 			if (fee > 0.0) {				
 				if (bank.deduct(offlinePlayer, fee)) {
 					plugin.sendMessage(sender, "TransactionFeeCharged", plugin.getVaultAPI().format(fee));
-					return true;
+				}else{
+					plugin.getLogger().warning("Deducting transaction fee of " + plugin.getVaultAPI().format(fee) + " from " + offlinePlayer.getName() + " failed.");
 				}
 			}
+			return true;
 		}
 			
 		plugin.sendMessage(sender, "BankWithdrawFailed", plugin.getVaultAPI().format(amount));
